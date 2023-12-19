@@ -16,6 +16,20 @@ $ composer require red-jasmine/order
 
 ## Usage
 
+
+### 订单金额计算公式
+
+```
+  // 商品金额 (product_amount) = 价格 * 数量
+  // 订单总金额 (total_amount)  = 商品金额 + 税费 + 调整费 - 单品优惠
+
+  // 订单 总商品金额 (product_amount)  = 所有商品金额 之和
+  // 订单 总金额 (total_amount)  = 所有商品总金额 之和  + 邮费 + 调整费 - 订单优惠
+  // 订单 付款金额 (payment_amount) = 订单 总金额 - 抵扣优惠
+
+```
+
+
 ## Change log
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.
