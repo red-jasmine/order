@@ -11,7 +11,7 @@ enum OrderTypeEnums: string
 {
     use EnumsHelper;
 
-    case  FIXED = 'fixed'; // 一口价
+    case  FIXED = 'FIXED'; // 一口价
 
     public static function names() : array
     {

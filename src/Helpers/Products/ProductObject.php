@@ -9,21 +9,27 @@ use RedJasmine\Order\Enums\Orders\Types\ShippingTypeEnums;
 class ProductObject implements ProductInterface
 {
 
+    protected array $attributes = [];
+
 
     protected string            $productType;
     protected int               $productID;
     protected int               $skuID;
     protected string            $title;
     protected string            $price;
+    protected string            $costPrice      = '0';
     protected int               $num;
     protected ?string           $image;
     protected ShippingTypeEnums $shippingType;
+    protected string            $taxAmount      = '0';
+    protected string            $discountAmount = '0';
 
     /**
      * @param array{shipping_type:string|ShippingTypeEnums,product_type:string,product_id:int,sku_id:int,title:string,price:string,num:int,image:string|null} $data
      */
     public function __construct(array $data = [])
     {
+        // TODO 快速设置属性
         isset($data['shipping_type']) ? $this->shippingType = ShippingTypeEnums::tryFrom($data['shipping_type']) : null;
         isset($data['product_type']) ? $this->productType = $data['product_type'] : null;
         isset($data['product_id']) ? $this->productID = $data['product_id'] : null;
@@ -119,6 +125,37 @@ class ProductObject implements ProductInterface
     public function setImage(?string $image) : ProductObject
     {
         $this->image = $image;
+        return $this;
+    }
+
+    public function getTaxAmount() : string
+    {
+        return $this->taxAmount;
+    }
+
+    public function setTaxAmount(string $taxAmount) : void
+    {
+        $this->taxAmount = $taxAmount;
+    }
+
+    public function getDiscountAmount() : string
+    {
+        return $this->discountAmount;
+    }
+
+    public function setDiscountAmount(string $discountAmount) : void
+    {
+        $this->discountAmount = $discountAmount;
+    }
+
+    public function getCostPrice() : string
+    {
+        return $this->costPrice;
+    }
+
+    public function setCostPrice(string $costPrice) : static
+    {
+        $this->costPrice = $costPrice;
         return $this;
     }
 
