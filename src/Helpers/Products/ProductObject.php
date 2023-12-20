@@ -1,10 +1,9 @@
 <?php
 
 namespace RedJasmine\Order\Helpers\Products;
-
-
+use Illuminate\Support\Str;
 use RedJasmine\Order\Contracts\ProductInterface;
-use RedJasmine\Order\Enums\Orders\Types\ShippingTypeEnums;
+use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
 
 class ProductObject implements ProductInterface
 {
@@ -13,8 +12,8 @@ class ProductObject implements ProductInterface
 
 
     protected string            $productType;
-    protected int               $productID;
-    protected int               $skuID;
+    protected int               $productId;
+    protected int               $skuId;
     protected string            $title;
     protected string            $price;
     protected string            $costPrice      = '0';
@@ -29,15 +28,14 @@ class ProductObject implements ProductInterface
      */
     public function __construct(array $data = [])
     {
-        // TODO 快速设置属性
-        isset($data['shipping_type']) ? $this->shippingType = ShippingTypeEnums::tryFrom($data['shipping_type']) : null;
-        isset($data['product_type']) ? $this->productType = $data['product_type'] : null;
-        isset($data['product_id']) ? $this->productID = $data['product_id'] : null;
-        isset($data['sku_id']) ? $this->skuID = $data['sku_id'] : null;
-        isset($data['title']) ? $this->title = $data['title'] : null;
-        isset($data['price']) ? $this->price = $data['price'] : null;
-        isset($data['num']) ? $this->num = $data['num'] : null;
-        isset($data['image']) ? $this->image = $data['image'] : null;
+
+        foreach ($data as $key => $value) {
+            $key = Str::camel($key);
+            if (property_exists($this, $key)) {
+                $method = 'set' . Str::studly($key);
+                $this->$method($value);
+            }
+        }
     }
 
     public function getProductType() : string
@@ -56,31 +54,31 @@ class ProductObject implements ProductInterface
         return $this->shippingType;
     }
 
-    public function setShippingType(ShippingTypeEnums $shippingType) : ProductObject
+    public function setShippingType($shippingType) : ProductObject
     {
-        $this->shippingType = $shippingType;
+        $this->shippingType = ShippingTypeEnums::from($shippingType);
         return $this;
     }
 
-    public function getProductID() : int
+    public function getProductId() : int
     {
-        return $this->productID;
+        return $this->productId;
     }
 
-    public function setProductID(int $productID) : ProductObject
+    public function setProductId(int $productID) : ProductObject
     {
-        $this->productID = $productID;
+        $this->productId = $productID;
         return $this;
     }
 
-    public function getSkuID() : int
+    public function getSkuId() : int
     {
-        return $this->skuID;
+        return $this->skuId;
     }
 
-    public function setSkuID(?int $skuID) : ProductObject
+    public function setSkuId(?int $skuID) : ProductObject
     {
-        $this->skuID = $skuID;
+        $this->skuId = $skuID;
         return $this;
     }
 

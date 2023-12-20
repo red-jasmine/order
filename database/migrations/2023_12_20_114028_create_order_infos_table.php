@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() : void
     {
-        Schema::create('order_info', function (Blueprint $table) {
-            $table->unsignedTinyInteger('id')->primary();
+        Schema::create('order_infos', function (Blueprint $table) {
+            $table->unsignedBigInteger('id')->primary();
 
             $table->string('seller_remarks')->nullable()->comment('卖家备注');
             $table->string('seller_message')->nullable()->comment('卖家留言');
@@ -26,6 +26,6 @@ return new class extends Migration {
 
     public function down() : void
     {
-        Schema::dropIfExists('order_info');
+        Schema::dropIfExists('order_infos');
     }
 };

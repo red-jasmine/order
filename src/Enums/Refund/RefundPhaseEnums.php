@@ -5,20 +5,22 @@ namespace RedJasmine\Order\Enums\Orders\Types;
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
 /**
- * 订单类型
+ * 退款阶段
  */
-enum OrderTypeEnums: string
+enum RefundPhaseEnums: string
 {
     use EnumsHelper;
 
-    case  FIXED = 'FIXED'; // 一口价
+    case  ON_SALE = 'ON_SALE';
+    case  AFTER_SALE = 'AFTER_SALE';
+
 
     public static function names() : array
     {
         return [
-            self::FIXED->value => '一口价',
+            self::ON_SALE->value    => '售中',
+            self::AFTER_SALE->value => '售后',
         ];
+
     }
-
-
 }

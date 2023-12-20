@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Contracts;
 
-use RedJasmine\Order\Enums\Orders\Types\ShippingTypeEnums;
+use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
 
 interface ProductInterface
 {
@@ -23,7 +23,7 @@ interface ProductInterface
      * 商品ID
      * @return int
      */
-    public function getProductID() : int;
+    public function getProductId() : int;
 
     /**
      * 价格
@@ -61,12 +61,20 @@ interface ProductInterface
      * 规格ID
      * @return int
      */
-    public function getSkuID() : int;
+    public function getSkuId() : int;
 
 
+    /**
+     * 标题
+     * @return string
+     */
     public function getTitle() : string;
 
 
+    /**
+     * 图片
+     * @return string|null
+     */
     public function getImage() : ?string;
 
 

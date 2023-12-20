@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up() : void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->unsignedTinyInteger('id')->primary();
+            $table->unsignedBigInteger('id')->primary();
 
             $table->string('seller_type')->comment('卖家 类型');
             $table->unsignedBigInteger('seller_id')->comment('卖家 ID');
@@ -20,9 +20,9 @@ return new class extends Migration {
 
             $table->string('title')->nullable()->comment('标题');
             // 类型 如 普通订单、拍卖单、
-            $table->string('type', 30)->comment('订单类型');
+            $table->string('order_type', 30)->comment('订单类型');
             $table->string('shipping_type', 30)->comment('发货类型');
-            $table->string('source_type', 30)->comment('来源类型');   // 普通 、活动、
+            $table->string('source', 30)->nullable()->comment('来源');   // 普通 、活动、
             // 状态
             $table->string('order_status')->comment('订单状态');
             $table->string('shipping_status', 30)->nullable()->comment('发货状态');
@@ -50,9 +50,8 @@ return new class extends Migration {
 
             $table->unsignedTinyInteger('is_seller_delete')->default(0)->comment('卖家删除');
             $table->unsignedTinyInteger('is_buyer_delete')->default(0)->comment('买家删除');
-            $table->string('client_type', 30)->comment('客户端');
-            $table->string('client_ip', 30)->comment('IP');
-
+            $table->string('client_type', 30)->nullable()->comment('客户端');
+            $table->string('client_ip', 30)->nullable()->comment('IP');
             $table->nullableMorphs('channel'); // 渠道
             $table->nullableMorphs('store'); // 门店
             $table->nullableMorphs('guide');// 导购

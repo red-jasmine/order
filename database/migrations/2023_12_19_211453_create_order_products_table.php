@@ -8,8 +8,8 @@ return new class extends Migration {
     public function up() : void
     {
         Schema::create('order_products', function (Blueprint $table) {
-            $table->unsignedTinyInteger('id')->primary();
-            $table->unsignedTinyInteger('oid')->comment('订单ID');
+            $table->unsignedBigInteger('id')->primary();
+            $table->unsignedBigInteger('oid')->comment('订单ID');
             // 商品信息
             $table->string('title')->nullable()->comment('标题');
             $table->string('image')->nullable()->comment('图片');
@@ -22,10 +22,12 @@ return new class extends Migration {
             $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
             $table->string('barcode', 64)->nullable()->comment('条形码');
 
+            $table->string('shipping_type', 30)->comment('发货类型');
+
             $table->unsignedBigInteger('num')->default(0)->comment('数量');
             $table->decimal('price', 12)->default(0)->comment('价格');
             $table->decimal('cost_price', 12)->default(0)->comment('成本价');
-            $table->decimal('product_amount', 16)->default(0)->comment('商品金额');
+            $table->decimal('amount', 16)->default(0)->comment('商品金额');
             $table->decimal('tax_amount', 16)->default(0)->comment('税费');
             $table->decimal('discount_amount', 16)->default(0)->comment('商品优惠');
             $table->decimal('payment_amount', 16)->default(0)->comment('付款金额');
