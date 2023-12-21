@@ -4,13 +4,14 @@ namespace RedJasmine\Order\Services\Orders;
 
 
 use Exception;
-use Illuminate\Support\Collection;
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\Contracts\ProductInterface;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnums;
+use RedJasmine\Order\Enums\Orders\OrderTypeEnums;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnums;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnums;
-use RedJasmine\Order\Enums\Orders\OrderTypeEnums;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderInfo;
@@ -29,12 +30,6 @@ use Throwable;
 class OrderCreatorService
 {
     use ServiceExtends;
-
-
-    /**
-     * @var array|Collection|ProductInterface[]|OrderProduct[]
-     */
-    protected array|Collection $products = [];
 
     protected UserInterface  $owner;
     protected UserInterface  $buyer;
@@ -79,7 +74,7 @@ class OrderCreatorService
 
     public function __construct(protected OrderService $service)
     {
-
+        $this->initOrder();
     }
 
 
@@ -97,59 +92,50 @@ class OrderCreatorService
     }
 
 
-    public function setAttributes()
+    protected function fillOrder() : static
     {
-        $order = $this->order;
-        // 订单ID
         // 卖家
-        $order->seller_type     = $this->seller->getType();
-        $order->seller_id       = $this->seller->getID();
-        $order->seller_nickname = $this->seller->getNickname();
+        $this->order->seller_type     = $this->seller->getType();
+        $this->order->seller_id       = $this->seller->getID();
+        $this->order->seller_nickname = $this->seller->getNickname();
         // 买家
-        $order->buyer_type     = $this->buyer->getType();
-        $order->buyer_id       = $this->buyer->getID();
-        $order->buyer_nickname = $this->buyer->getNickname();
-
+        $this->order->buyer_type     = $this->buyer->getType();
+        $this->order->buyer_id       = $this->buyer->getID();
+        $this->order->buyer_nickname = $this->buyer->getNickname();
         // 订单类型
-        $order->order_type    = $this->orderType;
-        $order->shipping_type = $this->shippingType;
+        $this->order->order_type    = $this->orderType;
+        $this->order->shipping_type = $this->shippingType;
         // 订单信息
-        $order->title = '';
+        $this->order->title = '';
         // 订单状态
-        $order->order_status = $this->orderStatus;
+        $this->order->order_status = $this->orderStatus;
         // 发货状态
-        $order->shipping_status = $this->shippingStatus;
+        $this->order->shipping_status = $this->shippingStatus;
         // 支付状态
-        $order->payment_status = $this->paymentStatus;
-
-        // 金额类
-        $order->total_amount    = $order->total_amount;
-        $order->freight_amount  = $order->freight_amount;
-        $order->discount_amount = $order->discount_amount;
-        $order->payment_amount  = $order->payment_amount;
-        $order->refund_amount   = 0;
-
+        $this->order->payment_status = $this->paymentStatus;
         // 时间
-        $order->created_time = now();
+        $this->order->created_time = now();
         // 渠道
         if ($this->channel) {
-            $order->channel_type = $this->channel->getType();
-            $order->channel_id   = $this->channel->getID();
+            $this->order->channel_type = $this->channel->getType();
+            $this->order->channel_id   = $this->channel->getID();
         }
         // 门店
         if ($this->store) {
-            $order->store_type = $this->store->getType();
-            $order->store_id   = $this->store->getID();
+            $this->order->store_type = $this->store->getType();
+            $this->order->store_id   = $this->store->getID();
         }
         // 导购、推荐
         if ($this->guide) {
-            $order->guide_type = $this->guide->getType();
-            $order->guide_id   = $this->guide->getID();
+            $this->order->guide_type = $this->guide->getType();
+            $this->order->guide_id   = $this->guide->getID();
         }
         if ($this->getOperator()) {
-            $order->creator_type = $this->getOperator()->getType();
-            $order->creator_id   = $this->getOperator()->getID();
+            $this->order->creator_type = $this->getOperator()->getType();
+            $this->order->creator_id   = $this->getOperator()->getID();
         }
+
+        return $this;
 
     }
 
@@ -163,17 +149,23 @@ class OrderCreatorService
     {
         // 计算金额
         $this->calculate();
-        // 验证金额
+        // 订单验证 TODO
         $this->validate();
         try {
             DB::beginTransaction();
+            app(Pipeline::class)
+                ->send($this->order)
+                ->through(Config::get('red-jasmine.order.pipelines.create', []))
+                ->then(function ($order) {
+                    return $order;
+                });
             $this->order->id = $this->buildID();
-            $this->products->each(function ($product) {
+            $this->order->products->each(function ($product) {
                 $product->id = $product->id ?? $this->buildID();
             });
             $this->order->save();
-            $this->order->info()->save($this->orderInfo);
-            $this->order->products()->saveMany($this->products);
+            $this->order->info()->save($this->order->info);
+            $this->order->products()->saveMany($this->order->products);
             DB::commit();
         } catch (AbstractException $exception) {
             DB::rollBack();
@@ -205,29 +197,25 @@ class OrderCreatorService
 
     public function calculate() : static
     {
-        $this->initOrder();
         // 计算商品金额
         $this->calculateProducts();
         // 计算订单金额
         $this->calculateOrder();
-        $this->setAttributes();
+        $this->fillOrder();
         return $this;
     }
 
     public function initOrder() : static
     {
-        if ($this->order) {
-            return $this->order;
-        }
-        $this->order     = new Order();
-        $this->orderInfo = new OrderInfo();
-
+        $this->order = new Order();
+        $this->order->setRelation('info', new OrderInfo());
+        $this->order->setRelation('products', collect());
         return $this;
     }
 
     protected function calculateProducts() : static
     {
-        foreach ($this->products as $product) {
+        foreach ($this->order->products as $product) {
             // 商品金额
             $product->amount = bcmul($product->getNum(), $product->getPrice(), 2);
             // 成本金额
@@ -251,11 +239,11 @@ class OrderCreatorService
     protected function calculateOrder() : static
     {
         // 计算商品金额
-        $this->order->total_amount = $this->products->reduce(function ($sum, $product) {
+        $this->order->total_amount = $this->order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->payment_amount, 2);
         }, 0);
         // 统计成本
-        $this->order->cost_amount = $this->products->reduce(function ($sum, $product) {
+        $this->order->cost_amount = $this->order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->cost_amount, 2);
         }, 0);
         // 邮费
@@ -277,11 +265,11 @@ class OrderCreatorService
     {
         $this->order->discount_amount;
 
-        $totalAmount = $this->products->reduce(function ($sum, $product) {
+        $totalAmount = $this->order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->amount, 2);
         }, 0);
         // 对商品进行排序 从小到大
-        $products = $this->products->sortBy('product_amount')->values();
+        $products = $this->order->products->sortBy('product_amount')->values();
 
         // TODO 计算分摊  是在营销中心进行计算的
 
@@ -291,6 +279,7 @@ class OrderCreatorService
 
     public function validate()
     {
+
 
         foreach ($this->validators as $validator) {
             // TODO 验证
@@ -309,8 +298,8 @@ class OrderCreatorService
      */
     public function addProduct(ProductInterface $product) : static
     {
-        $this->products   = collect($this->products);
-        $this->products[] = $this->initProduct($product);
+        $product = $this->initProduct($product);
+        $this->order->products->add($product);
         return $this;
     }
 

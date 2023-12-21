@@ -11,11 +11,11 @@ class OrderServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(): void
+    public function boot() : void
     {
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'red-jasmine');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'red-jasmine');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         // $this->loadRoutesFrom(__DIR__.'/routes.php');
 
         // Publishing is only necessary when using the CLI.
@@ -29,9 +29,9 @@ class OrderServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register(): void
+    public function register() : void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/order.php', 'order');
+        $this->mergeConfigFrom(__DIR__ . '/../config/order.php', 'red-jasmine.order');
 
         // Register the service the package provides.
         $this->app->singleton('order', function ($app) {
@@ -46,7 +46,7 @@ class OrderServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['order'];
+        return [ 'order' ];
     }
 
     /**
@@ -54,12 +54,12 @@ class OrderServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function bootForConsole(): void
+    protected function bootForConsole() : void
     {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__.'/../config/order.php' => config_path('order.php'),
-        ], 'order.config');
+                             __DIR__ . '/../config/order.php' => config_path('order.php'),
+                         ], 'order.config');
 
         // Publishing the views.
         /*$this->publishes([
