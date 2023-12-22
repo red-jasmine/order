@@ -153,16 +153,20 @@ class OrderCreatorService
         $this->validate();
         try {
             DB::beginTransaction();
+
             app(Pipeline::class)
                 ->send($this->order)
                 ->through(Config::get('red-jasmine.order.pipelines.create', []))
                 ->then(function ($order) {
                     return $order;
                 });
+
+
             $this->order->id = $this->buildID();
             $this->order->products->each(function ($product) {
                 $product->id = $product->id ?? $this->buildID();
             });
+
             $this->order->save();
             $this->order->info()->save($this->order->info);
             $this->order->products()->saveMany($this->order->products);
@@ -211,6 +215,11 @@ class OrderCreatorService
         $this->order->setRelation('info', new OrderInfo());
         $this->order->setRelation('products', collect());
         return $this;
+    }
+
+    public function getOrder() : Order
+    {
+        return $this->order;
     }
 
     protected function calculateProducts() : static

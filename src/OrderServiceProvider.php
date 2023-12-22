@@ -59,7 +59,7 @@ class OrderServiceProvider extends ServiceProvider
         // Publishing the configuration file.
         $this->publishes([
                              __DIR__ . '/../config/order.php' => config_path('order.php'),
-                         ], 'order.config');
+                         ], 'red-jasmine.order.config');
 
         // Publishing the views.
         /*$this->publishes([

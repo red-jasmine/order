@@ -13,13 +13,13 @@ use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
 use RedJasmine\Order\Services\Orders\OrderProductAble;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 
-class OrderProduct extends Model implements ProductInterface
+class OrderProduct extends Model
 {
     use HasDateTimeFormatter;
 
     use SoftDeletes;
 
-    use OrderProductAble;
+    //use OrderProductAble;
 
     public $incrementing = false;
 
@@ -28,6 +28,18 @@ class OrderProduct extends Model implements ProductInterface
         'order_status'    => OrderStatusEnums::class,
         'shipping_status' => ShippingStatusEnums::class,
         'payment_status'  => PaymentStatusEnums::class,
+    ];
+
+    protected $fillable = [
+        'shipping_type',
+        'product_type',
+        'product_id',
+        'sku_id',
+        'num',
+        'price',
+        'cost_price',
+        'tax_amount',
+        'discount_amount'
     ];
 
 
