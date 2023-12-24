@@ -5,12 +5,10 @@ namespace RedJasmine\Order\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Order\Contracts\ProductInterface;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnums;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnums;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnums;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
-use RedJasmine\Order\Services\Orders\OrderProductAble;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 
 class OrderProduct extends Model
@@ -18,8 +16,6 @@ class OrderProduct extends Model
     use HasDateTimeFormatter;
 
     use SoftDeletes;
-
-    //use OrderProductAble;
 
     public $incrementing = false;
 
@@ -37,9 +33,6 @@ class OrderProduct extends Model
         'sku_id',
         'num',
         'price',
-        'cost_price',
-        'tax_amount',
-        'discount_amount'
     ];
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\Enums\Orders\Types;
+namespace RedJasmine\Order\Enums\Refund;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
