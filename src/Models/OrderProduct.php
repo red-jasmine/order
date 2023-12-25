@@ -19,6 +19,7 @@ class OrderProduct extends Model
 
     public $incrementing = false;
 
+
     protected $casts = [
         'shipping_type'   => ShippingTypeEnums::class,
         'order_status'    => OrderStatusEnums::class,
@@ -39,6 +40,27 @@ class OrderProduct extends Model
     public function order() : BelongsTo
     {
         return $this->belongsTo(Order::class, 'oid', 'id');
+    }
+
+    // 购买参数
+    protected array $parameters = [];
+
+    public function getParameters() : array
+    {
+        return $this->parameters;
+    }
+
+    public function setParameters(array $parameters) : OrderProduct
+    {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    public static function build(array $parameters) : static
+    {
+        $model             = static::make($parameters);
+        $model->parameters = $parameters;
+        return $model;
     }
 
 

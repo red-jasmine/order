@@ -7,7 +7,6 @@ use Exception;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Order\Contracts\ProductInterface;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnums;
 use RedJasmine\Order\Enums\Orders\OrderTypeEnums;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnums;
@@ -17,10 +16,10 @@ use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderInfo;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Order\OrderService;
+use RedJasmine\Order\ValueObjects\OrderProductObject;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Helpers\ID\Snowflake;
-use RedJasmine\Support\Helpers\UserObjectBuilder;
 use RedJasmine\Support\Traits\Services\ServiceExtends;
 use Throwable;
 
@@ -80,7 +79,41 @@ class OrderCreatorService
     }
 
 
-    // 验证
+    public function productHandler() : void
+    {
+        foreach ($this->order->products as $product) {
+            $this->productPipeline($product);
+        }
+
+    }
+
+
+    protected array $productPipelines = [];
+
+    public function addProductPipelines(mixed $class) : static
+    {
+        $this->productPipelines[] = $class;
+        return $this;
+    }
+
+    public function getProductPipelines() : array
+    {
+        $pipelines = Config::get('red-jasmine.order.pipelines.product', []);
+
+        return array_merge($pipelines, $this->productPipelines);
+    }
+
+
+    protected function productPipeline(OrderProduct $orderProduct) : OrderProduct
+    {
+        return app(Pipeline::class)
+            ->send($orderProduct)
+            ->through($this->getProductPipelines())
+            ->then(function ($orderProduct) {
+                return $orderProduct;
+            });
+    }
+
 
     /**
      * 创建订单
@@ -96,18 +129,16 @@ class OrderCreatorService
         $this->validate();
         try {
             DB::beginTransaction();
-
             app(Pipeline::class)
                 ->send($this->order)
                 ->through(Config::get('red-jasmine.order.pipelines.create', []))
                 ->then(function ($order) {
                     return $order;
                 });
-
-
             $this->order->id = $this->buildID();
             $this->order->products->each(function ($product) {
-                $product->id = $product->id ?? $this->buildID();
+                $product->id           = $product->id ?? $this->buildID();
+                $product->order_status = $this->order->order_status;
             });
 
             $this->order->save();
@@ -127,6 +158,7 @@ class OrderCreatorService
 
     public function calculate() : static
     {
+        $this->productHandler();
         // 计算商品金额
         $this->calculateProducts();
         // 计算订单金额
@@ -286,7 +318,6 @@ class OrderCreatorService
      */
     public function addProduct(OrderProduct $product) : static
     {
-        // 应有 OrderProduct to OrderProductModel
         $this->order->products->add($product);
         return $this;
     }

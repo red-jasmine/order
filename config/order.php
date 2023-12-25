@@ -30,7 +30,11 @@ return [
     |
     */
     'pipelines'  => [
-        'create' => [
+        // 产品
+        'product' => [
+            \RedJasmine\Order\Services\Orders\Pipelines\Products\ProductPipeline::class
+        ],
+        'create'  => [
             OrderCreatePipeline::class
         ],
     ],
