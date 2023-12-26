@@ -4,18 +4,22 @@ namespace RedJasmine\Order\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnums;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnums;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnums;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Traits\Models\ParametersMakeAble;
 
 class OrderProduct extends Model
 {
     use HasDateTimeFormatter;
 
     use SoftDeletes;
+
+    use ParametersMakeAble;
 
     public $incrementing = false;
 
@@ -42,26 +46,10 @@ class OrderProduct extends Model
         return $this->belongsTo(Order::class, 'oid', 'id');
     }
 
-    // 购买参数
-    protected array $parameters = [];
 
-    public function getParameters() : array
+    public function info() : HasOne
     {
-        return $this->parameters;
+        return $this->hasOne(OrderProductInfo::class, 'id', 'id');
     }
-
-    public function setParameters(array $parameters) : OrderProduct
-    {
-        $this->parameters = $parameters;
-        return $this;
-    }
-
-    public static function build(array $parameters) : static
-    {
-        $model             = static::make($parameters);
-        $model->parameters = $parameters;
-        return $model;
-    }
-
 
 }

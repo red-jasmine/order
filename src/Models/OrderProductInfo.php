@@ -16,4 +16,12 @@ class OrderProductInfo extends Model
     public $incrementing = false;
 
 
+    protected $casts = [
+        'seller_extends' => 'array',
+        'buyer_extends'  => 'array',
+        'other_extends'  => 'array',
+        'tools'          => 'array'
+    ];
+
+
 }

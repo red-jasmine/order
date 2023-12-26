@@ -12,8 +12,10 @@ return new class extends Migration {
 
             $table->string('seller_remarks')->nullable()->comment('卖家备注');
             $table->string('seller_message')->nullable()->comment('卖家留言');
+
             $table->string('buyer_remarks')->nullable()->comment('买家备注');
             $table->string('buyer_message')->nullable()->comment('买家留言');
+
             $table->json('seller_extends')->nullable()->comment('卖家扩展信息');
             $table->json('buyer_extends')->nullable()->comment('买家扩展信息');
             $table->json('other_extends')->nullable()->comment('其他扩展信息');

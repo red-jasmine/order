@@ -1,6 +1,5 @@
 <?php
 
-use RedJasmine\Order\Services\Orders\Pipelines\OrderCreatePipeline;
 
 return [
     //
@@ -30,12 +29,11 @@ return [
     |
     */
     'pipelines'  => [
-        // 产品
-        'product' => [
-            \RedJasmine\Order\Services\Orders\Pipelines\Products\ProductPipeline::class
+        'init'   => [
+            \RedJasmine\Order\Services\Orders\Pipelines\OrderFillPipeline::class
         ],
-        'create'  => [
-            OrderCreatePipeline::class
+        'create' => [
+
         ],
     ],
 ];

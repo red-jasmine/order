@@ -10,6 +10,8 @@ return new class extends Migration {
         Schema::create('order_products', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->unsignedBigInteger('oid')->comment('订单ID');
+
+            $table->string('shipping_type', 30)->comment('发货类型');
             // 商品信息
             $table->string('title')->nullable()->comment('标题');
             $table->string('image')->nullable()->comment('图片');
@@ -21,9 +23,7 @@ return new class extends Migration {
             $table->string('outer_iid', 64)->nullable()->comment('商品外部编码');
             $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
             $table->string('barcode', 64)->nullable()->comment('条形码');
-
-            $table->string('shipping_type', 30)->comment('发货类型');
-
+            // 下单
             $table->unsignedBigInteger('num')->default(0)->comment('数量');
             $table->decimal('price', 12)->default(0)->comment('价格');
             $table->decimal('cost_price', 12)->default(0)->comment('成本价');
@@ -47,12 +47,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
             $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
             $table->string('warehouse_code', 32)->nullable()->comment('仓库编码');
-            $table->string('tools_label')->nullable()->comment('工具标签');
-
             // 退款
             $table->unsignedBigInteger('refund_id')->nullable()->comment('退款单ID');
-
-
             // 流程时间
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');

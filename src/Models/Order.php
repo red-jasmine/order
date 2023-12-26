@@ -13,6 +13,7 @@ use RedJasmine\Order\Enums\Orders\ShippingStatusEnums;
 use RedJasmine\Order\Enums\Orders\OrderTypeEnums;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Traits\Models\ParametersMakeAble;
 
 class Order extends Model
 {
@@ -21,8 +22,14 @@ class Order extends Model
 
     use SoftDeletes;
 
+    use ParametersMakeAble;
+
     public $incrementing = false;
 
+    protected $fillable = [
+        'order_type',
+        'shipping_type',
+    ];
 
     protected $casts = [
         'order_type'      => OrderTypeEnums::class,
@@ -41,7 +48,6 @@ class Order extends Model
         'end_time'        => 'datetime',
         'refund_time'     => 'datetime',
         'rate_time'       => 'datetime',
-
     ];
 
 

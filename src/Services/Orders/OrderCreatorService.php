@@ -7,14 +7,10 @@ use Exception;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnums;
-use RedJasmine\Order\Enums\Orders\OrderTypeEnums;
-use RedJasmine\Order\Enums\Orders\PaymentStatusEnums;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnums;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderInfo;
 use RedJasmine\Order\Models\OrderProduct;
+use RedJasmine\Order\Models\OrderProductInfo;
 use RedJasmine\Order\OrderService;
 use RedJasmine\Order\ValueObjects\OrderProductObject;
 use RedJasmine\Support\Contracts\UserInterface;
@@ -31,45 +27,16 @@ class OrderCreatorService
 {
     use ServiceExtends;
 
-    protected UserInterface  $owner;
-    protected UserInterface  $buyer;
-    protected UserInterface  $seller;
-    protected ?UserInterface $guide      = null;
-    protected ?UserInterface $channel    = null;
-    protected ?UserInterface $store      = null;
-    protected array          $validators = [];
+    protected UserInterface $buyer;
 
-    /**
-     * 订单类型
-     * @var OrderTypeEnums
-     */
-    protected OrderTypeEnums $orderType = OrderTypeEnums::MALL;
-    /**
-     * 发货类型
-     * @var ShippingTypeEnums
-     */
-    protected ShippingTypeEnums $shippingType;
+    protected UserInterface $seller;
 
-    /**
-     * 订单状态
-     * @var OrderStatusEnums
-     */
-    protected OrderStatusEnums $orderStatus = OrderStatusEnums::WAIT_BUYER_PAY;
+    protected array $validators = [];
 
-    /**
-     * 发货状态
-     * @var ShippingStatusEnums
-     */
-    protected ShippingStatusEnums $shippingStatus = ShippingStatusEnums::WAIT_SEND;
-
-    /**
-     * 发货状态
-     * @var PaymentStatusEnums
-     */
-    protected PaymentStatusEnums $paymentStatus = PaymentStatusEnums::WAIT_PAY;
-
+    protected array $initPipelines = [];
 
     protected ?Order $order = null;
+
 
     public function __construct(protected OrderService $service)
     {
@@ -78,40 +45,16 @@ class OrderCreatorService
         $this->order->setRelation('products', collect());
     }
 
-
-    public function productHandler() : void
+    public function setOrderParameters($parameters) : static
     {
-        foreach ($this->order->products as $product) {
-            $this->productPipeline($product);
-        }
-
-    }
-
-
-    protected array $productPipelines = [];
-
-    public function addProductPipelines(mixed $class) : static
-    {
-        $this->productPipelines[] = $class;
+        $this->order->setParameters($parameters);
         return $this;
     }
 
-    public function getProductPipelines() : array
+    public function addInitPipelines($pipeline) : static
     {
-        $pipelines = Config::get('red-jasmine.order.pipelines.product', []);
-
-        return array_merge($pipelines, $this->productPipelines);
-    }
-
-
-    protected function productPipeline(OrderProduct $orderProduct) : OrderProduct
-    {
-        return app(Pipeline::class)
-            ->send($orderProduct)
-            ->through($this->getProductPipelines())
-            ->then(function ($orderProduct) {
-                return $orderProduct;
-            });
+        $this->initPipelines[] = $pipeline;
+        return $this;
     }
 
 
@@ -158,13 +101,41 @@ class OrderCreatorService
 
     public function calculate() : static
     {
-        $this->productHandler();
+        $this->init();
         // 计算商品金额
         $this->calculateProducts();
         // 计算订单金额
         $this->calculateOrder();
-        $this->fillOrder();
+
         return $this;
+    }
+
+    protected function init() : static
+    {
+        $this->order->buyer_type      = $this->buyer->getType();
+        $this->order->buyer_id        = $this->buyer->getID();
+        $this->order->buyer_nickname  = $this->buyer->getNickname();
+        $this->order->seller_type     = $this->seller->getType();
+        $this->order->seller_id       = $this->seller->getID();
+        $this->order->seller_nickname = $this->seller->getNickname();
+        $this->order->creator_type    = $this->getOperator()->getType();
+        $this->order->creator_id      = $this->getOperator()->getID();
+
+        // 初始化管道
+        app(Pipeline::class)
+            ->send($this->order)
+            ->through($this->getInitPipelines())
+            ->then(function ($order) {
+                return $order;
+            });
+
+        return $this;
+    }
+
+    public function getInitPipelines() : array
+    {
+        $pipelines = Config::get('red-jasmine.order.pipelines.init', []);
+        return array_merge($pipelines, $this->initPipelines);
     }
 
     protected function calculateProducts() : static
@@ -210,62 +181,12 @@ class OrderCreatorService
         return $this;
     }
 
-    protected function fillOrder() : static
-    {
-        // 卖家
-        $this->order->seller_type     = $this->seller->getType();
-        $this->order->seller_id       = $this->seller->getID();
-        $this->order->seller_nickname = $this->seller->getNickname();
-        // 买家
-        $this->order->buyer_type     = $this->buyer->getType();
-        $this->order->buyer_id       = $this->buyer->getID();
-        $this->order->buyer_nickname = $this->buyer->getNickname();
-        // 订单类型
-        $this->order->order_type    = $this->orderType;
-        $this->order->shipping_type = $this->shippingType;
-        // 订单信息
-        $this->order->title = '';
-        // 订单状态
-        $this->order->order_status = $this->orderStatus;
-        // 发货状态
-        $this->order->shipping_status = $this->shippingStatus;
-        // 支付状态
-        $this->order->payment_status = $this->paymentStatus;
-        // 时间
-        $this->order->created_time = now();
-        // 渠道
-        if ($this->channel) {
-            $this->order->channel_type = $this->channel->getType();
-            $this->order->channel_id   = $this->channel->getID();
-        }
-        // 门店
-        if ($this->store) {
-            $this->order->store_type = $this->store->getType();
-            $this->order->store_id   = $this->store->getID();
-        }
-        // 导购、推荐
-        if ($this->guide) {
-            $this->order->guide_type = $this->guide->getType();
-            $this->order->guide_id   = $this->guide->getID();
-        }
-        if ($this->getOperator()) {
-            $this->order->creator_type = $this->getOperator()->getType();
-            $this->order->creator_id   = $this->getOperator()->getID();
-        }
-
-        return $this;
-
-    }
-
     public function validate()
     {
-
-
+        $this->init();
         foreach ($this->validators as $validator) {
             // TODO 验证
         }
-
-
     }
 
     /**
@@ -302,10 +223,6 @@ class OrderCreatorService
         }, 0);
         // 对商品进行排序 从小到大
         $products = $this->order->products->sortBy('product_amount')->values();
-
-        // TODO 计算分摊  是在营销中心进行计算的
-
-
     }
 
     /**
@@ -318,6 +235,9 @@ class OrderCreatorService
      */
     public function addProduct(OrderProduct $product) : static
     {
+        if ($product->relationLoaded('info') === false) {
+            $product->setRelation('info', new OrderProductInfo());
+        }
         $this->order->products->add($product);
         return $this;
     }
@@ -340,63 +260,11 @@ class OrderCreatorService
 
     public function setBuyer(UserInterface $buyer) : OrderCreatorService
     {
-        $this->buyer = $buyer;
+        $this->buyer                 = $buyer;
+        $this->order->buyer_type     = $buyer->getType();
+        $this->order->buyer_id       = $buyer->getID();
+        $this->order->buyer_nickname = $buyer->getNickname();
         return $this;
     }
-
-    public function setGuide(?UserInterface $guide) : OrderCreatorService
-    {
-        $this->guide = $guide;
-        return $this;
-    }
-
-    public function setChannel(?UserInterface $channel) : OrderCreatorService
-    {
-        $this->channel = $channel;
-        return $this;
-    }
-
-    public function setStore(?UserInterface $store) : OrderCreatorService
-    {
-        $this->store = $store;
-        return $this;
-    }
-
-    public function setValidators(array $validators) : OrderCreatorService
-    {
-        $this->validators = $validators;
-        return $this;
-    }
-
-    public function setOrderType(OrderTypeEnums $orderType) : OrderCreatorService
-    {
-        $this->orderType = $orderType;
-        return $this;
-    }
-
-    public function setShippingType(ShippingTypeEnums $shippingType) : OrderCreatorService
-    {
-        $this->shippingType = $shippingType;
-        return $this;
-    }
-
-    public function setOrderStatus(OrderStatusEnums $orderStatus) : OrderCreatorService
-    {
-        $this->orderStatus = $orderStatus;
-        return $this;
-    }
-
-    public function setShippingStatus(ShippingStatusEnums $shippingStatus) : OrderCreatorService
-    {
-        $this->shippingStatus = $shippingStatus;
-        return $this;
-    }
-
-    public function setPaymentStatus(PaymentStatusEnums $paymentStatus) : OrderCreatorService
-    {
-        $this->paymentStatus = $paymentStatus;
-        return $this;
-    }
-
 
 }
