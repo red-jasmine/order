@@ -5,15 +5,15 @@ namespace RedJasmine\Order\Services\Orders;
 
 use Exception;
 use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use RedJasmine\Order\Models\Order;
+use RedJasmine\Order\Models\OrderAddress;
 use RedJasmine\Order\Models\OrderInfo;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Order\Models\OrderProductInfo;
 use RedJasmine\Order\OrderService;
-use RedJasmine\Order\Services\Orders\Validators\OrderValidate;
 use RedJasmine\Order\ValueObjects\OrderProductObject;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Exceptions\AbstractException;
@@ -35,7 +35,7 @@ class OrderCreatorService
 
     protected array $validators = [];
 
-    protected array $initPipelines = [];
+    protected array $pipelines = [];
 
     protected ?Order $order = null;
 
@@ -45,6 +45,11 @@ class OrderCreatorService
         $this->order = new Order();
         $this->order->setRelation('info', new OrderInfo());
         $this->order->setRelation('products', collect());
+
+        if ($this->getOperator()) {
+            $this->order->creator_type = $this->getOperator()->getType();
+            $this->order->creator_id   = $this->getOperator()->getID();
+        }
     }
 
     public function setOrderParameters($parameters) : static
@@ -53,10 +58,16 @@ class OrderCreatorService
         return $this;
     }
 
-    public function addInitPipelines($pipeline) : static
+    public function addPipelines($pipeline) : static
     {
-        $this->initPipelines[] = $pipeline;
+        $this->pipelines[] = $pipeline;
         return $this;
+    }
+
+    public function getPipelines() : array
+    {
+        $pipelines = Config::get('red-jasmine.order.pipelines.creation', []);
+        return array_merge($this->pipelines, $pipelines);
     }
 
 
@@ -68,27 +79,25 @@ class OrderCreatorService
      */
     public function create() : Order
     {
-        // 计算金额
-        $this->calculate();
-        $this->validate();
         try {
             DB::beginTransaction();
-            app(Pipeline::class)
+            // 数据验证
+            $order = app(Pipeline::class)
                 ->send($this->order)
-                ->through(Config::get('red-jasmine.order.pipelines.create', []))
-                ->then(function ($order) {
+                ->through($this->getPipelines())
+                ->then(function (Order $order) {
+                    $order->id = $this->buildID();
+                    $order->products->each(function ($product) use ($order) {
+                        $product->id           = $product->id ?? $this->buildID();
+                        $product->order_status = $order->order_status;
+                    });
+                    $order->save();
+                    $order->info()->save($order->info);
+                    $order->products()->saveMany($order->products);
                     return $order;
                 });
-            $this->order->id = $this->buildID();
-            $this->order->products->each(function ($product) {
-                $product->id           = $product->id ?? $this->buildID();
-                $product->order_status = $this->order->order_status;
-            });
-
-            $this->order->save();
-            $this->order->info()->save($this->order->info);
-            $this->order->products()->saveMany($this->order->products);
             DB::commit();
+            return $order;
         } catch (AbstractException $exception) {
             DB::rollBack();
             throw  $exception;
@@ -96,102 +105,8 @@ class OrderCreatorService
             DB::rollBack();
             throw  $throwable;
         }
-        return $this->order;
 
-    }
 
-    public function calculate() : static
-    {
-        $this->init();
-        // 计算商品金额
-        $this->calculateProducts();
-        // 计算订单金额
-        $this->calculateOrder();
-
-        return $this;
-    }
-
-    protected function init() : static
-    {
-        $this->order->buyer_type      = $this->buyer->getType();
-        $this->order->buyer_id        = $this->buyer->getID();
-        $this->order->buyer_nickname  = $this->buyer->getNickname();
-        $this->order->seller_type     = $this->seller->getType();
-        $this->order->seller_id       = $this->seller->getID();
-        $this->order->seller_nickname = $this->seller->getNickname();
-        $this->order->creator_type    = $this->getOperator()->getType();
-        $this->order->creator_id      = $this->getOperator()->getID();
-
-        // 初始化管道
-        app(Pipeline::class)
-            ->send($this->order)
-            ->through($this->getInitPipelines())
-            ->then(function ($order) {
-                return $order;
-            });
-
-        return $this;
-    }
-
-    public function getInitPipelines() : array
-    {
-        $pipelines = Config::get('red-jasmine.order.pipelines.init', []);
-        return array_merge($pipelines, $this->initPipelines);
-    }
-
-    protected function calculateProducts() : static
-    {
-        foreach ($this->order->products as $product) {
-            // 商品金额
-            $product->amount = bcmul($product->num, $product->price, 2);
-            // 成本金额
-            $product->cost_amount = bcmul($product->num, $product->price, 2);
-            // 计算税费
-            $product->tax_amount = bcadd($product->tax_amount, 0, 2);
-            // 单品优惠
-            $product->discount_amount = bcadd($product->discount_amount, 0, 2);
-            // 付款金额
-            $product->payment_amount = bcsub(bcadd($product->amount, $product->tax_amount, 2), $product->discount_amount, 2);
-            // 分摊优惠
-            $product->divide_discount_amount = bcadd(0, 0, 2);
-            // 分摊后付款金额
-            $product->divided_payment_amount = bcsub($product->payment_amount, $product->divide_discount_amount, 2);
-        }
-
-        return $this;
-
-    }
-
-    protected function calculateOrder() : static
-    {
-        // 计算商品金额
-        $this->order->total_amount = $this->order->products->reduce(function ($sum, $product) {
-            return bcadd($sum, $product->payment_amount, 2);
-        }, 0);
-        // 统计成本
-        $this->order->cost_amount = $this->order->products->reduce(function ($sum, $product) {
-            return bcadd($sum, $product->cost_amount, 2);
-        }, 0);
-        // 邮费
-        $this->order->freight_amount = bcadd(0, 0, 2);
-        // 订单优惠
-        $this->order->discount_amount = bcadd(0, 0, 2);
-        // 计算付款 金额 = 商品总金额 + 邮费 - 优惠
-        $this->order->payment_amount = bcsub(bcadd($this->order->total_amount, $this->order->freight_amount, 2), $this->order->discount_amount, 2);
-        // TODO 计算分摊
-        return $this;
-    }
-
-    public function validate()
-    {
-        $this->init();
-        $this->calculate();
-        $orderValidate = new OrderValidate();
-        $validator = Validator::make($this->order->toArray(),$orderValidate->rules());
-        dd($validator->validated());
-        foreach ($this->validators as $validator) {
-            // TODO 验证
-        }
     }
 
     /**
@@ -216,18 +131,18 @@ class OrderCreatorService
     }
 
     /**
-     * 计算分摊优惠
-     * @return void
+     * @param array|Collection|OrderProduct[] $products
+     *
+     * @return static
+     * @throws Exception
      */
-    public function calculateDivideDiscount()
+    public function setProducts(array|Collection $products) : static
     {
-        $this->order->discount_amount;
-
-        $totalAmount = $this->order->products->reduce(function ($sum, $product) {
-            return bcadd($sum, $product->amount, 2);
-        }, 0);
-        // 对商品进行排序 从小到大
-        $products = $this->order->products->sortBy('product_amount')->values();
+        $this->order->setRelation('products', []);
+        foreach ($products as $product) {
+            $this->addProduct($product);
+        }
+        return $this;
     }
 
     /**
@@ -254,7 +169,10 @@ class OrderCreatorService
 
     public function setSeller(UserInterface $seller) : OrderCreatorService
     {
-        $this->seller = $seller;
+        $this->seller                 = $seller;
+        $this->order->seller_type     = $this->seller->getType();
+        $this->order->seller_id       = $this->seller->getID();
+        $this->order->seller_nickname = $this->seller->getNickname();
         return $this;
     }
 

@@ -11,10 +11,10 @@ class OrderFillPipeline
 
     public function handle(Order $order, Closure $next)
     {
-        $this->fillOrder($order);
 
-        $order->products->each(function ($orderProduct) {
-            $this->fillOrderProduct($orderProduct);
+        $this->fillOrder($order);
+        $order->products->each(function ($orderProduct) use ($order) {
+            $this->fillOrderProduct($order, $orderProduct);
         });
         return $next($order);
     }
@@ -53,15 +53,16 @@ class OrderFillPipeline
         $order->info->other_extends  = $parameters['info']['other_extends'] ?? null;
     }
 
-    public function fillOrderProduct(OrderProduct $orderProduct) : void
+    public function fillOrderProduct(Order $order, OrderProduct $orderProduct) : void
     {
+
         $parameters                         = $orderProduct->getParameters();
+        $orderProduct->order_status         = $order->order_status;
         $orderProduct->image                = $parameters['image'] ?? null;
         $orderProduct->category_id          = $parameters['category_id'] ?? null;
         $orderProduct->seller_category_id   = $parameters['seller_category_id'] ?? null;
         $orderProduct->outer_iid            = $parameters['outer_iid'] ?? null;
         $orderProduct->outer_sku_id         = $parameters['outer_sku_id'] ?? null;
-        $orderProduct->order_status         = $parameters['order_status'] ?? null;
         $orderProduct->shipping_status      = $parameters['shipping_status'] ?? null;
         $orderProduct->payment_status       = $parameters['payment_status'] ?? null;
         $orderProduct->refund_status        = $parameters['refund_status'] ?? null;

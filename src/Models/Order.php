@@ -60,4 +60,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderProduct::class, 'oid', 'id');
     }
+
+    public function address() : HasOne
+    {
+        return $this->hasOne(OrderAddress::class, 'id', 'id');
+    }
 }

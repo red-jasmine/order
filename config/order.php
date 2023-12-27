@@ -24,14 +24,11 @@ return [
     |
     */
     'pipelines'  => [
-        'init'     => [
-            \RedJasmine\Order\Services\Orders\Pipelines\OrderFillPipeline::class
-        ],
-        'validate' => [
-
-        ],
-        'create'   => [
-
+        'creation' => [
+            \RedJasmine\Order\Services\Orders\Pipelines\OrderFillPipeline::class,
+            \RedJasmine\Order\Services\Orders\Pipelines\OrderCalculatePipeline::class,
+            \RedJasmine\Order\Services\Orders\Pipelines\OrderValidatePipeline::class,
+            \RedJasmine\Order\Services\Orders\Pipelines\OrderAddressPipeline::class,
         ],
     ],
 

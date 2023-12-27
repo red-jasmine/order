@@ -1,0 +1,37 @@
+<?php
+
+namespace RedJasmine\Order\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Traits\Models\ParametersMakeAble;
+
+class OrderAddress extends Model
+{
+    use SoftDeletes;
+
+    use HasDateTimeFormatter;
+
+    use SoftDeletes;
+
+    use ParametersMakeAble;
+
+    public $incrementing = false;
+
+
+    protected $fillable = [
+        'id'
+    ];
+
+    protected $casts = [
+
+    ];
+
+
+    public function order() : BelongsTo
+    {
+        return $this->belongsTo(Order::class, 'id', 'id');
+    }
+}
