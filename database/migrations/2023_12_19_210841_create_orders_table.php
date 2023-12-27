@@ -9,34 +9,27 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
-
             $table->string('seller_type')->comment('卖家 类型');
             $table->unsignedBigInteger('seller_id')->comment('卖家 ID');
             $table->string('seller_nickname')->nullable()->comment('卖家昵称');
-
             $table->string('buyer_type')->comment('买家类型');
             $table->unsignedBigInteger('buyer_id')->comment('买家类型');
             $table->string('buyer_nickname')->nullable()->comment('买家昵称');
-
             $table->string('title')->nullable()->comment('标题');
-            // 类型 如 普通订单、拍卖单、
             $table->string('order_type', 30)->comment('订单类型');
             $table->string('shipping_type', 30)->comment('发货类型');
             $table->string('source', 30)->nullable()->comment('来源');   // 普通 、活动、
-            // 状态
             $table->string('order_status')->comment('订单状态');
             $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('payment_status', 30)->nullable()->comment('付款状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
-            // 金额
             $table->decimal('total_amount', 16)->default(0)->comment('商品总金额');
             $table->decimal('freight_amount', 16)->default(0)->comment('运费');
             $table->decimal('discount_amount', 16)->default(0)->comment('订单优惠');
             $table->decimal('payment_amount', 16)->default(0)->comment('实付金额');
             $table->decimal('refund_amount', 16)->default(0)->comment('退款金额');
             $table->decimal('cost_amount', 16)->default(0)->comment('成本金额');
-            // 时间
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');
             $table->timestamp('close_time')->nullable()->comment('关闭时间');
@@ -47,20 +40,15 @@ return new class extends Migration {
             $table->timestamp('end_time')->nullable()->comment('确认时间');
             $table->timestamp('refund_time')->nullable()->comment('退款时间');
             $table->timestamp('rate_time')->nullable()->comment('评价时间');
-
             $table->unsignedTinyInteger('is_seller_delete')->default(0)->comment('卖家删除');
             $table->unsignedTinyInteger('is_buyer_delete')->default(0)->comment('买家删除');
-
             $table->string('client_type', 30)->nullable()->comment('客户端');
             $table->string('client_ip', 30)->nullable()->comment('IP');
-
             $table->nullableMorphs('channel'); // 渠道
             $table->nullableMorphs('store'); // 门店
             $table->nullableMorphs('guide');// 导购
-
             $table->string('email')->nullable()->comment('下单邮箱');
             $table->string('password')->nullable()->comment('查询密码');
-
             $table->nullableMorphs('creator'); // 创建人
             $table->nullableMorphs('updater'); // 更新人
             $table->timestamps();

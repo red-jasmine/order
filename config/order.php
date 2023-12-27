@@ -16,11 +16,6 @@ return [
     ],
 
 
-    // 订单验证器
-    'validators' => [
-
-    ],
-
     /*
     |--------------------------------------------------------------------------
     | 订单管道
@@ -29,11 +24,19 @@ return [
     |
     */
     'pipelines'  => [
-        'init'   => [
+        'init'     => [
             \RedJasmine\Order\Services\Orders\Pipelines\OrderFillPipeline::class
         ],
-        'create' => [
+        'validate' => [
 
         ],
+        'create'   => [
+
+        ],
+    ],
+
+    // 订单验证器
+    'validators' => [
+
     ],
 ];

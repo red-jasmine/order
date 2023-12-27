@@ -7,11 +7,13 @@ use Exception;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderInfo;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Order\Models\OrderProductInfo;
 use RedJasmine\Order\OrderService;
+use RedJasmine\Order\Services\Orders\Validators\OrderValidate;
 use RedJasmine\Order\ValueObjects\OrderProductObject;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Exceptions\AbstractException;
@@ -68,7 +70,6 @@ class OrderCreatorService
     {
         // 计算金额
         $this->calculate();
-        // 订单验证 TODO
         $this->validate();
         try {
             DB::beginTransaction();
@@ -184,6 +185,10 @@ class OrderCreatorService
     public function validate()
     {
         $this->init();
+        $this->calculate();
+        $orderValidate = new OrderValidate();
+        $validator = Validator::make($this->order->toArray(),$orderValidate->rules());
+        dd($validator->validated());
         foreach ($this->validators as $validator) {
             // TODO 验证
         }

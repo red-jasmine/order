@@ -10,9 +10,7 @@ return new class extends Migration {
         Schema::create('order_products', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->unsignedBigInteger('oid')->comment('订单ID');
-
             $table->string('shipping_type', 30)->comment('发货类型');
-            // 商品信息
             $table->string('title')->nullable()->comment('标题');
             $table->string('image')->nullable()->comment('图片');
             $table->string('product_type', 30)->comment('商品类型');
@@ -23,7 +21,6 @@ return new class extends Migration {
             $table->string('outer_iid', 64)->nullable()->comment('商品外部编码');
             $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
             $table->string('barcode', 64)->nullable()->comment('条形码');
-            // 下单
             $table->unsignedBigInteger('num')->default(0)->comment('数量');
             $table->decimal('price', 12)->default(0)->comment('价格');
             $table->decimal('cost_price', 12)->default(0)->comment('成本价');
@@ -35,21 +32,15 @@ return new class extends Migration {
             $table->decimal('divided_payment_amount', 16)->default(0)->comment('分摊后实际付款金额');
             $table->decimal('refund_amount', 16)->default(0)->comment('退款金额');
             $table->decimal('cost_amount', 16)->default(0)->comment('成本金额');
-
-            // 状态
             $table->string('order_status')->comment('状态');
             $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('payment_status', 30)->nullable()->comment('付款状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
-
-            // 发货
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
             $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
             $table->string('warehouse_code', 32)->nullable()->comment('仓库编码');
-            // 退款
             $table->unsignedBigInteger('refund_id')->nullable()->comment('退款单ID');
-            // 流程时间
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');
             $table->timestamp('close_time')->nullable()->comment('关闭时间');
@@ -60,9 +51,8 @@ return new class extends Migration {
             $table->timestamp('end_time')->nullable()->comment('确认时间');
             $table->timestamp('refund_time')->nullable()->comment('退款时间');
             $table->timestamp('rate_time')->nullable()->comment('评价时间');
-
-            $table->nullableMorphs('creator'); // 创建人
-            $table->nullableMorphs('updater'); // 更新人
+            $table->nullableMorphs('creator');
+            $table->nullableMorphs('updater');
             $table->timestamps();
             $table->softDeletes();
             $table->comment('订单-商品表');
