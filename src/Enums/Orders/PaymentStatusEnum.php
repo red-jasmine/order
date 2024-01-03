@@ -7,7 +7,7 @@ use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 /**
  * 付款状态
  */
-enum PaymentStatusEnums: string
+enum PaymentStatusEnum: string
 {
 
     use EnumsHelper;

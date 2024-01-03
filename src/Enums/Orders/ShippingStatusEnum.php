@@ -7,7 +7,7 @@ use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 /**
  * 发货状态
  */
-enum ShippingStatusEnums: string
+enum ShippingStatusEnum: string
 {
 
     use EnumsHelper;

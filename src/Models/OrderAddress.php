@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,16 +23,43 @@ class OrderAddress extends Model
 
 
     protected $fillable = [
-        'id'
+        'contacts',
+        'mobile',
+        'country',
+        'province',
+        'city',
+        'district',
+        'street',
+        'country_id',
+        'province_id',
+        'city_id',
+        'district_id',
+        'street_id',
+        'address',
+        'zip_code',
+        'long',
+        'lat',
     ];
 
     protected $casts = [
 
     ];
 
+    protected $appends = [
+        'full_address'
+    ];
+
 
     public function order() : BelongsTo
     {
         return $this->belongsTo(Order::class, 'id', 'id');
+    }
+
+    public function fullAddress() : Attribute
+    {
+        return Attribute::make(
+            get: fn($value, $attributes) => implode([ $attributes['province'], $attributes['city'], $attributes['district'], $attributes['street'], $attributes['address'] ])
+        );
+
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\Models\Order;
-use RedJasmine\Order\Models\OrderAddress;
 use RedJasmine\Order\Models\OrderInfo;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Order\Models\OrderProductInfo;
@@ -94,6 +93,10 @@ class OrderCreatorService
                     $order->save();
                     $order->info()->save($order->info);
                     $order->products()->saveMany($order->products);
+                    $order->products->each(function ($product) use ($order) {
+                        $product->info()->save($product->info);
+                    });
+
                     return $order;
                 });
             DB::commit();

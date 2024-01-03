@@ -7,7 +7,7 @@ use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 /**
  * 订单类型
  */
-enum OrderTypeEnums: string
+enum OrderTypeEnum: string
 {
     use EnumsHelper;
 

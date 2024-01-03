@@ -8,7 +8,7 @@ use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 /**
  * 退款类型
  */
-enum RefundTypeEnums: string
+enum RefundTypeEnum: string
 {
     use EnumsHelper;
 

@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnums;
-use RedJasmine\Order\Enums\Orders\PaymentStatusEnums;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnums;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
+use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
+use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\ParametersMakeAble;
 
@@ -25,10 +25,10 @@ class OrderProduct extends Model
 
 
     protected $casts = [
-        'shipping_type'   => ShippingTypeEnums::class,
-        'order_status'    => OrderStatusEnums::class,
-        'shipping_status' => ShippingStatusEnums::class,
-        'payment_status'  => PaymentStatusEnums::class,
+        'shipping_type'   => ShippingTypeEnum::class,
+        'order_status'    => OrderStatusEnum::class,
+        'shipping_status' => ShippingStatusEnum::class,
+        'payment_status'  => PaymentStatusEnum::class,
     ];
 
     protected $fillable = [

@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnums;
-use RedJasmine\Order\Enums\Orders\PaymentStatusEnums;
-use RedJasmine\Order\Enums\Orders\RefundStatusEnums;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnums;
-use RedJasmine\Order\Enums\Orders\OrderTypeEnums;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnums;
+use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
+use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
+use RedJasmine\Order\Enums\Orders\OrderTypeEnum;
+use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\ParametersMakeAble;
 
@@ -32,12 +32,12 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'order_type'      => OrderTypeEnums::class,
-        'shipping_type'   => ShippingTypeEnums::class,
-        'order_status'    => OrderStatusEnums::class,
-        'payment_status'  => PaymentStatusEnums::class,
-        'shipping_status' => ShippingStatusEnums::class,
-        'refund_status'   => RefundStatusEnums::class,
+        'order_type'      => OrderTypeEnum::class,
+        'shipping_type'   => ShippingTypeEnum::class,
+        'order_status'    => OrderStatusEnum::class,
+        'payment_status'  => PaymentStatusEnum::class,
+        'shipping_status' => ShippingStatusEnum::class,
+        'refund_status'   => RefundStatusEnum::class,
         'created_time'    => 'datetime',
         'payment_time'    => 'datetime',
         'close_time'      => 'datetime',
