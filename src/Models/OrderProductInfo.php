@@ -17,10 +17,10 @@ class OrderProductInfo extends Model
 
 
     protected $casts = [
-        //'seller_extends' => 'array',
-        //'buyer_extends'  => 'array',
-        //'other_extends'  => 'array',
-        //'tools'          => 'array'
+        'seller_extends' => 'array',
+        'buyer_extends'  => 'array',
+        'other_extends'  => 'array',
+        'tools'          => 'array'
     ];
 
 

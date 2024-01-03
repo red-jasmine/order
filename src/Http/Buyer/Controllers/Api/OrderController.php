@@ -4,7 +4,8 @@ namespace RedJasmine\Order\Http\Buyer\Controllers\Api;
 
 
 use Illuminate\Http\Request;
-use RedJasmine\Order\OrderService;
+use RedJasmine\Order\Business\Buyer\OrderService;
+use RedJasmine\Order\Http\Buyer\Resources\OrderResource;
 
 class OrderController extends Controller
 {
@@ -42,6 +43,8 @@ class OrderController extends Controller
 
     public function show($id)
     {
+        $order = $this->service()->queries()->find($id);
+        return $this->success(new OrderResource($order));
     }
 
 

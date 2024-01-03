@@ -42,7 +42,7 @@ class OrderAddress extends Model
     ];
 
     protected $casts = [
-
+        'extends' => 'array'
     ];
 
     protected $appends = [
