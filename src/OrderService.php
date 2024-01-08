@@ -4,6 +4,7 @@ namespace RedJasmine\Order;
 
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Services\Orders\OrderCreatorService;
+use RedJasmine\Order\Services\Orders\OrderPayAction;
 use RedJasmine\Order\Services\Orders\OrderQueryService;
 use RedJasmine\Support\Traits\Services\WithUserService;
 
@@ -25,12 +26,18 @@ class OrderService
 
     public function queries() : OrderQueryService
     {
-        return new OrderQueryService($this);
+        return app(OrderQueryService::class)->setService($this);
     }
 
     public function creator() : OrderCreatorService
     {
-        return new OrderCreatorService($this);
+        return app(OrderCreatorService::class)->setService($this);
+    }
+
+
+    public function pay() : OrderPayAction
+    {
+        return app(OrderPayAction::class)->setService($this);
     }
 
 

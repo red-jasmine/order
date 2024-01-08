@@ -17,7 +17,7 @@ enum ShippingTypeEnum: string
 
     case  VIRTUAL = 'VIRTUAL';  // 虚拟发货
 
-    public static function names() : array
+    public static function labels() : array
     {
 
         return [

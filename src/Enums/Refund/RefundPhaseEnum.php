@@ -15,7 +15,7 @@ enum RefundPhaseEnum: string
     case  AFTER_SALE = 'AFTER_SALE';
 
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::ON_SALE->value    => '售中',

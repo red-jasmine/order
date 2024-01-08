@@ -23,7 +23,7 @@ enum PaymentStatusEnum: string
     // 不支付
     case NO_PAYMENT = 'NO_PAYMENT';
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::WAIT_PAY->value   => '待支付',

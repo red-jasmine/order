@@ -3,24 +3,18 @@
 namespace RedJasmine\Order\Services\Orders;
 
 use RedJasmine\Order\Models\Order;
-use RedJasmine\Order\OrderService;
+use RedJasmine\Order\Services\Orders\Actions\AbstractOrderAction;
 use RedJasmine\Support\Traits\Services\HasQueryBuilder;
-use RedJasmine\Support\Traits\Services\ServiceExtends;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class OrderQueryService
+class OrderQueryService extends AbstractOrderAction
 {
+
 
     use HasQueryBuilder;
 
     protected string $model = Order::class;
 
-    public function __construct(protected OrderService $service)
-    {
-    }
-
-
-    use ServiceExtends;
 
     public function includes() : array
     {

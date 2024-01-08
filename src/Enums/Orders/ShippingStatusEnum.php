@@ -17,7 +17,7 @@ enum ShippingStatusEnum: string
     case SHIPPED = 'SHIPPED'; // 全部已发货
 
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
 

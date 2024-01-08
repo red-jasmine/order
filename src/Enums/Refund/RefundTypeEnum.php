@@ -19,7 +19,7 @@ enum RefundTypeEnum: string
     case  EXCHANGE_GOODS = 'EXCHANGE_GOODS';
 
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::REFUND_ONLY->value         => '仅退款',

@@ -19,7 +19,7 @@ enum RefundStatusEnum: string
     case  REFUND_SUCCESS = 'REFUND_SUCCESS';
     case  REFUND_CLOSED = 'REFUND_CLOSED';
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
 

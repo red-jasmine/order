@@ -11,7 +11,7 @@ return [
     | 配置的订单站内来源  如 购物车、直购、活动、分销、
     |
     */
-    'sources'    => [
+    'sources'   => [
 
     ],
 
@@ -23,7 +23,7 @@ return [
     | 订单的一些操作会经过这些管道进行处理
     |
     */
-    'pipelines'  => [
+    'pipelines' => [
         'creation' => [
             \RedJasmine\Order\Services\Orders\Pipelines\OrderFillPipeline::class,
             \RedJasmine\Order\Services\Orders\Pipelines\OrderCalculatePipeline::class,
@@ -31,9 +31,9 @@ return [
             \RedJasmine\Order\Services\Orders\Pipelines\OrderAddressPipeline::class,
         ],
     ],
-
-    // 订单验证器
-    'validators' => [
-
+    'actions'   => [
+        'pay' => \RedJasmine\Order\Services\Orders\OrderPayAction::class,
     ],
+
+
 ];

@@ -13,6 +13,7 @@ use RedJasmine\Order\Models\OrderInfo;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Order\Models\OrderProductInfo;
 use RedJasmine\Order\OrderService;
+use RedJasmine\Order\Services\Orders\Actions\AbstractOrderAction;
 use RedJasmine\Order\ValueObjects\OrderProductObject;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Exceptions\AbstractException;
@@ -24,10 +25,8 @@ use Throwable;
 /**
  * @mixin  OrderService
  */
-class OrderCreatorService
+class OrderCreatorService extends AbstractOrderAction
 {
-    use ServiceExtends;
-
     protected UserInterface $buyer;
 
     protected UserInterface $seller;
@@ -38,17 +37,13 @@ class OrderCreatorService
 
     protected ?Order $order = null;
 
-
-    public function __construct(protected OrderService $service)
+    public function __construct()
     {
         $this->order = new Order();
         $this->order->setRelation('info', new OrderInfo());
         $this->order->setRelation('products', collect());
 
-        if ($this->getOperator()) {
-            $this->order->creator_type = $this->getOperator()->getType();
-            $this->order->creator_id   = $this->getOperator()->getID();
-        }
+
     }
 
     public function setOrderParameters($parameters) : static
@@ -78,6 +73,10 @@ class OrderCreatorService
      */
     public function create() : Order
     {
+        if ($this->getOperator()) {
+            $this->order->creator_type = $this->getOperator()->getType();
+            $this->order->creator_id   = $this->getOperator()->getID();
+        }
         try {
             DB::beginTransaction();
             // 数据验证
@@ -93,7 +92,7 @@ class OrderCreatorService
                     $order->save();
                     $order->info()->save($order->info);
                     $order->products()->saveMany($order->products);
-                    $order->products->each(function ($product) use ($order) {
+                    $order->products->each(function ($product) {
                         $product->info()->save($product->info);
                     });
 

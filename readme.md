@@ -29,6 +29,19 @@ $ composer require red-jasmine/order
 
 ```
 
+### 订单查询
+ - 详情
+ - 列表
+ - 搜索
+
+### 订单操作
+ - 创建
+ - 发起支付
+ - 支付成功
+ - 发货
+   - 部分发货
+   - 
+
 
 ## Change log
 

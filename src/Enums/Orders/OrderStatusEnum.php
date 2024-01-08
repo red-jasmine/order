@@ -20,7 +20,7 @@ enum OrderStatusEnum: string
     case  TRADE_CLOSED = 'TRADE_CLOSED'; // 已关闭 已支付已退款
 
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::WAIT_BUYER_PAY->value           => '待付款',

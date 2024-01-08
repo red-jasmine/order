@@ -13,7 +13,7 @@ enum OrderTypeEnum: string
 
     case  MALL = 'MALL'; // 一口价
 
-    public static function names() : array
+    public static function labels() : array
     {
         return [
             self::MALL->value => '商城',
