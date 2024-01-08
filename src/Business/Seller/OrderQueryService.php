@@ -10,7 +10,7 @@ class OrderQueryService extends \RedJasmine\Order\Services\Orders\OrderQueryServ
     public function query() : QueryBuilder
     {
         $query = parent::query();
-        $query->owner($this->service->getOwner());
+        $query->seller($this->service->getOwner());
         return $query;
     }
 

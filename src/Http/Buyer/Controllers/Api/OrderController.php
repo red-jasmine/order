@@ -18,8 +18,7 @@ class OrderController extends Controller
 
     public function service() : OrderService
     {
-        $this->service->setOwner($this->getOwner())
-                      ->setOperator($this->getUser());
+        $this->service->setOwner($this->getOwner())->setOperator($this->getUser());
         return $this->service;
     }
 
