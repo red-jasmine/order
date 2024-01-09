@@ -68,9 +68,9 @@ class OrderValidate
             'info.seller_message' => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'info.buyer_remarks'  => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'info.buyer_message'  => [ 'nullable', 'string', 'min:1', 'max:255' ],
-            'info.seller_extends' => [ 'nullable', 'json' ],
-            'info.buyer_extends'  => [ 'nullable', 'json' ],
-            'info.other_extends'  => [ 'nullable', 'json' ]
+            'info.seller_extends' => [ 'nullable', 'array' ],
+            'info.buyer_extends'  => [ 'nullable', 'array' ],
+            'info.other_extends'  => [ 'nullable', 'array' ]
         ];
         $product = [
             'shipping_type'          => [ 'required', 'string', 'min:1', 'max:30' ],
@@ -122,10 +122,10 @@ class OrderValidate
             'info.seller_message'    => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'info.buyer_remarks'     => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'info.buyer_message'     => [ 'nullable', 'string', 'min:1', 'max:255' ],
-            'info.seller_extends'    => [ 'nullable', 'json' ],
-            'info.buyer_extends'     => [ 'nullable', 'json' ],
-            'info.other_extends'     => [ 'nullable', 'json' ],
-            'info.tools'             => [ 'nullable', 'json' ],
+            'info.seller_extends'    => [ 'nullable', 'array' ],
+            'info.buyer_extends'     => [ 'nullable', 'array' ],
+            'info.other_extends'     => [ 'nullable', 'array' ],
+            'info.tools'             => [ 'nullable', 'array' ],
         ];
         $rules   = $order;
         foreach ($product as $key => $item) {

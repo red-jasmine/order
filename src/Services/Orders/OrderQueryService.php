@@ -4,7 +4,7 @@ namespace RedJasmine\Order\Services\Orders;
 
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Services\Orders\Actions\AbstractOrderAction;
-use RedJasmine\Support\Traits\Services\HasQueryBuilder;
+use RedJasmine\Support\Foundation\Service\HasQueryBuilder;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class OrderQueryService extends AbstractOrderAction
@@ -39,7 +39,8 @@ class OrderQueryService extends AbstractOrderAction
 
     public function lists()
     {
-        $this->query();
+        return $this->query()->paginate();
+
     }
 
 

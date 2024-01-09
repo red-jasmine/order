@@ -26,6 +26,8 @@ class OrderController extends Controller
     public function index()
     {
 
+        $result = $this->service()->queries()->lists();
+        return $this->success(OrderResource::collection($result));
 
     }
 

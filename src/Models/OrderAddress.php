@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\ParametersMakeAble;
+use RedJasmine\Support\Traits\Models\Transferable;
 
 class OrderAddress extends Model
 {
@@ -17,7 +17,7 @@ class OrderAddress extends Model
 
     use SoftDeletes;
 
-    use ParametersMakeAble;
+    use Transferable;
 
     public $incrementing = false;
 

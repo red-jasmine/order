@@ -11,7 +11,7 @@ use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\ParametersMakeAble;
+use RedJasmine\Support\Traits\Models\Transferable;
 
 class OrderProduct extends Model
 {
@@ -19,7 +19,7 @@ class OrderProduct extends Model
 
     use SoftDeletes;
 
-    use ParametersMakeAble;
+    use Transferable;
 
     public $incrementing = false;
 

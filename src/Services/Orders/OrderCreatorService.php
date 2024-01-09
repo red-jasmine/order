@@ -12,19 +12,13 @@ use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderInfo;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Order\Models\OrderProductInfo;
-use RedJasmine\Order\OrderService;
 use RedJasmine\Order\Services\Orders\Actions\AbstractOrderAction;
 use RedJasmine\Order\ValueObjects\OrderProductObject;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Support\Helpers\ID\Snowflake;
-use RedJasmine\Support\Traits\Services\ServiceExtends;
 use Throwable;
 
-
-/**
- * @mixin  OrderService
- */
 class OrderCreatorService extends AbstractOrderAction
 {
     protected UserInterface $buyer;
@@ -35,6 +29,9 @@ class OrderCreatorService extends AbstractOrderAction
 
     protected array $pipelines = [];
 
+    /**
+     * @var Order|null
+     */
     protected ?Order $order = null;
 
     public function __construct()
@@ -73,10 +70,7 @@ class OrderCreatorService extends AbstractOrderAction
      */
     public function create() : Order
     {
-        if ($this->getOperator()) {
-            $this->order->creator_type = $this->getOperator()->getType();
-            $this->order->creator_id   = $this->getOperator()->getID();
-        }
+        $this->order->creator = $this->service->getOperator();
         try {
             DB::beginTransaction();
             // 数据验证
@@ -164,6 +158,7 @@ class OrderCreatorService extends AbstractOrderAction
         return $this;
     }
 
+
     public function getSeller() : UserInterface
     {
         return $this->seller;
@@ -171,10 +166,8 @@ class OrderCreatorService extends AbstractOrderAction
 
     public function setSeller(UserInterface $seller) : OrderCreatorService
     {
-        $this->seller                 = $seller;
-        $this->order->seller_type     = $this->seller->getType();
-        $this->order->seller_id       = $this->seller->getID();
-        $this->order->seller_nickname = $this->seller->getNickname();
+        $this->seller        = $seller;
+        $this->order->seller = $seller;
         return $this;
     }
 
@@ -185,10 +178,8 @@ class OrderCreatorService extends AbstractOrderAction
 
     public function setBuyer(UserInterface $buyer) : OrderCreatorService
     {
-        $this->buyer                 = $buyer;
-        $this->order->buyer_type     = $buyer->getType();
-        $this->order->buyer_id       = $buyer->getID();
-        $this->order->buyer_nickname = $buyer->getNickname();
+        $this->buyer        = $buyer;
+        $this->order->buyer = $buyer;
         return $this;
     }
 

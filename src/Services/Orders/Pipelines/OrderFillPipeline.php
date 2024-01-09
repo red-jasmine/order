@@ -5,6 +5,7 @@ namespace RedJasmine\Order\Services\Orders\Pipelines;
 use Closure;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
+use RedJasmine\Support\Helpers\Json\Json;
 
 class OrderFillPipeline
 {
@@ -48,9 +49,10 @@ class OrderFillPipeline
         $order->info->seller_message = $parameters['info']['seller_message'] ?? null;
         $order->info->buyer_remarks  = $parameters['info']['buyer_remarks'] ?? null;
         $order->info->buyer_message  = $parameters['info']['buyer_message'] ?? null;
-        $order->info->seller_extends = $parameters['info']['seller_extends'] ?? null;
-        $order->info->buyer_extends  = $parameters['info']['buyer_extends'] ?? null;
-        $order->info->other_extends  = $parameters['info']['other_extends'] ?? null;
+        $order->info->seller_extends = Json::toArray($parameters['info']['seller_extends'] ?? null);
+        $order->info->buyer_extends  = Json::toArray($parameters['info']['buyer_extends'] ?? null);
+        $order->info->other_extends  = Json::toArray($parameters['info']['other_extends'] ?? null);
+
     }
 
     public function fillOrderProduct(Order $order, OrderProduct $orderProduct) : void
@@ -71,9 +73,9 @@ class OrderFillPipeline
         $orderProduct->info->seller_message = $parameters['info']['seller_message'] ?? null;
         $orderProduct->info->buyer_remarks  = $parameters['info']['buyer_remarks'] ?? null;
         $orderProduct->info->buyer_message  = $parameters['info']['buyer_message'] ?? null;
-        $orderProduct->info->seller_extends = $parameters['info']['seller_extends'] ?? null;
-        $orderProduct->info->buyer_extends  = $parameters['info']['buyer_extends'] ?? null;
-        $orderProduct->info->other_extends  = $parameters['info']['other_extends'] ?? null;
-        $orderProduct->info->tools          = $parameters['info']['tools'] ?? null;
+        $orderProduct->info->seller_extends = Json::toArray($parameters['info']['seller_extends'] ?? null);
+        $orderProduct->info->buyer_extends  = Json::toArray($parameters['info']['buyer_extends'] ?? null);
+        $orderProduct->info->other_extends  = Json::toArray($parameters['info']['other_extends'] ?? null);
+        $orderProduct->info->tools          = Json::toArray($parameters['info']['tools'] ?? null);
     }
 }

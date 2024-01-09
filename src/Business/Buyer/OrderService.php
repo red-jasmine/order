@@ -6,7 +6,7 @@ class OrderService extends \RedJasmine\Order\OrderService
 {
     public function queries() : OrderQueryService
     {
-        return new OrderQueryService($this);
+        return app(OrderQueryService::class)->setService($this);
     }
 
 

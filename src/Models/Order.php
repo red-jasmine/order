@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -14,10 +15,10 @@ use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Contracts\UserInterface;
-use RedJasmine\Support\Helpers\UserObjectBuilder;
+use RedJasmine\Support\Helpers\User\UserObject;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\ParametersMakeAble;
-use RedJasmine\Support\Traits\Models\WithOperatorModel;
+use RedJasmine\Support\Traits\Models\HasOperator;
+use RedJasmine\Support\Traits\Models\Transferable;
 
 class Order extends Model
 {
@@ -26,9 +27,10 @@ class Order extends Model
 
     use SoftDeletes;
 
-    use ParametersMakeAble;
+    use Transferable;
 
-    use WithOperatorModel;
+    use HasOperator;
+
 
     public $incrementing = false;
 
@@ -72,44 +74,54 @@ class Order extends Model
         return $this->hasOne(OrderAddress::class, 'id', 'id');
     }
 
-    public function getSeller() : UserInterface
-    {
-        return new UserObjectBuilder([ 'type' => $this->seller_type, 'id' => $this->seller_id ]);
-    }
 
-    public function scopeSeller(Builder $query, UserInterface $owner) : Builder
+    public function scopeOnlySeller(Builder $query, UserInterface $seller) : Builder
     {
-        return $query->where('seller_type', $owner->getType())
-                     ->where('seller_id', $owner->getID());
+        return $query->where('seller_type', $seller->getType())
+                     ->where('seller_id', $seller->getID());
 
     }
 
-    public function withSeller(?UserInterface $owner) : void
+    public function seller() : Attribute
     {
-        if ($owner) {
-            $this->seller_type = $owner->getType();
-            $this->seller_id   = $owner->getID();
-        }
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => new UserObject([
+                                                                           'type'     => $attributes['seller_type'],
+                                                                           'id'       => $attributes['seller_id'],
+                                                                           'nickname' => $attributes['seller_nickname']
+                                                                       ]),
+            set: fn(?UserInterface $user) => [
+                'seller_type'     => $user?->getType(),
+                'seller_id'       => $user?->getID(),
+                'seller_nickname' => $user?->getNickname()
+            ]
+
+        );
     }
 
-    public function getBuyer() : UserInterface
+    public function buyer() : Attribute
     {
-        return new UserObjectBuilder([ 'type' => $this->buyer_type, 'id' => $this->buyer_id ]);
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => new UserObject([
+                                                                           'type'     => $attributes['buyer_type'],
+                                                                           'id'       => $attributes['buyer_id'],
+                                                                           'nickname' => $attributes['buyer_nickname']
+                                                                       ]),
+            set: fn(?UserInterface $user) => [
+                'buyer_type'     => $user?->getType(),
+                'buyer_id'       => $user?->getID(),
+                'buyer_nickname' => $user?->getNickname()
+            ]
+
+        );
     }
 
-    public function scopeBuyer(Builder $query, UserInterface $owner) : Builder
-    {
-        return $query->where('buyer_type', $owner->getType())
-                     ->where('buyer_id', $owner->getID());
 
-    }
-
-    public function withBuyer(?UserInterface $owner) : void
+    public function scopeOnlyBuyer(Builder $query, UserInterface $buyer) : Builder
     {
-        if ($owner) {
-            $this->buyer_type = $owner->getType();
-            $this->buyer_id   = $owner->getID();
-        }
+        return $query->where('buyer_type', $buyer->getType())
+                     ->where('buyer_id', $buyer->getID());
+
     }
 
 }
