@@ -14,25 +14,35 @@ return [
     'sources'   => [
 
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | 订单操作
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    'actions'   => [
+        'paying' => \RedJasmine\Order\Actions\OrderPayingAction::class,
+        'create' => \RedJasmine\Order\Actions\OrderCreateAction::class,
+        'paid'   => \RedJasmine\Order\Actions\OrderPaidAction::class,
+        'cancel' => \RedJasmine\Order\Actions\OrderCancelAction::class,
+    ],
 
 
     /*
     |--------------------------------------------------------------------------
-    | 订单管道
+    | 操作管道
     |--------------------------------------------------------------------------
-    | 订单的一些操作会经过这些管道进行处理
+    | 操作会经过这些管道进行依次处理
     |
     */
     'pipelines' => [
-        'creation' => [
-            \RedJasmine\Order\Services\Orders\Pipelines\OrderFillPipeline::class,
-            \RedJasmine\Order\Services\Orders\Pipelines\OrderCalculatePipeline::class,
-            \RedJasmine\Order\Services\Orders\Pipelines\OrderValidatePipeline::class,
-            \RedJasmine\Order\Services\Orders\Pipelines\OrderAddressPipeline::class,
+        'create' => [
+            \RedJasmine\Order\Pipelines\OrderFillPipeline::class,
+            \RedJasmine\Order\Pipelines\OrderCalculatePipeline::class,
+            \RedJasmine\Order\Pipelines\OrderValidatePipeline::class,
+            \RedJasmine\Order\Pipelines\OrderAddressPipeline::class,
         ],
-    ],
-    'actions'   => [
-        'paying' => \RedJasmine\Order\Services\Orders\Actions\OrderPayingAction::class,
     ],
 
 

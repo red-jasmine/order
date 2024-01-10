@@ -30,7 +30,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "RedJasmine\\Order\\OrderServiceProvider"
+              "RedJasmine\\Order\\OrderDomainServiceProvider"
             ],
             "aliases": {
                 "OrderService": "RedJasmine\\Order\\Facades\\OrderService"
