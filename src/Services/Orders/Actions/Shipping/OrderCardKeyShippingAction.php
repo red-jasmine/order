@@ -10,4 +10,6 @@ use RedJasmine\Order\Services\Orders\Actions\AbstractOrderAction;
 class OrderCardKeyShippingAction extends AbstractOrderAction
 {
 
+     protected ?string $pipelinesConfigKey = null;
+
 }

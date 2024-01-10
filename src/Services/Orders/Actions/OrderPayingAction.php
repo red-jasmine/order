@@ -18,7 +18,7 @@ use Throwable;
 class OrderPayingAction extends AbstractOrderAction
 {
 
-    protected ?string $pipelinesKey = 'red-jasmine.order.pipelines.paying';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.paying';
 
 
     protected ?array $allowOrderStatus   = [

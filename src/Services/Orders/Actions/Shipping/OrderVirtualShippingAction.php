@@ -9,5 +9,5 @@ use RedJasmine\Order\Services\Orders\Actions\AbstractOrderAction;
  */
 class OrderVirtualShippingAction extends AbstractOrderAction
 {
-
+    protected ?string $pipelinesConfigKey = null;
 }
