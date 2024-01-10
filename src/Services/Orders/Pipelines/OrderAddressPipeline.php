@@ -14,8 +14,10 @@ class OrderAddressPipeline
         $address    = $parameters['address'] ?? null;
 
         $order = $next($order);
-        $order->setRelation('address', OrderAddress::make($address));
-        $order->address()->save($order->address);
+        if(filled($address)){
+            $order->setRelation('address', OrderAddress::make($address));
+            $order->address()->save($order->address);
+        }
         return $order;
     }
 

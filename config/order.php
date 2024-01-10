@@ -32,7 +32,7 @@ return [
         ],
     ],
     'actions'   => [
-        'pay' => \RedJasmine\Order\Services\Orders\Actions\OrderPayAction::class,
+        'paying' => \RedJasmine\Order\Services\Orders\Actions\OrderPayingAction::class,
     ],
 
 

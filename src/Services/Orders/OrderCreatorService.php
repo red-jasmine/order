@@ -21,13 +21,16 @@ use Throwable;
 
 class OrderCreatorService extends AbstractOrderAction
 {
+
+    protected ?string $pipelinesKey = 'red-jasmine.order.pipelines.creation';
+
+
     protected UserInterface $buyer;
 
     protected UserInterface $seller;
 
     protected array $validators = [];
 
-    protected array $pipelines = [];
 
     /**
      * @var Order|null
@@ -49,18 +52,6 @@ class OrderCreatorService extends AbstractOrderAction
         return $this;
     }
 
-    public function addPipelines($pipeline) : static
-    {
-        $this->pipelines[] = $pipeline;
-        return $this;
-    }
-
-    public function getPipelines() : array
-    {
-        $pipelines = Config::get('red-jasmine.order.pipelines.creation', []);
-        return array_merge($this->pipelines, $pipelines);
-    }
-
 
     /**
      * 创建订单
@@ -74,24 +65,21 @@ class OrderCreatorService extends AbstractOrderAction
         try {
             DB::beginTransaction();
             // 数据验证
-            $order = app(Pipeline::class)
-                ->send($this->order)
-                ->through($this->getPipelines())
-                ->then(function (Order $order) {
-                    $order->id = $this->buildID();
-                    $order->products->each(function ($product) use ($order) {
-                        $product->id           = $product->id ?? $this->buildID();
-                        $product->order_status = $order->order_status;
-                    });
-                    $order->save();
-                    $order->info()->save($order->info);
-                    $order->products()->saveMany($order->products);
-                    $order->products->each(function ($product) {
-                        $product->info()->save($product->info);
-                    });
-
-                    return $order;
+            $order = $this->pipelines($this->order, function (Order $order) {
+                $order->id = $this->buildID();
+                $order->products->each(function ($product) use ($order) {
+                    $product->id           = $product->id ?? $this->buildID();
+                    $product->order_status = $order->order_status;
                 });
+                $order->save();
+                $order->info()->save($order->info);
+                $order->products()->saveMany($order->products);
+                $order->products->each(function ($product) {
+                    $product->info()->save($product->info);
+                });
+
+                return $order;
+            });
             DB::commit();
             return $order;
         } catch (AbstractException $exception) {

@@ -3,8 +3,11 @@
 namespace RedJasmine\Order\Services\Orders\Actions;
 
 use DB;
+use Illuminate\Pipeline\Pipeline;
+use Illuminate\Support\Facades\Config;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Events\Orders\OrderPayingEvent;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
 use Throwable;
@@ -12,59 +15,51 @@ use Throwable;
 /**
  * 发起支付
  */
-class OrderPayAction extends AbstractOrderAction
+class OrderPayingAction extends AbstractOrderAction
 {
 
-    protected array $allowOrderStatus   = [
+    protected ?string $pipelinesKey = 'red-jasmine.order.pipelines.paying';
+
+
+    protected ?array $allowOrderStatus   = [
         OrderStatusEnum::WAIT_BUYER_PAY,
     ];
-    protected array $allowPaymentStatus = [
+    protected ?array $allowPaymentStatus = [
         PaymentStatusEnum::NO_PAYMENT,
         PaymentStatusEnum::WAIT_PAY,
     ];
 
-    /**
-     * @param Order $order
-     *
-     * @return void
-     * @throws OrderException
-     */
-    public function stateMachine(Order $order) : void
-    {
-        if (!in_array($order->order_status, $this->allowOrderStatus, true)) {
-            throw new OrderException();
-        }
-        if (!in_array($order->payment_status, $this->allowPaymentStatus, true)) {
-            throw new OrderException($order->payment_status->label() . '不可操作',);
-        }
-    }
 
     /**
      * @param Order $order
      *
-     * @return void
+     * @return bool
      * @throws OrderException
      */
-    public function isAllow(Order $order) : void
+    public function isAllow(Order $order) : bool
     {
-        $this->stateMachine($order);
-
+        $this->allowStatus($order);
+        return true;
     }
 
     /**
      * @param int $id
      *
-     * @return void
+     * @return bool|null
+     * @throws OrderException
      * @throws Throwable
      */
-    public function pay(int $id)
+    public function paying(int $id) : ?bool
     {
         try {
             DB::beginTransaction();
-            $order = $this->service->find($id);
+            $order = $this->service->findLock($id);
             $this->isAllow($order);
-            $this->paying($order);
-            $order->save();
+            $this->pipelines($order, function (Order $order) {
+                $this->setPaying($order);
+                $order->save();
+                return $order;
+            });
             DB::commit();
         } catch (AbstractException $exception) {
             DB::rollBack();
@@ -75,14 +70,17 @@ class OrderPayAction extends AbstractOrderAction
             throw  $throwable;
         }
 
+        // 触发事件
+        OrderPayingEvent::dispatch($order);
+        return true;
 
     }
 
 
-    protected function paying(Order $order) : Order
+    protected function setPaying(Order $order) : Order
     {
         $order->payment_status = PaymentStatusEnum::PAYING;
-
+        $order->updater        = $this->service->getOperator();
         return $order;
     }
 
