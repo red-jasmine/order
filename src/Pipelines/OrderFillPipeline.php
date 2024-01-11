@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Pipelines;
 
 use Closure;
+use RedJasmine\Order\DataTransferObjects\OrderDTO;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Support\Helpers\Json\Json;
@@ -23,36 +24,43 @@ class OrderFillPipeline
 
     public function fillOrder(Order $order) : void
     {
-        $parameters                  = $order->getParameters();
-        $order->title                = $parameters['title'] ?? '';
-        $order->order_type           = $parameters['order_type'] ?? null;
-        $order->shipping_type        = $parameters['shipping_type'] ?? null;
-        $order->source               = $parameters['source'] ?? null;
-        $order->order_status         = $parameters['order_status'] ?? null;
-        $order->shipping_status      = $parameters['shipping_status'] ?? null;
-        $order->payment_status       = $parameters['payment_status'] ?? null;
-        $order->refund_status        = $parameters['refund_status'] ?? null;
-        $order->rate_status          = $parameters['rate_status'] ?? null;
-        $order->freight_amount       = $parameters['freight_amount'] ?? 0;
-        $order->discount_amount      = $parameters['discount_amount'] ?? 0;
+
+        /**
+         *
+         * @var $orderDTO OrderDTO
+         */
+        $orderDTO = $order->getDTO();
+
+        $order->title                = $orderDTO->title;
+        $order->order_type           = $orderDTO->orderType;
+        $order->shipping_type        = $orderDTO->shippingType;
+        $order->source               = $orderDTO->source;
+        $order->order_status         = $orderDTO->orderStatus;
+        $order->shipping_status      = $orderDTO->shippingStatus;
+        $order->payment_status       = $orderDTO->paymentStatus;
+        $order->refund_status        = $orderDTO->refundStatus;
+        $order->rate_status          = $orderDTO->rateStatus ?? null;
+        $order->freight_amount       = $orderDTO->freightAmount;
+        $order->discount_amount      = $orderDTO->discountAmount;
         $order->client_type          = $parameters['client_type'] ?? null;
         $order->client_ip            = $parameters['client_ip'] ?? null;
         $order->channel_type         = $parameters['channel_type'] ?? null;
         $order->channel_id           = $parameters['channel_id'] ?? null;
-        $order->store_type           = $parameters['store_type'] ?? null;
-        $order->store_id             = $parameters['store_id'] ?? null;
-        $order->guide_type           = $parameters['guide_type'] ?? null;
-        $order->guide_id             = $parameters['guide_id'] ?? null;
-        $order->email                = $parameters['email'] ?? null;
-        $order->password             = $parameters['password'] ?? null;
-        $order->info->seller_remarks = $parameters['info']['seller_remarks'] ?? null;
-        $order->info->seller_message = $parameters['info']['seller_message'] ?? null;
-        $order->info->buyer_remarks  = $parameters['info']['buyer_remarks'] ?? null;
-        $order->info->buyer_message  = $parameters['info']['buyer_message'] ?? null;
-        $order->info->seller_extends = Json::toArray($parameters['info']['seller_extends'] ?? null);
-        $order->info->buyer_extends  = Json::toArray($parameters['info']['buyer_extends'] ?? null);
-        $order->info->other_extends  = Json::toArray($parameters['info']['other_extends'] ?? null);
+        $order->store_type           = $orderDTO->store?->type;
+        $order->store_id             = $orderDTO->store?->id;
+        $order->guide                = $orderDTO->guide;
+        $order->email                = $orderDTO->email;
+        $order->password             = $orderDTO->password;
+        $order->info->seller_remarks = $orderDTO->sellerRemarks;
+        $order->info->seller_message = $orderDTO->sellerMessage;
+        $order->info->buyer_remarks  = $orderDTO->buyerRemarks;
+        $order->info->buyer_message  = $orderDTO->buyerMessage;
+        $order->info->seller_extends = $orderDTO->sellerExtends;
+        $order->info->buyer_extends  = $orderDTO->buyerExtends;
+        $order->info->other_extends  = $orderDTO->otherExtends;
 
+
+        dd($order);
     }
 
     public function fillOrderProduct(Order $order, OrderProduct $orderProduct) : void

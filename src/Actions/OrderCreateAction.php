@@ -6,6 +6,7 @@ namespace RedJasmine\Order\Actions;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use RedJasmine\Order\DataTransferObjects\OrderDTO;
 use RedJasmine\Order\Models\Order;
 
 use RedJasmine\Order\Models\OrderInfo;
@@ -37,17 +38,14 @@ class OrderCreateAction extends AbstractOrderAction
 
     public function __construct()
     {
+        $this->initOrder();
+    }
+
+    public function initOrder() : void
+    {
         $this->order = new Order();
         $this->order->setRelation('info', new OrderInfo());
         $this->order->setRelation('products', collect());
-
-
-    }
-
-    public function setOrderParameters($parameters) : static
-    {
-        $this->order->setParameters($parameters);
-        return $this;
     }
 
 
@@ -63,19 +61,7 @@ class OrderCreateAction extends AbstractOrderAction
             DB::beginTransaction();
             // 数据验证
             $order = $this->pipelines($this->order, function (Order $order) {
-                $order->id = $this->buildID();
-                $order->products->each(function ($product) use ($order) {
-                    $product->id           = $product->id ?? $this->buildID();
-                    $product->order_status = $order->order_status;
-                });
-                $order->save();
-                $order->info()->save($order->info);
-                $order->products()->saveMany($order->products);
-                $order->products->each(function ($product) {
-                    $product->info()->save($product->info);
-                });
-
-                return $order;
+                return $this->save($order);
             });
             DB::commit();
             return $order;
@@ -86,6 +72,41 @@ class OrderCreateAction extends AbstractOrderAction
             DB::rollBack();
             throw  $throwable;
         }
+    }
+
+    /**
+     * @param Order $order
+     *
+     * @return Order
+     * @throws Exception
+     */
+    protected function save(Order $order) : Order
+    {
+        $order->id = $this->buildID();
+        $order->products->each(function ($product) use ($order) {
+            $product->id           = $product->id ?? $this->buildID();
+            $product->order_status = $order->order_status;
+        });
+        $order->save();
+        $order->info()->save($order->info);
+        $order->products()->saveMany($order->products);
+        $order->products->each(function ($product) {
+            $product->info()->save($product->info);
+        });
+
+        return $order;
+    }
+
+
+    public function executeV2(OrderDTO $orderDTO)
+    {
+        $this->order->setData($orderDTO);
+        $order = $this->pipelines($this->order, function (Order $order) {
+           return $order;
+        });
+
+        dd($order);
+
     }
 
     /**
@@ -102,7 +123,7 @@ class OrderCreateAction extends AbstractOrderAction
      */
     public function execute(UserInterface $seller, UserInterface $buyer, array $orderParameters, Collection $products) : Order
     {
-        $this->setOrderParameters($orderParameters);
+        //$this->setOrderParameters($orderParameters);
         $this->setBuyer($buyer)->setSeller($seller);
         $products->each(fn($product) => $this->addProduct($product));
         return $this->create();

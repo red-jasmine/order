@@ -15,19 +15,22 @@ use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Contracts\UserInterface;
+use RedJasmine\Support\DataTransferObjects\UserData;
 use RedJasmine\Support\Helpers\User\UserObject;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Traits\Models\HasCarryData;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\Transferable;
+use Spatie\LaravelData\WithData;
 
 class Order extends Model
 {
-
+    use HasCarryData;
     use HasDateTimeFormatter;
 
     use SoftDeletes;
 
-    use Transferable;
+    //use Transferable;
 
     use HasOperator;
 
@@ -85,7 +88,7 @@ class Order extends Model
     public function seller() : Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => new UserObject([
+            get: fn(mixed $value, array $attributes) => UserData::from([
                                                                            'type'     => $attributes['seller_type'],
                                                                            'id'       => $attributes['seller_id'],
                                                                            'nickname' => $attributes['seller_nickname']
@@ -102,7 +105,7 @@ class Order extends Model
     public function buyer() : Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => new UserObject([
+            get: fn(mixed $value, array $attributes) => UserData::from([
                                                                            'type'     => $attributes['buyer_type'],
                                                                            'id'       => $attributes['buyer_id'],
                                                                            'nickname' => $attributes['buyer_nickname']
@@ -111,6 +114,36 @@ class Order extends Model
                 'buyer_type'     => $user?->getType(),
                 'buyer_id'       => $user?->getID(),
                 'buyer_nickname' => $user?->getNickname()
+            ]
+
+        );
+    }
+
+    public function channel() : Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => UserData::from([
+                                                                           'type' => $attributes['channel_type'],
+                                                                           'id'   => $attributes['channel_id'],
+                                                                       ]),
+            set: fn(?UserInterface $user) => [
+                'channel_type' => $user?->getType(),
+                'channel_id'   => $user?->getID(),
+            ]
+
+        );
+    }
+
+    public function guide() : Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => UserData::from([
+                                                                           'type' => $attributes['guide_type'],
+                                                                           'id'   => $attributes['guide_id'],
+                                                                       ]),
+            set: fn(?UserInterface $user) => [
+                'guide_type' => $user?->getType(),
+                'guide_id'   => $user?->getID(),
             ]
 
         );
