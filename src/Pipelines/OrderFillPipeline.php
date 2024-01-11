@@ -3,9 +3,12 @@
 namespace RedJasmine\Order\Pipelines;
 
 use Closure;
+use JetBrains\PhpStorm\NoReturn;
 use RedJasmine\Order\DataTransferObjects\OrderDTO;
+use RedJasmine\Order\DataTransferObjects\OrderProductDTO;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
+use RedJasmine\Order\Models\OrderProductInfo;
 use RedJasmine\Support\Helpers\Json\Json;
 
 class OrderFillPipeline
@@ -13,24 +16,34 @@ class OrderFillPipeline
 
     public function handle(Order $order, Closure $next)
     {
-
-        $this->fillOrder($order);
-        $order->products->each(function ($orderProduct) use ($order) {
-            $this->fillOrderProduct($order, $orderProduct);
-        });
-        return $next($order);
-    }
-
-
-    public function fillOrder(Order $order) : void
-    {
-
         /**
          *
          * @var $orderDTO OrderDTO
          */
         $orderDTO = $order->getDTO();
+        $this->fillOrder($order, $orderDTO);
+        $orderDTO->products->each(function ($orderProductDTO) use ($order, $orderDTO) {
+            $orderProduct = new OrderProduct();
+            $orderProduct->setRelation('info', new OrderProductInfo());
+            $orderProduct->setDTO($orderProductDTO);
+            $this->fillOrderProduct($order, $orderProduct, $orderDTO, $orderProductDTO);
+            $order->products->add($orderProduct);
+        });
+        return $next($order);
+    }
 
+
+    /**
+     * @param Order    $order
+     * @param OrderDTO $orderDTO
+     *
+     * @return void
+     */
+    public function fillOrder(Order $order, OrderDTO $orderDTO) : void
+    {
+
+        $order->seller               = $orderDTO->seller;
+        $order->buyer                = $orderDTO->buyer;
         $order->title                = $orderDTO->title;
         $order->order_type           = $orderDTO->orderType;
         $order->shipping_type        = $orderDTO->shippingType;
@@ -42,48 +55,51 @@ class OrderFillPipeline
         $order->rate_status          = $orderDTO->rateStatus ?? null;
         $order->freight_amount       = $orderDTO->freightAmount;
         $order->discount_amount      = $orderDTO->discountAmount;
-        $order->client_type          = $parameters['client_type'] ?? null;
-        $order->client_ip            = $parameters['client_ip'] ?? null;
-        $order->channel_type         = $parameters['channel_type'] ?? null;
-        $order->channel_id           = $parameters['channel_id'] ?? null;
+        $order->email                = $orderDTO->email;
+        $order->password             = $orderDTO->password;
+        $order->client_type          = $orderDTO->clientType;
+        $order->client_ip            = $orderDTO->clientIp;
         $order->store_type           = $orderDTO->store?->type;
         $order->store_id             = $orderDTO->store?->id;
         $order->guide                = $orderDTO->guide;
-        $order->email                = $orderDTO->email;
-        $order->password             = $orderDTO->password;
-        $order->info->seller_remarks = $orderDTO->sellerRemarks;
-        $order->info->seller_message = $orderDTO->sellerMessage;
-        $order->info->buyer_remarks  = $orderDTO->buyerRemarks;
-        $order->info->buyer_message  = $orderDTO->buyerMessage;
-        $order->info->seller_extends = $orderDTO->sellerExtends;
-        $order->info->buyer_extends  = $orderDTO->buyerExtends;
-        $order->info->other_extends  = $orderDTO->otherExtends;
+        $order->channel_type         = $orderDTO->channel?->type;
+        $order->channel_id           = $orderDTO->channel?->id;
+        $order->info->seller_remarks = $orderDTO->info?->sellerRemarks;
+        $order->info->seller_message = $orderDTO->info?->sellerMessage;
+        $order->info->buyer_remarks  = $orderDTO->info?->buyerRemarks;
+        $order->info->buyer_message  = $orderDTO->info?->buyerMessage;
+        $order->info->seller_extends = $orderDTO->info?->sellerExtends;
+        $order->info->buyer_extends  = $orderDTO->info?->buyerExtends;
+        $order->info->other_extends  = $orderDTO->info?->otherExtends;
+        $order->info->tools          = $orderDTO->info?->tools;
 
-
-        dd($order);
     }
 
-    public function fillOrderProduct(Order $order, OrderProduct $orderProduct) : void
+    public function fillOrderProduct(Order $order, OrderProduct $orderProduct, OrderDTO $orderDTO, OrderProductDTO $orderProductDTO) : void
     {
-
-        $parameters                         = $orderProduct->getParameters();
-        $orderProduct->order_status         = $order->order_status;
-        $orderProduct->image                = $parameters['image'] ?? null;
-        $orderProduct->category_id          = $parameters['category_id'] ?? null;
-        $orderProduct->seller_category_id   = $parameters['seller_category_id'] ?? null;
-        $orderProduct->outer_iid            = $parameters['outer_iid'] ?? null;
-        $orderProduct->outer_sku_id         = $parameters['outer_sku_id'] ?? null;
-        $orderProduct->shipping_status      = $parameters['shipping_status'] ?? null;
-        $orderProduct->payment_status       = $parameters['payment_status'] ?? null;
-        $orderProduct->refund_status        = $parameters['refund_status'] ?? null;
-        $orderProduct->rate_status          = $parameters['rate_status'] ?? null;
-        $orderProduct->info->seller_remarks = $parameters['info']['seller_remarks'] ?? null;
-        $orderProduct->info->seller_message = $parameters['info']['seller_message'] ?? null;
-        $orderProduct->info->buyer_remarks  = $parameters['info']['buyer_remarks'] ?? null;
-        $orderProduct->info->buyer_message  = $parameters['info']['buyer_message'] ?? null;
-        $orderProduct->info->seller_extends = Json::toArray($parameters['info']['seller_extends'] ?? null);
-        $orderProduct->info->buyer_extends  = Json::toArray($parameters['info']['buyer_extends'] ?? null);
-        $orderProduct->info->other_extends  = Json::toArray($parameters['info']['other_extends'] ?? null);
-        $orderProduct->info->tools          = Json::toArray($parameters['info']['tools'] ?? null);
+        $orderProduct->order_status         = $orderProductDTO->orderStatus ?? $orderDTO->orderStatus;
+        $orderProduct->product_type         = $orderProductDTO->productType;
+        $orderProduct->product_id           = $orderProductDTO->productId;
+        $orderProduct->sku_id               = $orderProductDTO->skuId;
+        $orderProduct->price                = $orderProductDTO->price;
+        $orderProduct->num                  = $orderProductDTO->num;
+        $orderProduct->shipping_type        = $orderProductDTO->shippingType;
+        $orderProduct->image                = $orderProductDTO->image;
+        $orderProduct->category_id          = $orderProductDTO->categoryId;
+        $orderProduct->seller_category_id   = $orderProductDTO->sellerCategoryId;
+        $orderProduct->outer_iid            = $orderProductDTO->outerIid;
+        $orderProduct->outer_sku_id         = $orderProductDTO->outerSkuId;
+        $orderProduct->shipping_status      = $orderProductDTO->shippingStatus;
+        $orderProduct->payment_status       = $orderProductDTO->paymentStatus;
+        $orderProduct->refund_status        = $orderProductDTO->refundStatus;
+        $orderProduct->rate_status          = $orderProductDTO->rateStatus;
+        $orderProduct->info->seller_remarks = $orderProductDTO->info?->sellerRemarks;
+        $orderProduct->info->seller_message = $orderProductDTO->info?->sellerMessage;
+        $orderProduct->info->buyer_remarks  = $orderProductDTO->info?->buyerRemarks;
+        $orderProduct->info->buyer_message  = $orderProductDTO->info?->buyerMessage;
+        $orderProduct->info->seller_extends = $orderProductDTO->info?->buyerMessage;
+        $orderProduct->info->buyer_extends  = $orderProductDTO->info?->buyerExtends;
+        $orderProduct->info->other_extends  = $orderProductDTO->info?->otherExtends;
+        $orderProduct->info->tools          = $orderProductDTO->info?->tools;
     }
 }

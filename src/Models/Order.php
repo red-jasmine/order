@@ -16,21 +16,17 @@ use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\DataTransferObjects\UserData;
-use RedJasmine\Support\Helpers\User\UserObject;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasCarryData;
 use RedJasmine\Support\Traits\Models\HasOperator;
-use RedJasmine\Support\Traits\Models\Transferable;
-use Spatie\LaravelData\WithData;
+use RedJasmine\Support\Traits\Models\WithDTO;
 
 class Order extends Model
 {
-    use HasCarryData;
+    use WithDTO;
+
     use HasDateTimeFormatter;
 
     use SoftDeletes;
-
-    //use Transferable;
 
     use HasOperator;
 
@@ -114,21 +110,6 @@ class Order extends Model
                 'buyer_type'     => $user?->getType(),
                 'buyer_id'       => $user?->getID(),
                 'buyer_nickname' => $user?->getNickname()
-            ]
-
-        );
-    }
-
-    public function channel() : Attribute
-    {
-        return Attribute::make(
-            get: fn(mixed $value, array $attributes) => UserData::from([
-                                                                           'type' => $attributes['channel_type'],
-                                                                           'id'   => $attributes['channel_id'],
-                                                                       ]),
-            set: fn(?UserInterface $user) => [
-                'channel_type' => $user?->getType(),
-                'channel_id'   => $user?->getID(),
             ]
 
         );
