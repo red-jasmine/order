@@ -52,7 +52,7 @@ class OrderPaidAction extends AbstractOrderAction
             DB::beginTransaction();
             $order = $this->service->findLock($id);
             $this->isAllow($order);
-            $order = $this->pipelines($order, function (Order $order) {
+            $order = $this->pipelines($order)->then(function (Order $order) {
                 $this->setPaid($order);
                 $order->push();
                 return $order;

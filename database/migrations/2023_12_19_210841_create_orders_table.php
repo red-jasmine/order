@@ -9,8 +9,8 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
-            $table->string('seller_type')->comment('卖家 类型');
-            $table->unsignedBigInteger('seller_id')->comment('卖家 ID');
+            $table->string('seller_type')->comment('卖家类型');
+            $table->unsignedBigInteger('seller_id')->comment('卖家ID');
             $table->string('seller_nickname')->nullable()->comment('卖家昵称');
             $table->string('buyer_type')->comment('买家类型');
             $table->unsignedBigInteger('buyer_id')->comment('买家类型');
@@ -44,9 +44,12 @@ return new class extends Migration {
             $table->unsignedTinyInteger('is_buyer_delete')->default(0)->comment('买家删除');
             $table->string('client_type', 30)->nullable()->comment('客户端');
             $table->string('client_ip', 30)->nullable()->comment('IP');
-            $table->nullableMorphs('channel'); // 渠道
-            $table->nullableMorphs('store'); // 门店
-            $table->nullableMorphs('guide');// 导购
+            $table->string('channel_type')->nullable()->comment('渠道类型');
+            $table->unsignedBigInteger('channel_id')->nullable()->comment('渠道ID');
+            $table->string('store_type')->nullable()->comment('门店类型');
+            $table->unsignedBigInteger('store_id')->nullable()->comment('门店ID');
+            $table->string('guide_type')->nullable()->comment('导购类型');
+            $table->unsignedBigInteger('guide_id')->nullable()->comment('导购ID');
             $table->string('email')->nullable()->comment('下单邮箱');
             $table->string('password')->nullable()->comment('查询密码');
             $table->nullableMorphs('creator'); // 创建人

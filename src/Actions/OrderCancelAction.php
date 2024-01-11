@@ -14,7 +14,6 @@ class OrderCancelAction extends AbstractOrderAction
 {
 
 
-
     protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.cancel';
 
     public function isAllow(Order $order) : bool
@@ -36,7 +35,7 @@ class OrderCancelAction extends AbstractOrderAction
             DB::beginTransaction();
             $order = $this->service->findLock($id);
             $this->isAllow($order);
-            $order = $this->pipelines($order, function (Order $order) {
+            $order = $this->pipelines($order)->then(function (Order $order) {
                 $this->setCancel($order);
                 $order->push();
                 return $order;

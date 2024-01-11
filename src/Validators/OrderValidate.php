@@ -70,7 +70,8 @@ class OrderValidate
             'info.buyer_message'  => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'info.seller_extends' => [ 'nullable', 'array' ],
             'info.buyer_extends'  => [ 'nullable', 'array' ],
-            'info.other_extends'  => [ 'nullable', 'array' ]
+            'info.other_extends'  => [ 'nullable', 'array' ],
+            'info.tools'          => [ 'nullable', 'array' ],
         ];
         $product = [
             'shipping_type'          => [ 'required', 'string', 'min:1', 'max:30' ],
