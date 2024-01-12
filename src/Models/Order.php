@@ -15,7 +15,7 @@ use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Contracts\UserInterface;
-use RedJasmine\Support\DataTransferObjects\UserData;
+use RedJasmine\Support\DataTransferObjects\UserDTO;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\WithDTO;
@@ -84,7 +84,7 @@ class Order extends Model
     public function seller() : Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => UserData::from([
+            get: fn(mixed $value, array $attributes) => UserDTO::from([
                                                                            'type'     => $attributes['seller_type'],
                                                                            'id'       => $attributes['seller_id'],
                                                                            'nickname' => $attributes['seller_nickname']
@@ -101,7 +101,7 @@ class Order extends Model
     public function buyer() : Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => UserData::from([
+            get: fn(mixed $value, array $attributes) => UserDTO::from([
                                                                            'type'     => $attributes['buyer_type'],
                                                                            'id'       => $attributes['buyer_id'],
                                                                            'nickname' => $attributes['buyer_nickname']
@@ -118,7 +118,7 @@ class Order extends Model
     public function guide() : Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => UserData::from([
+            get: fn(mixed $value, array $attributes) => UserDTO::from([
                                                                            'type' => $attributes['guide_type'],
                                                                            'id'   => $attributes['guide_id'],
                                                                        ]),

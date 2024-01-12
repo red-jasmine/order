@@ -9,7 +9,7 @@ use RedJasmine\Order\Enums\Orders\RateStatusEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
-use RedJasmine\Support\DataTransferObjects\UserData;
+use RedJasmine\Support\DataTransferObjects\UserDTO;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
@@ -23,10 +23,10 @@ class OrderDTO extends Data
 
     public ?array $parameters = [];
 
-    public string              $title;
-    public UserData            $seller;
-    public UserData            $buyer;
-    public ShippingTypeEnum    $shippingType;
+    public string           $title;
+    public UserDTO          $seller;
+    public UserDTO          $buyer;
+    public ShippingTypeEnum $shippingType;
     public OrderTypeEnum       $orderType;
     public OrderStatusEnum     $orderStatus;
     public ?ShippingStatusEnum $shippingStatus = null;
@@ -35,11 +35,11 @@ class OrderDTO extends Data
     public ?RateStatusEnum     $rateStatus     = null;
     public ?string             $source         = null;
     public ?string             $email          = null;
-    public ?string             $password       = null;
-    public ?UserData           $channel        = null;
-    public ?UserData           $store          = null;
-    public ?UserData           $guide          = null;
-    public string|float|int    $freightAmount  = 0;
+    public ?string          $password      = null;
+    public ?UserDTO         $channel       = null;
+    public ?UserDTO         $store         = null;
+    public ?UserDTO         $guide         = null;
+    public string|float|int $freightAmount = 0;
     public string|float|int    $discountAmount = 0;
 
     public ?string $clientType;
