@@ -17,11 +17,11 @@ return new class extends Migration {
             $table->string('buyer_nickname')->nullable()->comment('买家昵称');
             $table->string('title')->nullable()->comment('标题');
             $table->string('order_type', 30)->comment('订单类型');
-            $table->string('shipping_type', 30)->comment('发货类型');
+            $table->string('ship_type', 30)->comment('发货类型');
             $table->string('source', 30)->nullable()->comment('来源');   // 普通 、活动、
             $table->string('order_status')->comment('订单状态');
-            $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('payment_status', 30)->nullable()->comment('付款状态');
+            $table->string('ship_status', 30)->nullable()->comment('发货状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
             $table->decimal('total_amount', 16)->default(0)->comment('商品总金额');
@@ -48,7 +48,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('store_id')->nullable()->comment('门店ID');
             $table->string('guide_type')->nullable()->comment('导购类型');
             $table->unsignedBigInteger('guide_id')->nullable()->comment('导购ID');
-            $table->string('email')->nullable()->comment('下单邮箱');
+            $table->string('notifiable')->nullable()->comment('通知者');
             $table->string('password')->nullable()->comment('查询密码');
             $table->string('payment_type')->nullable()->comment('支付类型');
             $table->unsignedBigInteger('payment_id')->nullable()->comment('支付单号');

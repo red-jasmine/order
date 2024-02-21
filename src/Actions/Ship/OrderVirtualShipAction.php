@@ -1,13 +1,13 @@
 <?php
 
-namespace RedJasmine\Order\Actions\Shipping;
+namespace RedJasmine\Order\Actions\Ship;
 
 use RedJasmine\Order\Services\Orders\Actions\AbstractOrderAction;
 
 /**
- * 物流发货
+ * 虚拟发货
  */
-class OrderLogisticsShippingAction extends AbstractOrderAction
+class OrderVirtualShipAction extends AbstractOrderAction
 {
     protected ?string $pipelinesConfigKey = null;
 }

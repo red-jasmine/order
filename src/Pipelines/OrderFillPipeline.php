@@ -46,16 +46,16 @@ class OrderFillPipeline
         $order->buyer                = $orderDTO->buyer;
         $order->title                = $orderDTO->title;
         $order->order_type           = $orderDTO->orderType;
-        $order->shipping_type        = $orderDTO->shippingType;
+        $order->ship_type            = $orderDTO->shipType;
         $order->source               = $orderDTO->source;
         $order->order_status         = $orderDTO->orderStatus;
-        $order->shipping_status      = $orderDTO->shippingStatus;
+        $order->ship_status          = $orderDTO->shipStatus;
         $order->payment_status       = $orderDTO->paymentStatus;
         $order->refund_status        = $orderDTO->refundStatus;
         $order->rate_status          = $orderDTO->rateStatus ?? null;
         $order->freight_amount       = $orderDTO->freightAmount;
         $order->discount_amount      = $orderDTO->discountAmount;
-        $order->email                = $orderDTO->email;
+        $order->notifiable           = $orderDTO->notifiable;
         $order->password             = $orderDTO->password;
         $order->client_type          = $orderDTO->clientType;
         $order->client_ip            = $orderDTO->clientIp;
@@ -78,18 +78,21 @@ class OrderFillPipeline
     public function fillOrderProduct(Order $order, OrderProduct $orderProduct, OrderDTO $orderDTO, OrderProductDTO $orderProductDTO) : void
     {
         $orderProduct->order_status         = $orderProductDTO->orderStatus ?? $orderDTO->orderStatus;
+        $orderProduct->order_product_type   = $orderProductDTO->orderProductType;
+        $orderProduct->ship_type            = $orderProductDTO->shipType;
         $orderProduct->product_type         = $orderProductDTO->productType;
         $orderProduct->product_id           = $orderProductDTO->productId;
         $orderProduct->sku_id               = $orderProductDTO->skuId;
+        $orderProduct->title                = $orderProductDTO->title;
+        $orderProduct->sku_name             = $orderProductDTO->skuName;
         $orderProduct->price                = $orderProductDTO->price;
         $orderProduct->num                  = $orderProductDTO->num;
-        $orderProduct->shipping_type        = $orderProductDTO->shippingType;
         $orderProduct->image                = $orderProductDTO->image;
         $orderProduct->category_id          = $orderProductDTO->categoryId;
         $orderProduct->seller_category_id   = $orderProductDTO->sellerCategoryId;
-        $orderProduct->outer_iid            = $orderProductDTO->outerIid;
+        $orderProduct->outer_id             = $orderProductDTO->outerId;
         $orderProduct->outer_sku_id         = $orderProductDTO->outerSkuId;
-        $orderProduct->shipping_status      = $orderProductDTO->shippingStatus;
+        $orderProduct->ship_status          = $orderProductDTO->shipStatus;
         $orderProduct->payment_status       = $orderProductDTO->paymentStatus;
         $orderProduct->refund_status        = $orderProductDTO->refundStatus;
         $orderProduct->rate_status          = $orderProductDTO->rateStatus;
@@ -97,7 +100,7 @@ class OrderFillPipeline
         $orderProduct->info->seller_message = $orderProductDTO->info?->sellerMessage;
         $orderProduct->info->buyer_remarks  = $orderProductDTO->info?->buyerRemarks;
         $orderProduct->info->buyer_message  = $orderProductDTO->info?->buyerMessage;
-        $orderProduct->info->seller_extends = $orderProductDTO->info?->buyerMessage;
+        $orderProduct->info->seller_extends = $orderProductDTO->info?->sellerExtends;
         $orderProduct->info->buyer_extends  = $orderProductDTO->info?->buyerExtends;
         $orderProduct->info->other_extends  = $orderProductDTO->info?->otherExtends;
         $orderProduct->info->tools          = $orderProductDTO->info?->tools;

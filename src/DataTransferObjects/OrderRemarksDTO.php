@@ -2,13 +2,8 @@
 
 namespace RedJasmine\Order\DataTransferObjects;
 
-use Dflydev\DotAccessData\Data;
-use Spatie\LaravelData\Attributes\MapInputName;
-use Spatie\LaravelData\Attributes\MapOutputName;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use RedJasmine\Support\DataTransferObjects\Data;
 
-#[MapInputName(SnakeCaseMapper::class)]
-#[MapOutputName(SnakeCaseMapper::class)]
 class OrderRemarksDTO extends Data
 {
     public string $type;

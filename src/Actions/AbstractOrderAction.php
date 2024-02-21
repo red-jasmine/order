@@ -33,7 +33,7 @@ class AbstractOrderAction extends Action
      */
     protected function allowStatus(Order $order) : bool
     {
-        $this->checkStatus($order->order_status, $this->allowPaymentStatus);
+        $this->checkStatus($order->order_status, $this->allowOrderStatus);
         $this->checkStatus($order->payment_status, $this->allowPaymentStatus);
         return true;
     }

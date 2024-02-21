@@ -12,8 +12,8 @@ use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\OrderTypeEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
+use RedJasmine\Order\Enums\Orders\ShipStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShipTypeEnum;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\DataTransferObjects\UserDTO;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
@@ -35,15 +35,15 @@ class Order extends Model
 
     protected $fillable = [
         'order_type',
-        'shipping_type',
+        'ship_type',
     ];
 
     protected $casts = [
         'order_type'      => OrderTypeEnum::class,
-        'shipping_type'   => ShippingTypeEnum::class,
+        'ship_type'   => ShipTypeEnum::class,
         'order_status'    => OrderStatusEnum::class,
         'payment_status'  => PaymentStatusEnum::class,
-        'shipping_status' => ShippingStatusEnum::class,
+        'ship_status' => ShipStatusEnum::class,
         'refund_status'   => RefundStatusEnum::class,
         'created_time'    => 'datetime',
         'payment_time'    => 'datetime',
@@ -85,10 +85,10 @@ class Order extends Model
     {
         return Attribute::make(
             get: fn(mixed $value, array $attributes) => UserDTO::from([
-                                                                           'type'     => $attributes['seller_type'],
-                                                                           'id'       => $attributes['seller_id'],
-                                                                           'nickname' => $attributes['seller_nickname']
-                                                                       ]),
+                                                                          'type'     => $attributes['seller_type'],
+                                                                          'id'       => $attributes['seller_id'],
+                                                                          'nickname' => $attributes['seller_nickname']
+                                                                      ]),
             set: fn(?UserInterface $user) => [
                 'seller_type'     => $user?->getType(),
                 'seller_id'       => $user?->getID(),
@@ -98,14 +98,21 @@ class Order extends Model
         );
     }
 
+    public function scopeOnlyBuyer(Builder $query, UserInterface $buyer) : Builder
+    {
+        return $query->where('buyer_type', $buyer->getType())
+                     ->where('buyer_id', $buyer->getID());
+
+    }
+
     public function buyer() : Attribute
     {
         return Attribute::make(
             get: fn(mixed $value, array $attributes) => UserDTO::from([
-                                                                           'type'     => $attributes['buyer_type'],
-                                                                           'id'       => $attributes['buyer_id'],
-                                                                           'nickname' => $attributes['buyer_nickname']
-                                                                       ]),
+                                                                          'type'     => $attributes['buyer_type'],
+                                                                          'id'       => $attributes['buyer_id'],
+                                                                          'nickname' => $attributes['buyer_nickname']
+                                                                      ]),
             set: fn(?UserInterface $user) => [
                 'buyer_type'     => $user?->getType(),
                 'buyer_id'       => $user?->getID(),
@@ -119,9 +126,9 @@ class Order extends Model
     {
         return Attribute::make(
             get: fn(mixed $value, array $attributes) => UserDTO::from([
-                                                                           'type' => $attributes['guide_type'],
-                                                                           'id'   => $attributes['guide_id'],
-                                                                       ]),
+                                                                          'type' => $attributes['guide_type'],
+                                                                          'id'   => $attributes['guide_id'],
+                                                                      ]),
             set: fn(?UserInterface $user) => [
                 'guide_type' => $user?->getType(),
                 'guide_id'   => $user?->getID(),
@@ -130,12 +137,5 @@ class Order extends Model
         );
     }
 
-
-    public function scopeOnlyBuyer(Builder $query, UserInterface $buyer) : Builder
-    {
-        return $query->where('buyer_type', $buyer->getType())
-                     ->where('buyer_id', $buyer->getID());
-
-    }
 
 }

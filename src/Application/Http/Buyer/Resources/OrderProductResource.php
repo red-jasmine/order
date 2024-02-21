@@ -12,7 +12,7 @@ class OrderProductResource extends JsonResource
     {
         return [
             'id'                     => $this->id,
-            'shipping_type'          => $this->shipping_type,
+            'ship_type'          => $this->ship_type,
             'title'                  => $this->title,
             'image'                  => $this->image,
             'product_type'           => $this->product_type,
@@ -35,7 +35,7 @@ class OrderProductResource extends JsonResource
             'refund_amount'          => $this->refund_amount,
             'cost_amount'            => $this->cost_amount,
             'order_status'           => $this->order_status,
-            'shipping_status'        => $this->shipping_status,
+            'ship_status'        => $this->ship_status,
             'payment_status'         => $this->payment_status,
             'refund_status'          => $this->refund_status,
             'rate_status'            => $this->rate_status,

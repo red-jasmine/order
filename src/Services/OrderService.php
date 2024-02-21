@@ -3,9 +3,12 @@
 namespace RedJasmine\Order\Services;
 
 use Illuminate\Support\Collection;
+use RedJasmine\Order\Actions\OrderCancelAction;
 use RedJasmine\Order\Actions\OrderCreateAction;
+use RedJasmine\Order\Actions\OrderPaidAction;
 use RedJasmine\Order\Actions\OrderPayingAction;
 use RedJasmine\Order\Actions\OrderQueryAction;
+use RedJasmine\Order\DataTransferObjects\OrderPaidInfoDTO;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Support\Contracts\UserInterface;
@@ -16,7 +19,12 @@ use RedJasmine\Support\Foundation\Service\Service;
  * @property OrderPayingAction $paying
  * @property OrderCreateAction $create
  * @method static Order create(UserInterface $seller, UserInterface $buyer, array $orderParameters, Collection $products)
+ * @see OrderCancelAction::execute()
+ * @method static Order cancel(int $id)
+ * @see OrderPayingAction::execute()
  * @method static Order paying(int $id)
+ * @see OrderPaidAction::execute()
+ * @method static Order paid(int $id, ?OrderPaidInfoDTO $orderPaidInfoDTO = null)
  */
 class OrderService extends Service
 {

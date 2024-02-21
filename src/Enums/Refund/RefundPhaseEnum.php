@@ -11,8 +11,8 @@ enum RefundPhaseEnum: string
 {
     use EnumsHelper;
 
-    case  ON_SALE = 'ON_SALE';
-    case  AFTER_SALE = 'AFTER_SALE';
+    case  ON_SALE = 'on_sale';
+    case  AFTER_SALE = 'after_sale';
 
 
     public static function labels() : array

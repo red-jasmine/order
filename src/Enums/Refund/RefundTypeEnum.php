@@ -12,11 +12,11 @@ enum RefundTypeEnum: string
 {
     use EnumsHelper;
 
-    case REFUND_ONLY = 'REFUND_ONLY';
+    case REFUND_ONLY = 'refund_only';
 
-    case  RETURN_GOODS_REFUND = 'RETURN_GOODS_REFUND';
+    case  RETURN_GOODS_REFUND = 'return_goods_refund';
 
-    case  EXCHANGE_GOODS = 'EXCHANGE_GOODS';
+    case  EXCHANGE_GOODS = 'exchange_goods';
 
 
     public static function labels() : array

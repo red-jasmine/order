@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
+use RedJasmine\Order\Enums\Orders\ShipStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShipTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\WithDTO;
 
@@ -27,14 +27,14 @@ class OrderProduct extends Model
 
 
     protected $casts = [
-        'shipping_type'   => ShippingTypeEnum::class,
+        'ship_type'   => ShipTypeEnum::class,
         'order_status'    => OrderStatusEnum::class,
-        'shipping_status' => ShippingStatusEnum::class,
+        'ship_status' => ShipStatusEnum::class,
         'payment_status'  => PaymentStatusEnum::class,
     ];
 
     protected $fillable = [
-        'shipping_type',
+        'ship_type',
         'product_type',
         'product_id',
         'sku_id',

@@ -61,7 +61,7 @@ class OrderCancelAction extends AbstractOrderAction
 
     protected function setCancel(Order $order) : void
     {
-        $order->order_status = OrderStatusEnum::TRADE_CANCEL;
+        $order->order_status = OrderStatusEnum::CANCEL;
         $order->close_time   = now();
 
     }

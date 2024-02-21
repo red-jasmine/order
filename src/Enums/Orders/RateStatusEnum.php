@@ -8,7 +8,7 @@ enum RateStatusEnum: string
 {
     use EnumsHelper;
 
-    case RATED = 'RATED';
+    case RATED = 'rated';
 
     public static function labels() : array
     {

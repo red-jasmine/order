@@ -98,6 +98,10 @@ class OrderCreateAction extends AbstractOrderAction
         $order->products->each(function ($product) use ($order) {
             $product->id           = $product->id ?? $this->buildID();
             $product->order_status = $order->order_status;
+            $product->seller_type  = $order->seller_type;
+            $product->seller_id    = $order->seller_id;
+            $product->buyer_type   = $order->buyer_type;
+            $product->buyer_id     = $order->buyer_id;
         });
         $order->save();
         $order->info()->save($order->info);

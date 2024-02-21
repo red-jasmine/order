@@ -4,21 +4,19 @@ namespace RedJasmine\Order\Enums\Orders;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
-/**
- * 订单类型
- */
-enum OrderTypeEnum: string
+enum OrderProductTypeEnum: string
 {
     use EnumsHelper;
 
-    case  MALL = 'mall'; // 一口价
+    case GOODS = 'goods'; // 实物
+
+    case VIRTUAL = 'virtual'; // 虚拟
 
     public static function labels() : array
     {
         return [
-            self::MALL->value => '商城',
+            self::GOODS->value   => '实物',
+            self::VIRTUAL->value => '虚拟',
         ];
     }
-
-
 }

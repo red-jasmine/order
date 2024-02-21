@@ -10,15 +10,21 @@ return new class extends Migration {
         Schema::create('order_products', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
             $table->unsignedBigInteger('oid')->comment('订单ID');
-            $table->string('shipping_type', 30)->comment('发货类型');
-            $table->string('title')->nullable()->comment('标题');
+            $table->string('seller_type')->comment('卖家类型');
+            $table->unsignedBigInteger('seller_id')->comment('卖家ID');
+            $table->string('buyer_type')->comment('买家类型');
+            $table->unsignedBigInteger('buyer_id')->comment('买家类型');
+            $table->string('ship_type', 30)->comment('发货类型');
+            $table->string('order_product_type', 30)->comment('订单商品类型');
+            $table->string('title')->comment('商品标题');
+            $table->string('sku_name')->nullable()->comment('SKU名称');
             $table->string('image')->nullable()->comment('图片');
-            $table->string('product_type', 30)->comment('商品类型');
+            $table->string('product_type', 30)->comment('商品多态类型');
             $table->unsignedBigInteger('product_id')->comment('商品ID');
             $table->unsignedBigInteger('sku_id')->default(0)->comment('规格ID');
             $table->unsignedBigInteger('category_id')->nullable()->comment('类目ID');
             $table->unsignedBigInteger('seller_category_id')->nullable()->comment('店内分类编号');
-            $table->string('outer_iid', 64)->nullable()->comment('商品外部编码');
+            $table->string('outer_id', 64)->nullable()->comment('商品外部编码');
             $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
             $table->string('barcode', 64)->nullable()->comment('条形码');
             $table->unsignedBigInteger('num')->default(0)->comment('数量');
@@ -33,8 +39,8 @@ return new class extends Migration {
             $table->decimal('refund_amount', 16)->default(0)->comment('退款金额');
             $table->decimal('cost_amount', 16)->default(0)->comment('成本金额');
             $table->string('order_status')->comment('状态');
-            $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('payment_status', 30)->nullable()->comment('付款状态');
+            $table->string('ship_status', 30)->nullable()->comment('发货状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');

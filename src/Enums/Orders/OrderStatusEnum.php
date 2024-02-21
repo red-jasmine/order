@@ -11,13 +11,13 @@ enum OrderStatusEnum: string
 {
     use EnumsHelper;
 
-    case  WAIT_BUYER_PAY = 'WAIT_BUYER_PAY'; // 待付款
-    case  PAID_FORBID_CONSIGN = 'PAID_FORBID_CONSIGN'; // 已付款管控发货
-    case  WAIT_SELLER_SEND_GOODS = 'WAIT_SELLER_SEND_GOODS'; // 待发货
-    case  WAIT_BUYER_CONFIRM_GOODS = 'WAIT_BUYER_CONFIRM_GOODS'; // 待收货
-    case  TRADE_FINISHED = 'TRADE_FINISHED'; // 交易成功
-    case  TRADE_CANCEL = 'TRADE_CANCEL'; //已取消 未支付
-    case  TRADE_CLOSED = 'TRADE_CLOSED'; // 已关闭 已支付已退款
+    case  WAIT_BUYER_PAY = 'wait_buyer_pay'; // 待付款
+    case  PAID_FORBID_CONSIGN = 'paid_forbid_consign'; // 已付款管控发货
+    case  WAIT_SELLER_SEND_GOODS = 'wait_seller_send_goods'; // 待发货
+    case  WAIT_BUYER_CONFIRM_GOODS = 'wait_buyer_confirm_goods'; // 待收货
+    case  FINISHED = 'finished'; // 交易成功
+    case  CANCEL = 'cancel'; //已取消 未支付
+    case  CLOSED = 'closed'; // 已关闭 已支付已退款
 
 
     public static function labels() : array
@@ -27,9 +27,9 @@ enum OrderStatusEnum: string
             self::PAID_FORBID_CONSIGN->value      => '待确认',
             self::WAIT_SELLER_SEND_GOODS->value   => '待发货',
             self::WAIT_BUYER_CONFIRM_GOODS->value => '待收货',
-            self::TRADE_FINISHED->value           => '已完成',
-            self::TRADE_CANCEL->value             => '已取消',
-            self::TRADE_CLOSED->value             => '已关闭',
+            self::FINISHED->value                 => '已完成',
+            self::CANCEL->value                   => '已取消',
+            self::CLOSED->value                   => '已关闭',
         ];
     }
 }

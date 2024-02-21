@@ -13,15 +13,15 @@ enum PaymentStatusEnum: string
     use EnumsHelper;
 
     // 未支付
-    case WAIT_PAY = 'WAIT_PAY';
+    case WAIT_PAY = 'wait_pay';
     // 支付中
-    case PAYING = 'PAYING';
+    case PAYING = 'paying';
     // 支付成功
-    case PAID = 'PAID';
+    case PAID = 'paid';
     // 支付失败
-    case PAY_FAIL = 'PAY_FAIL';
+    case PAY_FAIL = 'pay_fail';
     // 不支付
-    case NO_PAYMENT = 'NO_PAYMENT';
+    case NO_PAYMENT = 'no_payment';
 
     public static function labels() : array
     {

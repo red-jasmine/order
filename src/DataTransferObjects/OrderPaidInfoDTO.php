@@ -2,15 +2,15 @@
 
 namespace RedJasmine\Order\DataTransferObjects;
 
+
 use Illuminate\Support\Carbon;
-use Spatie\LaravelData\Attributes\MapInputName;
-use Spatie\LaravelData\Attributes\MapOutputName;
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use RedJasmine\Support\DataTransferObjects\Data;
+use Spatie\LaravelData\Attributes\WithCast;
+use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
+use Spatie\LaravelData\Transformers\DateTimeInterfaceTransformer;
 
 
-#[MapInputName(SnakeCaseMapper::class)]
-#[MapOutputName(SnakeCaseMapper::class)]
 class OrderPaidInfoDTO extends Data
 {
     /**
@@ -23,7 +23,8 @@ class OrderPaidInfoDTO extends Data
 
     public ?string $paymentChannel;
 
-
+    #[WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
+    #[WithTransformer(DateTimeInterfaceTransformer::class, format: 'Y-m-d H:i:s')]
     public ?Carbon $paymentTime;
 
 }

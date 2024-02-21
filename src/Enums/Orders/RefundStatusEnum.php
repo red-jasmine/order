@@ -12,12 +12,12 @@ enum RefundStatusEnum: string
 
     use EnumsHelper;
 
-    case  WAIT_SELLER_AGREE = 'WAIT_SELLER_AGREE';
-    case  WAIT_BUYER_RETURN_GOODS = 'WAIT_BUYER_RETURN_GOODS';
-    case  WAIT_SELLER_CONFIRM_GOODS = 'WAIT_SELLER_CONFIRM_GOODS';
-    case  SELLER_REFUSE_BUYER = 'SELLER_REFUSE_BUYER';
-    case  REFUND_SUCCESS = 'REFUND_SUCCESS';
-    case  REFUND_CLOSED = 'REFUND_CLOSED';
+    case  WAIT_SELLER_AGREE = 'wait_seller_agree';
+    case  WAIT_BUYER_RETURN_GOODS = 'wait_buyer_return_goods';
+    case  WAIT_SELLER_CONFIRM_GOODS = 'wait_seller_confirm_goods';
+    case  SELLER_REFUSE_BUYER = 'seller_refuse_buyer';
+    case  REFUND_SUCCESS = 'refund_success';
+    case  REFUND_CLOSED = 'refund_closed';
 
     public static function labels() : array
     {

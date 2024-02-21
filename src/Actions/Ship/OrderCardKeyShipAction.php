@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\Actions\Shipping;
+namespace RedJasmine\Order\Actions\Ship;
 
 
 
@@ -9,7 +9,7 @@ use RedJasmine\Order\Actions\Orders\AbstractOrderAction;
 /**
  * 卡密发货
  */
-class OrderCardKeyShippingAction extends AbstractOrderAction
+class OrderCardKeyShipAction extends AbstractOrderAction
 {
 
      protected ?string $pipelinesConfigKey = null;

@@ -8,7 +8,7 @@ use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\OrderTypeEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
+use RedJasmine\Order\Enums\Orders\ShipTypeEnum;
 
 class OrderValidate
 {
@@ -25,10 +25,10 @@ class OrderValidate
             'buyer_nickname'      => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'title'               => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'order_type'          => [ 'required', 'string', 'min:1', 'max:30' ],
-            'shipping_type'       => [ 'required', 'string', 'min:1', 'max:30' ],
+            'ship_type'       => [ 'required', 'string', 'min:1', 'max:30' ],
             'source'              => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'order_status'        => [ 'required', 'string', 'min:1', 'max:255' ],
-            'shipping_status'     => [ 'nullable', 'string', 'min:1', 'max:30' ],
+            'ship_status'     => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'payment_status'      => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'refund_status'       => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'rate_status'         => [ 'nullable', 'string', 'min:1', 'max:30' ],
@@ -74,7 +74,7 @@ class OrderValidate
             'info.tools'          => [ 'nullable', 'array' ],
         ];
         $product = [
-            'shipping_type'          => [ 'required', 'string', 'min:1', 'max:30' ],
+            'ship_type'          => [ 'required', 'string', 'min:1', 'max:30' ],
             'title'                  => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'image'                  => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'product_type'           => [ 'required', 'string', 'min:1', 'max:30' ],
@@ -97,7 +97,7 @@ class OrderValidate
             'refund_amount'          => [ 'sometimes', 'numeric' ],
             'cost_amount'            => [ 'sometimes', 'numeric' ],
             'order_status'           => [ 'required', 'string', 'min:1', 'max:255' ],
-            'shipping_status'        => [ 'nullable', 'string', 'min:1', 'max:30' ],
+            'ship_status'        => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'payment_status'         => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'refund_status'          => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'rate_status'            => [ 'nullable', 'string', 'min:1', 'max:30' ],

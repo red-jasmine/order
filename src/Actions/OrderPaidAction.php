@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\DataTransferObjects\OrderPaidInfoDTO;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShipStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderPaidEvent;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
@@ -88,6 +89,8 @@ class OrderPaidAction extends AbstractOrderAction
      */
     protected function setPaid(Order $order, ?OrderPaidInfoDTO $orderPaidInfoDTO = null) : Order
     {
+        $order->order_status    = OrderStatusEnum::WAIT_SELLER_SEND_GOODS;
+        $order->ship_status     = ShipStatusEnum::WAIT_SEND;
         $order->payment_status  = PaymentStatusEnum::PAID;
         $order->payment_time    = $orderPaidInfoDTO->paymentTime ?? now();
         $order->payment_type    = $orderPaidInfoDTO->paymentType;
