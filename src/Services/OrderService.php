@@ -7,6 +7,7 @@ use RedJasmine\Order\Actions\OrderCreateAction;
 use RedJasmine\Order\Actions\OrderPayingAction;
 use RedJasmine\Order\Actions\OrderQueryAction;
 use RedJasmine\Order\Models\Order;
+use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Foundation\Service\Service;
 
@@ -36,6 +37,17 @@ class OrderService extends Service
     {
         return Order::lockForUpdate()->findOrFail($id);
     }
+
+    public function findOrderProduct(int $id)
+    {
+        return OrderProduct::findOrFail($id);
+    }
+
+    public function findOrderProductLock(int $id)
+    {
+        return OrderProduct::lockForUpdate()->findOrFail($id);
+    }
+
 
     public function queries() : OrderQueryAction
     {

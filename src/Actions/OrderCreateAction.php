@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\DataTransferObjects\OrderDTO;
+use RedJasmine\Order\Events\Orders\OrderCreatedEvent;
 use RedJasmine\Order\Models\Order;
 
 use RedJasmine\Order\Models\OrderInfo;
@@ -32,9 +33,18 @@ class OrderCreateAction extends AbstractOrderAction
      */
     protected ?Order $order = null;
 
-    public function __construct()
+    /**
+     * @param OrderDTO $orderDTO
+     *
+     * @return Order
+     * @throws AbstractException
+     * @throws Throwable
+     */
+    public function execute(OrderDTO $orderDTO) : Order
     {
         $this->initOrder();
+        $this->order->setDTO($orderDTO);
+        return $this->create();
     }
 
     public function initOrder() : void
@@ -56,11 +66,12 @@ class OrderCreateAction extends AbstractOrderAction
         try {
             DB::beginTransaction();
             // 数据验证
-            $order = $this->pipelines($this->order)->then(function (Order $order) {
+            $pipelines = $this->pipelines($this->order);
+            $pipelines->before();
+            $order = $pipelines->then(function (Order $order) {
                 return $this->save($order);
             });
             DB::commit();
-            return $order;
         } catch (AbstractException $exception) {
             DB::rollBack();
             throw  $exception;
@@ -68,6 +79,11 @@ class OrderCreateAction extends AbstractOrderAction
             DB::rollBack();
             throw  $throwable;
         }
+        $pipelines->after();
+
+        OrderCreatedEvent::dispatch($order);
+
+        return $order;
     }
 
     /**
@@ -93,19 +109,6 @@ class OrderCreateAction extends AbstractOrderAction
         return $order;
     }
 
-
-    /**
-     * @param OrderDTO $orderDTO
-     *
-     * @return Order
-     * @throws AbstractException
-     * @throws Throwable
-     */
-    public function execute(OrderDTO $orderDTO) : Order
-    {
-        $this->order->setDTO($orderDTO);
-        return $this->create();
-    }
 
     /**
      * 生成订单ID

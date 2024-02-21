@@ -9,8 +9,9 @@ return new class extends Migration {
     {
         Schema::create('order_refunds', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary();
-            $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('order_product_id');
+            $table->unsignedBigInteger('order_id')->comment('订单号');
+            $table->unsignedBigInteger('order_product_id')->comment('订单商品单号');
+
             $table->string('seller_type')->comment('卖家 类型');
             $table->unsignedBigInteger('seller_id')->comment('卖家 ID');
             $table->string('seller_nickname')->nullable()->comment('卖家昵称');
@@ -22,6 +23,13 @@ return new class extends Migration {
             $table->string('image')->nullable()->comment('图片');
             $table->string('product_type', 30)->comment('商品类型');
             $table->unsignedBigInteger('product_id')->comment('商品ID');
+            $table->unsignedBigInteger('sku_id')->default(0)->comment('规格ID');
+            $table->unsignedBigInteger('category_id')->nullable()->comment('类目ID');
+            $table->unsignedBigInteger('seller_category_id')->nullable()->comment('店内分类编号');
+            $table->string('outer_iid', 64)->nullable()->comment('商品外部编码');
+            $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
+            $table->string('barcode', 64)->nullable()->comment('条形码');
+            $table->unsignedBigInteger('num')->default(0)->comment('数量');
 
 
             $table->nullableMorphs('creator'); // 创建人

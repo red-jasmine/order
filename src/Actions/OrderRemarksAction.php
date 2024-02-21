@@ -3,44 +3,33 @@
 namespace RedJasmine\Order\Actions;
 
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderCancelledEvent;
 use RedJasmine\Order\Models\Order;
+use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Support\Exceptions\AbstractException;
 
-/**
- * 取消订单
- */
-class OrderCancelAction extends AbstractOrderAction
+class OrderRemarksAction extends AbstractOrderAction
 {
-
-
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.cancel';
 
     public function isAllow(Order $order) : bool
     {
-        // TODO
-
         return true;
+
     }
 
-
-    /**
-     * @param int $id
-     *
-     * @return mixed
-     * @throws AbstractException
-     */
-    public function execute(int $id) : Order
+    public function execute(int $id, string $remarks = null, ?int $orderProductId = null)
     {
         try {
             DB::beginTransaction();
-            $order = $this->service->findLock($id);
+            $order = $this->service->find($id);
             $this->isAllow($order);
+
+            $orderProduct = $orderProductId ? $this->service->findOrderProduct($orderProductId) : null;
+
             $pipelines = $this->pipelines($order);
             $pipelines->before();
-            $order = $pipelines->then(function (Order $order) {
-                $this->setCancel($order);
+            $order = $pipelines->then(function (Order $order) use ($remarks, $orderProduct) {
+                $this->setRemarks($order, $remarks, $orderProduct);
                 $order->push();
                 return $order;
             });
@@ -56,14 +45,14 @@ class OrderCancelAction extends AbstractOrderAction
         OrderCancelledEvent::dispatch($order);
 
         return $order;
-
     }
 
-    protected function setCancel(Order $order) : void
+
+    public function setRemarks(Order $order, string $remarks = null, ?OrderProduct $orderProduct = null)
     {
-        $order->order_status = OrderStatusEnum::TRADE_CANCEL;
-        $order->close_time   = now();
+        $model = $orderProduct ?? $order;
 
     }
+
 
 }

@@ -40,8 +40,6 @@ return new class extends Migration {
             $table->timestamp('end_time')->nullable()->comment('确认时间');
             $table->timestamp('refund_time')->nullable()->comment('退款时间');
             $table->timestamp('rate_time')->nullable()->comment('评价时间');
-            $table->unsignedTinyInteger('is_seller_delete')->default(0)->comment('卖家删除');
-            $table->unsignedTinyInteger('is_buyer_delete')->default(0)->comment('买家删除');
             $table->string('client_type', 30)->nullable()->comment('客户端');
             $table->string('client_ip', 30)->nullable()->comment('IP');
             $table->string('channel_type')->nullable()->comment('渠道类型');
@@ -52,6 +50,11 @@ return new class extends Migration {
             $table->unsignedBigInteger('guide_id')->nullable()->comment('导购ID');
             $table->string('email')->nullable()->comment('下单邮箱');
             $table->string('password')->nullable()->comment('查询密码');
+            $table->string('payment_type')->nullable()->comment('支付类型');
+            $table->unsignedBigInteger('payment_id')->nullable()->comment('支付单号');
+            $table->string('payment_channel')->nullable()->comment('支付渠道');
+            $table->unsignedTinyInteger('is_seller_delete')->default(0)->comment('卖家删除');
+            $table->unsignedTinyInteger('is_buyer_delete')->default(0)->comment('买家删除');
             $table->nullableMorphs('creator'); // 创建人
             $table->nullableMorphs('updater'); // 更新人
             $table->timestamps();
