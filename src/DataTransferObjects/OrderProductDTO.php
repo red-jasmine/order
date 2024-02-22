@@ -6,8 +6,8 @@ use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\RateStatusEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShipStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShipTypeEnum;
+use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\DataTransferObjects\Data;
 use Spatie\LaravelData\Optional;
 
@@ -18,7 +18,7 @@ class OrderProductDTO extends Data
      * @var string
      */
     public string       $orderProductType;
-    public ShipTypeEnum $shipType;
+    public ShippingTypeEnum $shippingType;
     /**
      * 商品多态类型
      * @var string
@@ -43,7 +43,7 @@ class OrderProductDTO extends Data
     public ?string            $outerSkuId;
     public ?string            $barcode;
     public ?OrderStatusEnum   $orderStatus   = null;
-    public ?ShipStatusEnum    $shipStatus    = null;
+    public ?ShippingStatusEnum    $shippingStatus    = null;
     public ?PaymentStatusEnum $paymentStatus = null;
     public ?RefundStatusEnum  $refundStatus  = null;
     public ?RateStatusEnum    $rateStatus    = null;

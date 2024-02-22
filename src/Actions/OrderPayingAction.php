@@ -25,6 +25,7 @@ class OrderPayingAction extends AbstractOrderAction
     protected ?array $allowPaymentStatus = [
         PaymentStatusEnum::NO_PAYMENT,
         PaymentStatusEnum::WAIT_PAY,
+        PaymentStatusEnum::PAYING,
     ];
 
 

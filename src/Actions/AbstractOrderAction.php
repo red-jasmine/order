@@ -4,6 +4,7 @@ namespace RedJasmine\Order\Actions;
 
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Services\OrderService;
@@ -26,6 +27,11 @@ class AbstractOrderAction extends Action
 
 
     /**
+     * @var array|null|ShippingStatusEnum[]
+     */
+    protected ?array $allowShippingStatus = null;
+
+    /**
      * @param Order $order
      *
      * @return bool
@@ -35,6 +41,7 @@ class AbstractOrderAction extends Action
     {
         $this->checkStatus($order->order_status, $this->allowOrderStatus);
         $this->checkStatus($order->payment_status, $this->allowPaymentStatus);
+        $this->checkStatus($order->shipping_status, $this->allowShippingStatus);
         return true;
     }
 

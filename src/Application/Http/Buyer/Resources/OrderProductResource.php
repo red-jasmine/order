@@ -12,7 +12,7 @@ class OrderProductResource extends JsonResource
     {
         return [
             'id'                     => $this->id,
-            'ship_type'          => $this->ship_type,
+            'shipping_type'          => $this->shipping_type,
             'title'                  => $this->title,
             'image'                  => $this->image,
             'product_type'           => $this->product_type,
@@ -35,7 +35,7 @@ class OrderProductResource extends JsonResource
             'refund_amount'          => $this->refund_amount,
             'cost_amount'            => $this->cost_amount,
             'order_status'           => $this->order_status,
-            'ship_status'        => $this->ship_status,
+            'shipping_status'        => $this->shipping_status,
             'payment_status'         => $this->payment_status,
             'refund_status'          => $this->refund_status,
             'rate_status'            => $this->rate_status,
@@ -46,7 +46,7 @@ class OrderProductResource extends JsonResource
             'created_time'           => $this->created_time,
             'payment_time'           => $this->payment_time,
             'close_time'             => $this->close_time,
-            'consign_time'           => $this->consign_time,
+            'shipping_time'           => $this->shipping_time,
             'collect_time'           => $this->collect_time,
             'dispatch_time'          => $this->dispatch_time,
             'signed_time'            => $this->signed_time,
@@ -59,7 +59,7 @@ class OrderProductResource extends JsonResource
             'updater_type'           => $this->updater_type,
             'created_at'             => $this->created_at,
             'updated_at'             => $this->updated_at,
-            'oid'                    => $this->oid,
+            'order_id'                    => $this->order_id,
             'info'                   => new OrderProductInfoResource($this->whenLoaded('info')),
             'order'                  => new OrderResource($this->whenLoaded('order')),
         ];

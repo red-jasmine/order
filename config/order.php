@@ -22,10 +22,11 @@ return [
     |
     */
     'actions'   => [
-        'paying' => \RedJasmine\Order\Actions\OrderPayingAction::class,
-        'create' => \RedJasmine\Order\Actions\OrderCreateAction::class,
-        'paid'   => \RedJasmine\Order\Actions\OrderPaidAction::class,
-        'cancel' => \RedJasmine\Order\Actions\OrderCancelAction::class,
+        'create'          => \RedJasmine\Order\Actions\OrderCreateAction::class,
+        'paid'            => \RedJasmine\Order\Actions\OrderPaidAction::class,
+        'paying'          => \RedJasmine\Order\Actions\OrderPayingAction::class,
+        'cancel'          => \RedJasmine\Order\Actions\OrderCancelAction::class,
+        'virtualShipping' => \RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction::class,
     ],
 
 

@@ -8,6 +8,7 @@ use RedJasmine\Order\Actions\OrderCreateAction;
 use RedJasmine\Order\Actions\OrderPaidAction;
 use RedJasmine\Order\Actions\OrderPayingAction;
 use RedJasmine\Order\Actions\OrderQueryAction;
+use RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction;
 use RedJasmine\Order\DataTransferObjects\OrderPaidInfoDTO;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
@@ -25,6 +26,8 @@ use RedJasmine\Support\Foundation\Service\Service;
  * @method static Order paying(int $id)
  * @see OrderPaidAction::execute()
  * @method static Order paid(int $id, ?OrderPaidInfoDTO $orderPaidInfoDTO = null)
+ * @see OrderVirtualShippingAction::execute()
+ * @method static Order virtualShipping(int $id, bool $isAllOrderProducts = true, ?array $orderProducts = null)
  */
 class OrderService extends Service
 {

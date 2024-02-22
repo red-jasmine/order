@@ -8,13 +8,13 @@ return new class extends Migration {
     public function up() : void
     {
         Schema::create('order_products', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
-            $table->unsignedBigInteger('oid')->comment('订单ID');
+            $table->unsignedBigInteger('id')->primary()->comment('商品单号');
+            $table->unsignedBigInteger('order_id')->comment('订单ID');
             $table->string('seller_type')->comment('卖家类型');
             $table->unsignedBigInteger('seller_id')->comment('卖家ID');
             $table->string('buyer_type')->comment('买家类型');
             $table->unsignedBigInteger('buyer_id')->comment('买家类型');
-            $table->string('ship_type', 30)->comment('发货类型');
+            $table->string('shipping_type', 30)->comment('发货类型');
             $table->string('order_product_type', 30)->comment('订单商品类型');
             $table->string('title')->comment('商品标题');
             $table->string('sku_name')->nullable()->comment('SKU名称');
@@ -40,7 +40,7 @@ return new class extends Migration {
             $table->decimal('cost_amount', 16)->default(0)->comment('成本金额');
             $table->string('order_status')->comment('状态');
             $table->string('payment_status', 30)->nullable()->comment('付款状态');
-            $table->string('ship_status', 30)->nullable()->comment('发货状态');
+            $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
@@ -50,7 +50,7 @@ return new class extends Migration {
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');
             $table->timestamp('close_time')->nullable()->comment('关闭时间');
-            $table->timestamp('consign_time')->nullable()->comment('发货时间');
+            $table->timestamp('shipping_time')->nullable()->comment('发货时间');
             $table->timestamp('collect_time')->nullable()->comment('揽收时间');
             $table->timestamp('dispatch_time')->nullable()->comment('派送时间');
             $table->timestamp('signed_time')->nullable()->comment('签收时间');

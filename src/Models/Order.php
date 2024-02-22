@@ -12,8 +12,8 @@ use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\OrderTypeEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShipStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShipTypeEnum;
+use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\DataTransferObjects\UserDTO;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
@@ -35,20 +35,20 @@ class Order extends Model
 
     protected $fillable = [
         'order_type',
-        'ship_type',
+        'shipping_type',
     ];
 
     protected $casts = [
         'order_type'      => OrderTypeEnum::class,
-        'ship_type'   => ShipTypeEnum::class,
+        'shipping_type'   => ShippingTypeEnum::class,
         'order_status'    => OrderStatusEnum::class,
         'payment_status'  => PaymentStatusEnum::class,
-        'ship_status' => ShipStatusEnum::class,
+        'shipping_status' => ShippingStatusEnum::class,
         'refund_status'   => RefundStatusEnum::class,
         'created_time'    => 'datetime',
         'payment_time'    => 'datetime',
         'close_time'      => 'datetime',
-        'consign_time'    => 'datetime',
+        'shipping_time'    => 'datetime',
         'collect_time'    => 'datetime',
         'dispatch_time'   => 'datetime',
         'signed_time'     => 'datetime',
@@ -65,12 +65,17 @@ class Order extends Model
 
     public function products() : HasMany
     {
-        return $this->hasMany(OrderProduct::class, 'oid', 'id');
+        return $this->hasMany(OrderProduct::class, 'order_id', 'id');
     }
 
     public function address() : HasOne
     {
         return $this->hasOne(OrderAddress::class, 'id', 'id');
+    }
+
+    public function logistics() : HasMany
+    {
+        return $this->hasMany(OrderLogistics::class,'order_id','id');
     }
 
 

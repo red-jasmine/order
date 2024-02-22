@@ -7,7 +7,7 @@ use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 /**
  * 发货类型
  */
-enum ShipTypeEnum: string
+enum ShippingTypeEnum: string
 {
     use EnumsHelper;
 

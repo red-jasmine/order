@@ -46,10 +46,10 @@ class OrderFillPipeline
         $order->buyer                = $orderDTO->buyer;
         $order->title                = $orderDTO->title;
         $order->order_type           = $orderDTO->orderType;
-        $order->ship_type            = $orderDTO->shipType;
+        $order->shipping_type            = $orderDTO->shippingType;
         $order->source               = $orderDTO->source;
         $order->order_status         = $orderDTO->orderStatus;
-        $order->ship_status          = $orderDTO->shipStatus;
+        $order->shipping_status          = $orderDTO->shippingStatus;
         $order->payment_status       = $orderDTO->paymentStatus;
         $order->refund_status        = $orderDTO->refundStatus;
         $order->rate_status          = $orderDTO->rateStatus ?? null;
@@ -79,7 +79,7 @@ class OrderFillPipeline
     {
         $orderProduct->order_status         = $orderProductDTO->orderStatus ?? $orderDTO->orderStatus;
         $orderProduct->order_product_type   = $orderProductDTO->orderProductType;
-        $orderProduct->ship_type            = $orderProductDTO->shipType;
+        $orderProduct->shipping_type            = $orderProductDTO->shippingType;
         $orderProduct->product_type         = $orderProductDTO->productType;
         $orderProduct->product_id           = $orderProductDTO->productId;
         $orderProduct->sku_id               = $orderProductDTO->skuId;
@@ -92,7 +92,7 @@ class OrderFillPipeline
         $orderProduct->seller_category_id   = $orderProductDTO->sellerCategoryId;
         $orderProduct->outer_id             = $orderProductDTO->outerId;
         $orderProduct->outer_sku_id         = $orderProductDTO->outerSkuId;
-        $orderProduct->ship_status          = $orderProductDTO->shipStatus;
+        $orderProduct->shipping_status          = $orderProductDTO->shippingStatus;
         $orderProduct->payment_status       = $orderProductDTO->paymentStatus;
         $orderProduct->refund_status        = $orderProductDTO->refundStatus;
         $orderProduct->rate_status          = $orderProductDTO->rateStatus;

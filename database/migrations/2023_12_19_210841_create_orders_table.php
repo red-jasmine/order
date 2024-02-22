@@ -17,11 +17,11 @@ return new class extends Migration {
             $table->string('buyer_nickname')->nullable()->comment('买家昵称');
             $table->string('title')->nullable()->comment('标题');
             $table->string('order_type', 30)->comment('订单类型');
-            $table->string('ship_type', 30)->comment('发货类型');
+            $table->string('shipping_type', 30)->comment('发货类型');
             $table->string('source', 30)->nullable()->comment('来源');   // 普通 、活动、
             $table->string('order_status')->comment('订单状态');
             $table->string('payment_status', 30)->nullable()->comment('付款状态');
-            $table->string('ship_status', 30)->nullable()->comment('发货状态');
+            $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
             $table->decimal('total_amount', 16)->default(0)->comment('商品总金额');
@@ -33,7 +33,7 @@ return new class extends Migration {
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');
             $table->timestamp('close_time')->nullable()->comment('关闭时间');
-            $table->timestamp('consign_time')->nullable()->comment('发货时间');
+            $table->timestamp('shipping_time')->nullable()->comment('发货时间');
             $table->timestamp('collect_time')->nullable()->comment('揽收时间');
             $table->timestamp('dispatch_time')->nullable()->comment('派送时间');
             $table->timestamp('signed_time')->nullable()->comment('签收时间');

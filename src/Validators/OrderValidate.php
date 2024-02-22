@@ -8,7 +8,7 @@ use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\OrderTypeEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShipTypeEnum;
+use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 
 class OrderValidate
 {
@@ -25,10 +25,10 @@ class OrderValidate
             'buyer_nickname'      => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'title'               => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'order_type'          => [ 'required', 'string', 'min:1', 'max:30' ],
-            'ship_type'       => [ 'required', 'string', 'min:1', 'max:30' ],
+            'shipping_type'       => [ 'required', 'string', 'min:1', 'max:30' ],
             'source'              => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'order_status'        => [ 'required', 'string', 'min:1', 'max:255' ],
-            'ship_status'     => [ 'nullable', 'string', 'min:1', 'max:30' ],
+            'shipping_status'     => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'payment_status'      => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'refund_status'       => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'rate_status'         => [ 'nullable', 'string', 'min:1', 'max:30' ],
@@ -41,7 +41,7 @@ class OrderValidate
             'created_time'        => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'payment_time'        => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'close_time'          => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
-            'consign_time'        => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
+            'shipping_time'        => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'collect_time'        => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'dispatch_time'       => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'signed_time'         => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
@@ -74,7 +74,7 @@ class OrderValidate
             'info.tools'          => [ 'nullable', 'array' ],
         ];
         $product = [
-            'ship_type'          => [ 'required', 'string', 'min:1', 'max:30' ],
+            'shipping_type'          => [ 'required', 'string', 'min:1', 'max:30' ],
             'title'                  => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'image'                  => [ 'nullable', 'string', 'min:1', 'max:255' ],
             'product_type'           => [ 'required', 'string', 'min:1', 'max:30' ],
@@ -97,7 +97,7 @@ class OrderValidate
             'refund_amount'          => [ 'sometimes', 'numeric' ],
             'cost_amount'            => [ 'sometimes', 'numeric' ],
             'order_status'           => [ 'required', 'string', 'min:1', 'max:255' ],
-            'ship_status'        => [ 'nullable', 'string', 'min:1', 'max:30' ],
+            'shipping_status'        => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'payment_status'         => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'refund_status'          => [ 'nullable', 'string', 'min:1', 'max:30' ],
             'rate_status'            => [ 'nullable', 'string', 'min:1', 'max:30' ],
@@ -108,7 +108,7 @@ class OrderValidate
             'created_time'           => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'payment_time'           => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'close_time'             => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
-            'consign_time'           => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
+            'shipping_time'           => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'collect_time'           => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'dispatch_time'          => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
             'signed_time'            => [ 'nullable', 'date', 'after_or_equal:1970-01-01 00:00:01', 'before_or_equal:2038-01-19 03:14:07' ],
