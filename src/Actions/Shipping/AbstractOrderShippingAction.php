@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Actions\Shipping;
 
 use RedJasmine\Order\Actions\AbstractOrderAction;
+use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
@@ -52,14 +53,14 @@ abstract class AbstractOrderShippingAction extends AbstractOrderAction
     }
 
 
-    public function shipping(Order $order, bool $isAllOrderProducts = true, ?array $orderProducts = null) : Order
+    public function shipping(Order $order, OrderShippingDTO $orderShippingDTO) : Order
     {
         $order->products;
-        // 未发货的 的订单商品 TODO
+        // 未发货的 的订单商品 TODO 需要优化
         $order->products
             ->where('shipping_status', ShippingStatusEnum::WAIT_SEND)
-            ->each(function (OrderProduct $orderProduct) use ($isAllOrderProducts, $orderProducts) {
-                if ($isAllOrderProducts === true || in_array($orderProduct->id, $orderProducts, true)) {
+            ->each(function (OrderProduct $orderProduct) use ($orderShippingDTO) {
+                if ($orderShippingDTO->isSplit === false || in_array($orderProduct->id, $orderShippingDTO->orderProducts ?? [], true)) {
                     $orderProduct->shipping_status = ShippingStatusEnum::SHIPPED;
                     $orderProduct->order_status    = OrderStatusEnum::WAIT_BUYER_CONFIRM_GOODS;
                     $orderProduct->shipping_time   = now();
@@ -77,6 +78,7 @@ abstract class AbstractOrderShippingAction extends AbstractOrderAction
         if ($order->shipping_status === ShippingStatusEnum::SHIPPED) {
             $order->order_status = OrderStatusEnum::WAIT_BUYER_CONFIRM_GOODS;
         }
+        // TODO 存在退款单 那么就直接关闭？
 
         return $order;
     }

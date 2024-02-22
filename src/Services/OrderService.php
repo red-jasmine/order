@@ -8,8 +8,13 @@ use RedJasmine\Order\Actions\OrderCreateAction;
 use RedJasmine\Order\Actions\OrderPaidAction;
 use RedJasmine\Order\Actions\OrderPayingAction;
 use RedJasmine\Order\Actions\OrderQueryAction;
+use RedJasmine\Order\Actions\Shipping\OrderCardKeyShippingAction;
+use RedJasmine\Order\Actions\Shipping\OrderLogisticsShippingAction;
 use RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction;
 use RedJasmine\Order\DataTransferObjects\OrderPaidInfoDTO;
+use RedJasmine\Order\DataTransferObjects\Shipping\OrderCardKeyShippingDTO;
+use RedJasmine\Order\DataTransferObjects\Shipping\OrderLogisticsShippingDTO;
+use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Support\Contracts\UserInterface;
@@ -27,7 +32,11 @@ use RedJasmine\Support\Foundation\Service\Service;
  * @see OrderPaidAction::execute()
  * @method static Order paid(int $id, ?OrderPaidInfoDTO $orderPaidInfoDTO = null)
  * @see OrderVirtualShippingAction::execute()
- * @method static Order virtualShipping(int $id, bool $isAllOrderProducts = true, ?array $orderProducts = null)
+ * @method static Order virtualShipping(int $id, OrderShippingDTO $orderShippingDTO)
+ * @see OrderLogisticsShippingAction::execute()
+ * @method static Order logisticsShipping(int $id, OrderLogisticsShippingDTO $orderShippingDTO)
+ * @see OrderCardKeyShippingAction::execute()
+ * @method static Order cardKeyShipping(int $id, OrderCardKeyShippingDTO $orderShippingDTO)
  */
 class OrderService extends Service
 {
@@ -49,12 +58,12 @@ class OrderService extends Service
         return Order::lockForUpdate()->findOrFail($id);
     }
 
-    public function findOrderProduct(int $id)
+    public function findOrderProduct(int $id) : OrderProduct
     {
         return OrderProduct::findOrFail($id);
     }
 
-    public function findOrderProductLock(int $id)
+    public function findOrderProductLock(int $id) : OrderProduct
     {
         return OrderProduct::lockForUpdate()->findOrFail($id);
     }

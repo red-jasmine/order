@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Actions\Shipping;
 
 use Illuminate\Support\Facades\DB;
+use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderShippedEvent;
 use RedJasmine\Order\Exceptions\OrderException;
@@ -18,24 +19,24 @@ class OrderVirtualShippingAction extends AbstractOrderShippingAction
 
 
     /**
-     * @param int        $id
-     * @param bool       $isAllOrderProducts
-     * @param array|null $orderProducts
+     * @param int              $id
+     * @param OrderShippingDTO $orderShippingDTO
      *
      * @return Order
      * @throws OrderException
      * @throws Throwable
      */
-    public function execute(int $id, bool $isAllOrderProducts = true, ?array $orderProducts = null) : Order
+    public function execute(int $id, OrderShippingDTO $orderShippingDTO) : Order
     {
         // 如果是全部发货
         try {
             DB::beginTransaction();
             $order = $this->service->find($id);
             $this->isAllow($order);
+            $order->setDTO($orderShippingDTO);
             $pipelines = $this->pipelines($order);
             $pipelines->before();
-            $pipelines->then(fn($order) => $this->shipping($order, $isAllOrderProducts, $orderProducts));
+            $pipelines->then(fn($order) => $this->shipping($order, $orderShippingDTO));
             $order->push();
             DB::commit();
         } catch (AbstractException $exception) {

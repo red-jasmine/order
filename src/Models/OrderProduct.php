@@ -4,7 +4,6 @@ namespace RedJasmine\Order\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
@@ -53,11 +52,6 @@ class OrderProduct extends Model
     public function info() : HasOne
     {
         return $this->hasOne(OrderProductInfo::class, 'id', 'id');
-    }
-
-    public function logistics() : HasMany
-    {
-        return $this->hasMany(OrderLogistics::class, 'order_product_id', 'id');
     }
 
 

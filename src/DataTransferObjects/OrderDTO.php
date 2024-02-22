@@ -38,7 +38,7 @@ class OrderDTO extends Data
 
 
     // 虚拟商品 通知方
-    public ?string $notifiable = null;
+    public ?string $contact = null;
     public ?string $password   = null;
 
     public ?string $clientType;

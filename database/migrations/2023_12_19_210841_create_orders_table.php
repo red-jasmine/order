@@ -48,7 +48,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('store_id')->nullable()->comment('门店ID');
             $table->string('guide_type')->nullable()->comment('导购类型');
             $table->unsignedBigInteger('guide_id')->nullable()->comment('导购ID');
-            $table->string('notifiable')->nullable()->comment('通知者');
+            $table->string('contact')->nullable()->comment('联系方式');
             $table->string('password')->nullable()->comment('查询密码');
             $table->string('payment_type')->nullable()->comment('支付类型');
             $table->unsignedBigInteger('payment_id')->nullable()->comment('支付单号');

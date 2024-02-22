@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Order\Enums\Logistics\LogisticsStatusEnum;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\DataTransferObjects\UserDTO;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
@@ -22,16 +23,16 @@ class OrderLogistics extends Model
     use HasOperator;
 
 
+    protected $casts = [
+        'order_product_id' => 'array',
+        'status'           => LogisticsStatusEnum::class
+    ];
+
+
     public function order() : BelongsTo
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
-
-    public function product() : BelongsTo
-    {
-        return $this->belongsTo(OrderProduct::class, 'order_product_id', 'id');
-    }
-
 
     public function scopeOnlySeller(Builder $query, UserInterface $seller) : Builder
     {

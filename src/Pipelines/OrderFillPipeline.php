@@ -55,7 +55,7 @@ class OrderFillPipeline
         $order->rate_status          = $orderDTO->rateStatus ?? null;
         $order->freight_amount       = $orderDTO->freightAmount;
         $order->discount_amount      = $orderDTO->discountAmount;
-        $order->notifiable           = $orderDTO->notifiable;
+        $order->contact           = $orderDTO->contact;
         $order->password             = $orderDTO->password;
         $order->client_type          = $orderDTO->clientType;
         $order->client_ip            = $orderDTO->clientIp;

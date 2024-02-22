@@ -22,11 +22,13 @@ return [
     |
     */
     'actions'   => [
-        'create'          => \RedJasmine\Order\Actions\OrderCreateAction::class,
-        'paid'            => \RedJasmine\Order\Actions\OrderPaidAction::class,
-        'paying'          => \RedJasmine\Order\Actions\OrderPayingAction::class,
-        'cancel'          => \RedJasmine\Order\Actions\OrderCancelAction::class,
-        'virtualShipping' => \RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction::class,
+        'create'            => \RedJasmine\Order\Actions\OrderCreateAction::class,
+        'paid'              => \RedJasmine\Order\Actions\OrderPaidAction::class,
+        'paying'            => \RedJasmine\Order\Actions\OrderPayingAction::class,
+        'cancel'            => \RedJasmine\Order\Actions\OrderCancelAction::class,
+        'virtualShipping'   => \RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction::class,
+        'logisticsShipping' => \RedJasmine\Order\Actions\Shipping\OrderLogisticsShippingAction::class,
+        'cardKeyShipping'   => \RedJasmine\Order\Actions\Shipping\OrderCardKeyShippingAction::class,
     ],
 
 
