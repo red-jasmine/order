@@ -2,7 +2,10 @@
 
 namespace RedJasmine\Order;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use RedJasmine\Order\Models\Order;
+use RedJasmine\Order\Models\OrderRefund;
 use RedJasmine\Order\Services\OrderService;
 
 /**
@@ -26,6 +29,11 @@ class OrderDomainServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
         }
+
+        Relation::enforceMorphMap([
+                                      'order'  => Order::class,
+                                      'refund' => OrderRefund::class
+                                  ]);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace RedJasmine\Order\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
@@ -24,6 +25,8 @@ class OrderProduct extends Model
     use SoftDeletes;
 
     use HasOperator;
+
+    use HasTradeParties;
 
 
     public $incrementing = false;
@@ -56,6 +59,8 @@ class OrderProduct extends Model
     {
         return $this->hasOne(OrderProductInfo::class, 'id', 'id');
     }
+
+
 
 
 }

@@ -4,7 +4,7 @@ namespace RedJasmine\Order\Actions\Shipping;
 
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderLogisticsShippingDTO;
-use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
+use RedJasmine\Order\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderShippedEvent;
 use RedJasmine\Order\Exceptions\OrderException;
@@ -63,6 +63,7 @@ class OrderLogisticsShippingAction extends AbstractOrderShippingAction
         $orderLogistics                       = new OrderLogistics();
         $orderLogistics->seller               = $order->seller;
         $orderLogistics->buyer                = $order->buyer;
+        $orderLogistics->shipper              = LogisticsShipperEnum::SELLER;
         $orderLogistics->order_product_id     = $orderShippingDTO->orderProducts;
         $orderLogistics->express_company_code = $orderShippingDTO->expressCompanyCode;
         $orderLogistics->express_no           = $orderShippingDTO->expressNo;
