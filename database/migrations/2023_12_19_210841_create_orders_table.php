@@ -24,12 +24,12 @@ return new class extends Migration {
             $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
-            $table->decimal('total_amount', 16)->default(0)->comment('商品总金额');
-            $table->decimal('freight_amount', 16)->default(0)->comment('运费');
-            $table->decimal('discount_amount', 16)->default(0)->comment('订单优惠');
-            $table->decimal('payment_amount', 16)->default(0)->comment('实付金额');
-            $table->decimal('refund_amount', 16)->default(0)->comment('退款金额');
-            $table->decimal('cost_amount', 16)->default(0)->comment('成本金额');
+            $table->decimal('total_amount', 12)->default(0)->comment('商品总金额');
+            $table->decimal('freight_amount', 12)->default(0)->comment('运费');
+            $table->decimal('discount_amount', 12)->default(0)->comment('订单优惠');
+            $table->decimal('payment_amount', 12)->default(0)->comment('实付金额');
+            $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
+            $table->decimal('cost_amount', 12)->default(0)->comment('成本金额');
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');
             $table->timestamp('close_time')->nullable()->comment('关闭时间');
