@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up() : void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->primary();
+            $table->unsignedBigInteger('id')->primary()->comment('订单号');
             $table->string('seller_type')->comment('卖家类型');
             $table->unsignedBigInteger('seller_id')->comment('卖家ID');
             $table->string('seller_nickname')->nullable()->comment('卖家昵称');

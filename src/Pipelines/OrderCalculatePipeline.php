@@ -27,10 +27,10 @@ class OrderCalculatePipeline
             $product->discount_amount = bcadd($product->discount_amount, 0, 2);
             // 付款金额
             $product->payment_amount = bcsub(bcadd($product->amount, $product->tax_amount, 2), $product->discount_amount, 2);
-            // 分摊优惠
-            $product->divide_discount_amount = bcadd(0, 0, 2);
+            // 分摊优惠 TODO
+            $product->divided_discount_amount = bcadd(0, 0, 2);
             // 分摊后付款金额
-            $product->divided_payment_amount = bcsub($product->payment_amount, $product->divide_discount_amount, 2);
+            $product->divided_payment_amount = bcsub($product->payment_amount, $product->divided_discount_amount, 2);
         }
     }
 
@@ -45,13 +45,13 @@ class OrderCalculatePipeline
         $order->cost_amount = $order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->cost_amount, 2);
         }, 0);
-        // 邮费
+        // 邮费 TODO 计算邮费
         $order->freight_amount = bcadd(0, 0, 2);
-        // 订单优惠
+        // 订单优惠 TODO
         $order->discount_amount = bcadd(0, 0, 2);
         // 计算付款 金额 = 商品总金额 + 邮费 - 优惠
         $order->payment_amount = bcsub(bcadd($order->total_amount, $order->freight_amount, 2), $order->discount_amount, 2);
-        // TODO 计算分摊
+
 
     }
 

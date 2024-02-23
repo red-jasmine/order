@@ -92,7 +92,7 @@ class OrderValidate
             'tax_amount'             => [ 'required', 'numeric' ],
             'discount_amount'        => [ 'required', 'numeric' ],
             'payment_amount'         => [ 'required', 'numeric' ],
-            'divide_discount_amount' => [ 'sometimes', 'numeric' ],
+            'divided_discount_amount' => [ 'sometimes', 'numeric' ],
             'divided_payment_amount' => [ 'sometimes', 'numeric' ],
             'refund_amount'          => [ 'sometimes', 'numeric' ],
             'cost_amount'            => [ 'sometimes', 'numeric' ],

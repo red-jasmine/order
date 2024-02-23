@@ -29,14 +29,14 @@ return new class extends Migration {
             $table->string('barcode', 64)->nullable()->comment('条形码');
             $table->unsignedBigInteger('num')->default(0)->comment('数量');
             $table->decimal('price', 12)->default(0)->comment('价格');
-            $table->decimal('cost_price', 12)->default(0)->comment('成本价');
             $table->decimal('amount', 12)->default(0)->comment('商品金额');
             $table->decimal('tax_amount', 12)->default(0)->comment('税费');
             $table->decimal('discount_amount', 12)->default(0)->comment('商品优惠');
-            $table->decimal('payment_amount', 12)->default(0)->comment('付款金额');
-            $table->decimal('divide_discount_amount')->default(0)->comment('分摊优惠');
-            $table->decimal('divided_payment_amount', 12)->default(0)->comment('分摊后实际付款金额');
+            $table->decimal('payment_amount', 12)->default(0)->comment('付款金额金额');
+            $table->decimal('divided_discount_amount')->default(0)->comment('分摊优惠金额');
+            $table->decimal('divided_payment_amount', 12)->default(0)->comment('分摊后付款金额');
             $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
+            $table->decimal('cost_price', 12)->default(0)->comment('成本价格');
             $table->decimal('cost_amount', 12)->default(0)->comment('成本金额');
             $table->string('order_status')->comment('状态');
             $table->string('payment_status', 30)->nullable()->comment('付款状态');

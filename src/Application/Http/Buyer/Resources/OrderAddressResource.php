@@ -28,7 +28,7 @@ class OrderAddressResource extends JsonResource
             'street_id'    => $this->street_id,
             'address'      => $this->address,
             'zip_code'     => $this->zip_code,
-            'long'         => $this->long,
+            'lon'         => $this->lon,
             'lat'          => $this->lat,
             'extends'      => $this->extends,
             'full_address' => $this->full_address,

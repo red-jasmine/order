@@ -20,6 +20,7 @@ class OrderProductInfoResource extends JsonResource
             'buyer_extends'  => $this->buyer_extends,
             'other_extends'  => $this->other_extends,
             'tools'          => $this->tools,
+            'card_key'       => $this->card_key,
             'created_at'     => $this->created_at,
             'updated_at'     => $this->updated_at,
         ];
