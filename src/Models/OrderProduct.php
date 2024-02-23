@@ -11,6 +11,7 @@ use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\WithDTO;
 
 class OrderProduct extends Model
@@ -21,6 +22,8 @@ class OrderProduct extends Model
     use HasDateTimeFormatter;
 
     use SoftDeletes;
+
+    use HasOperator;
 
 
     public $incrementing = false;

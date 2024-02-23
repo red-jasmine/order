@@ -4,8 +4,12 @@ namespace RedJasmine\Order\Actions;
 
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
+use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderCancelledEvent;
+use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
+use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Support\Exceptions\AbstractException;
 
 /**
@@ -17,10 +21,39 @@ class OrderCancelAction extends AbstractOrderAction
 
     protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.cancel';
 
+
+    /**
+     * 订单状态
+     * @var array|null|OrderStatusEnum[]
+     */
+    protected ?array $allowOrderStatus = [
+        OrderStatusEnum::WAIT_BUYER_PAY,
+    ];
+
+    /**
+     * @var array|null|PaymentStatusEnum[]
+     */
+    protected ?array $allowPaymentStatus = [
+        PaymentStatusEnum::WAIT_PAY,
+        PaymentStatusEnum::NO_PAYMENT,
+    ];
+
+
+    /**
+     * @var array|null|ShippingStatusEnum[]
+     */
+    protected ?array $allowShippingStatus = null;
+
+
+    /**
+     * @param Order $order
+     *
+     * @return bool
+     * @throws OrderException
+     */
     public function isAllow(Order $order) : bool
     {
-        // TODO
-
+        $this->allowStatus($order);
         return true;
     }
 
@@ -40,7 +73,7 @@ class OrderCancelAction extends AbstractOrderAction
             $pipelines = $this->pipelines($order);
             $pipelines->before();
             $order = $pipelines->then(function (Order $order) {
-                $this->setCancel($order);
+                $this->cancel($order);
                 $order->push();
                 return $order;
             });
@@ -59,11 +92,14 @@ class OrderCancelAction extends AbstractOrderAction
 
     }
 
-    protected function setCancel(Order $order) : void
+    protected function cancel(Order $order) : void
     {
         $order->order_status = OrderStatusEnum::CANCEL;
         $order->close_time   = now();
-
+        $order->products->each(function (OrderProduct $product) use ($order) {
+            $product->order_status = OrderStatusEnum::CANCEL;
+            $product->close_time   = $order->close_time;
+        });
     }
 
 }

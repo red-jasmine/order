@@ -1,13 +1,14 @@
 <?php
 
-namespace RedJasmine\Order\DataTransferObjects\Shipping;
+namespace RedJasmine\Order\DataTransferObjects;
 
-use RedJasmine\Order\DataTransferObjects\OrderSplitProductDTO;
+use RedJasmine\Support\DataTransferObjects\Data;
 
-class OrderShippingDTO extends OrderSplitProductDTO
+class OrderSplitProductDTO extends Data
 {
+
     /**
-     * 是否拆分
+     * 是否拆分处理
      * @var bool
      */
     public bool $isSplit = false;
@@ -17,4 +18,5 @@ class OrderShippingDTO extends OrderSplitProductDTO
      * @var array|null
      */
     public ?array $orderProducts = null;
+
 }

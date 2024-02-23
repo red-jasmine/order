@@ -8,6 +8,7 @@ use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderPayingEvent;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
+use RedJasmine\Order\Models\OrderProduct;
 use Throwable;
 
 /**
@@ -55,7 +56,7 @@ class OrderPayingAction extends AbstractOrderAction
             $order = $this->service->findLock($id);
             $this->isAllow($order);
             $this->pipelines($order)->then(function (Order $order) {
-                $this->setPaying($order);
+                $this->paying($order);
                 $order->save();
                 return $order;
             });
@@ -76,10 +77,12 @@ class OrderPayingAction extends AbstractOrderAction
     }
 
 
-    protected function setPaying(Order $order) : Order
+    protected function paying(Order $order) : Order
     {
         $order->payment_status = PaymentStatusEnum::PAYING;
-        $order->updater        = $this->service->getOperator();
+        $order->products->each(function (OrderProduct $product) {
+            $product->payment_status = PaymentStatusEnum::PAYING;
+        });
         return $order;
     }
 

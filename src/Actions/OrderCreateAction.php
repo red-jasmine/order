@@ -102,6 +102,7 @@ class OrderCreateAction extends AbstractOrderAction
             $product->seller_id    = $order->seller_id;
             $product->buyer_type   = $order->buyer_type;
             $product->buyer_id     = $order->buyer_id;
+            $product->creator      = $order->creator;
         });
         $order->save();
         $order->info()->save($order->info);

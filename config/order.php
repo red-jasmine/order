@@ -26,6 +26,7 @@ return [
         'paid'              => \RedJasmine\Order\Actions\OrderPaidAction::class,
         'paying'            => \RedJasmine\Order\Actions\OrderPayingAction::class,
         'cancel'            => \RedJasmine\Order\Actions\OrderCancelAction::class,
+        'confirm'           => \RedJasmine\Order\Actions\OrderConfirmAction::class,
         'virtualShipping'   => \RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction::class,
         'logisticsShipping' => \RedJasmine\Order\Actions\Shipping\OrderLogisticsShippingAction::class,
         'cardKeyShipping'   => \RedJasmine\Order\Actions\Shipping\OrderCardKeyShippingAction::class,

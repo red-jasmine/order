@@ -4,6 +4,7 @@ namespace RedJasmine\Order\Services;
 
 use Illuminate\Support\Collection;
 use RedJasmine\Order\Actions\OrderCancelAction;
+use RedJasmine\Order\Actions\OrderConfirmAction;
 use RedJasmine\Order\Actions\OrderCreateAction;
 use RedJasmine\Order\Actions\OrderPaidAction;
 use RedJasmine\Order\Actions\OrderPayingAction;
@@ -12,6 +13,7 @@ use RedJasmine\Order\Actions\Shipping\OrderCardKeyShippingAction;
 use RedJasmine\Order\Actions\Shipping\OrderLogisticsShippingAction;
 use RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction;
 use RedJasmine\Order\DataTransferObjects\OrderPaidInfoDTO;
+use RedJasmine\Order\DataTransferObjects\OrderSplitProductDTO;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderCardKeyShippingDTO;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderLogisticsShippingDTO;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
@@ -37,6 +39,8 @@ use RedJasmine\Support\Foundation\Service\Service;
  * @method static Order logisticsShipping(int $id, OrderLogisticsShippingDTO $orderShippingDTO)
  * @see OrderCardKeyShippingAction::execute()
  * @method static Order cardKeyShipping(int $id, OrderCardKeyShippingDTO $orderShippingDTO)
+ * @see OrderConfirmAction::execute()
+ * @method static Order confirm(int $id, OrderSplitProductDTO $DTO)
  */
 class OrderService extends Service
 {

@@ -46,16 +46,16 @@ class OrderFillPipeline
         $order->buyer                = $orderDTO->buyer;
         $order->title                = $orderDTO->title;
         $order->order_type           = $orderDTO->orderType;
-        $order->shipping_type            = $orderDTO->shippingType;
+        $order->shipping_type        = $orderDTO->shippingType;
         $order->source               = $orderDTO->source;
         $order->order_status         = $orderDTO->orderStatus;
-        $order->shipping_status          = $orderDTO->shippingStatus;
+        $order->shipping_status      = $orderDTO->shippingStatus;
         $order->payment_status       = $orderDTO->paymentStatus;
         $order->refund_status        = $orderDTO->refundStatus;
         $order->rate_status          = $orderDTO->rateStatus ?? null;
         $order->freight_amount       = $orderDTO->freightAmount;
         $order->discount_amount      = $orderDTO->discountAmount;
-        $order->contact           = $orderDTO->contact;
+        $order->contact              = $orderDTO->contact;
         $order->password             = $orderDTO->password;
         $order->client_type          = $orderDTO->clientType;
         $order->client_ip            = $orderDTO->clientIp;
@@ -79,7 +79,7 @@ class OrderFillPipeline
     {
         $orderProduct->order_status         = $orderProductDTO->orderStatus ?? $orderDTO->orderStatus;
         $orderProduct->order_product_type   = $orderProductDTO->orderProductType;
-        $orderProduct->shipping_type            = $orderProductDTO->shippingType;
+        $orderProduct->shipping_type        = $orderProductDTO->shippingType;
         $orderProduct->product_type         = $orderProductDTO->productType;
         $orderProduct->product_id           = $orderProductDTO->productId;
         $orderProduct->sku_id               = $orderProductDTO->skuId;
@@ -92,7 +92,7 @@ class OrderFillPipeline
         $orderProduct->seller_category_id   = $orderProductDTO->sellerCategoryId;
         $orderProduct->outer_id             = $orderProductDTO->outerId;
         $orderProduct->outer_sku_id         = $orderProductDTO->outerSkuId;
-        $orderProduct->shipping_status          = $orderProductDTO->shippingStatus;
+        $orderProduct->shipping_status      = $orderProductDTO->shippingStatus;
         $orderProduct->payment_status       = $orderProductDTO->paymentStatus;
         $orderProduct->refund_status        = $orderProductDTO->refundStatus;
         $orderProduct->rate_status          = $orderProductDTO->rateStatus;
