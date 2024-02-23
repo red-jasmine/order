@@ -13,8 +13,10 @@ return new class extends Migration {
             $table->unsignedBigInteger('seller_id')->comment('卖家ID');
             $table->string('buyer_type')->comment('买家类型');
             $table->unsignedBigInteger('buyer_id')->comment('买家类型');
-            $table->unsignedBigInteger('order_id')->comment('订单ID');
+            $table->string('shippable_type')->comment('订单退款');
+            $table->unsignedBigInteger('shippable_id')->comment('(订单或退款)ID');
             $table->string('order_product_id')->nullable()->comment('订单商品单号');
+            $table->string('shipper')->comment('发货方');
             $table->string('status')->comment('状态');
             $table->string('express_company_code')->comment('快递公司代码');
             $table->string('express_no')->comment('快递单号');
@@ -26,6 +28,7 @@ return new class extends Migration {
             $table->nullableMorphs('creator');
             $table->nullableMorphs('updater');
             $table->timestamps();
+            $table->softDeletes();
             $table->comment('订单-物流表');
         });
     }
