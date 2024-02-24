@@ -18,6 +18,8 @@ enum RefundTypeEnum: string
 
     case  EXCHANGE_GOODS = 'exchange_goods';
 
+    case  SERVICE = 'service';
+
 
     public static function labels() : array
     {
@@ -25,6 +27,7 @@ enum RefundTypeEnum: string
             self::REFUND_ONLY->value         => '仅退款',
             self::RETURN_GOODS_REFUND->value => '退货退款',
             self::EXCHANGE_GOODS->value      => '换货',
+            self::SERVICE->value             => '维修',
         ];
 
     }

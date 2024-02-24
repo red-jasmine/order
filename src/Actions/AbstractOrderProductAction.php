@@ -4,15 +4,16 @@ namespace RedJasmine\Order\Actions;
 
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Exceptions\OrderException;
-use RedJasmine\Order\Models\Order;
-use RedJasmine\Order\Services\OrderService;
+use RedJasmine\Order\Models\OrderProduct;
+use RedJasmine\Order\Services\RefundService;
 use RedJasmine\Support\Foundation\Service\Action;
 
-class AbstractOrderAction extends Action
+class AbstractOrderProductAction extends Action
 {
-    protected ?OrderService $service;
+    protected ?RefundService $service;
 
 
     /**
@@ -31,20 +32,26 @@ class AbstractOrderAction extends Action
      */
     protected ?array $allowShippingStatus = null;
 
+
     /**
-     * @param Order $order
+     * @var array|null|RefundStatusEnum[]
+     */
+    protected ?array $allowRefundStatus = null;
+
+    /**
+     * @param OrderProduct $orderProduct
      *
      * @return bool
      * @throws OrderException
      */
-    protected function allowStatus(Order $order) : bool
+    protected function allowStatus(OrderProduct $orderProduct) : bool
     {
-        $this->checkStatus($order->order_status, $this->allowOrderStatus);
-        $this->checkStatus($order->payment_status, $this->allowPaymentStatus);
-        $this->checkStatus($order->shipping_status, $this->allowShippingStatus);
+        $this->checkStatus($orderProduct->order_status, $this->allowOrderStatus);
+        $this->checkStatus($orderProduct->payment_status, $this->allowPaymentStatus);
+        $this->checkStatus($orderProduct->shipping_status, $this->allowShippingStatus);
+        $this->checkStatus($orderProduct->refund_status, $this->allowRefundStatus);
         return true;
     }
-
 
 
     /**
@@ -64,5 +71,6 @@ class AbstractOrderAction extends Action
         }
         return true;
     }
+
 
 }

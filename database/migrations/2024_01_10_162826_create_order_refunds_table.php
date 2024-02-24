@@ -40,7 +40,7 @@ return new class extends Migration {
 
             $table->string('phase')->comment('阶段');
             $table->string('refund_status')->comment('退款状态');
-            $table->string('dispute_type')->comment('退款类型');
+            $table->string('refund_type')->comment('退款类型');
             $table->decimal('freight_amount', 12)->default(0)->comment('运费');
             $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
             $table->unsignedTinyInteger('has_good_return')->default(0)->comment('是否需要退货');
@@ -57,7 +57,7 @@ return new class extends Migration {
             $table->string('arbitrate_result')->nullable()->comment('仲裁结果');
             $table->timestamp('arbitrate_time')->nullable()->comment('时间');
             $table->string('arbitrate_handler_type')->nullable()->comment('仲裁者类型');
-            $table->string('arbitrate_handler_id')->nullable()->comment('仲裁者ID');
+            $table->unsignedBigInteger('arbitrate_handler_id')->nullable()->comment('仲裁者ID');
 
             $table->string('remarks')->nullable()->comment('备注');
             $table->json('extends')->nullable()->comment('扩展');

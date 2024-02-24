@@ -12,6 +12,7 @@ enum RefundPhaseEnum: string
     use EnumsHelper;
 
     case  ON_SALE = 'on_sale';
+
     case  AFTER_SALE = 'after_sale';
 
 

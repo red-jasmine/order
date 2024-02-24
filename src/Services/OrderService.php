@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Services;
 
+use Exception;
 use Illuminate\Support\Collection;
 use RedJasmine\Order\Actions\OrderCancelAction;
 use RedJasmine\Order\Actions\OrderConfirmAction;
@@ -9,11 +10,13 @@ use RedJasmine\Order\Actions\OrderCreateAction;
 use RedJasmine\Order\Actions\OrderPaidAction;
 use RedJasmine\Order\Actions\OrderPayingAction;
 use RedJasmine\Order\Actions\OrderQueryAction;
+use RedJasmine\Order\Actions\Refunds\RefundCreateAction;
 use RedJasmine\Order\Actions\Shipping\OrderCardKeyShippingAction;
 use RedJasmine\Order\Actions\Shipping\OrderLogisticsShippingAction;
 use RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction;
 use RedJasmine\Order\DataTransferObjects\OrderPaidInfoDTO;
 use RedJasmine\Order\DataTransferObjects\OrderSplitProductDTO;
+use RedJasmine\Order\DataTransferObjects\Refund\OrderProductRefundDTO;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderCardKeyShippingDTO;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderLogisticsShippingDTO;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
@@ -21,6 +24,7 @@ use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Foundation\Service\Service;
+use RedJasmine\Support\Helpers\ID\Snowflake;
 
 
 /**
@@ -45,7 +49,7 @@ use RedJasmine\Support\Foundation\Service\Service;
 class OrderService extends Service
 {
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.order.actions';
+    protected static ?string $actionsConfigKey = 'red-jasmine.order.actions.order';
 
     /**
      * @param int $id
@@ -76,6 +80,30 @@ class OrderService extends Service
     public function queries() : OrderQueryAction
     {
         return app(OrderQueryAction::class)->setService($this);
+    }
+
+
+    /**
+     * 生成订单ID
+     * @return int
+     * @throws Exception
+     */
+    public function buildID() : int
+    {
+        return Snowflake::getInstance()->nextId();
+    }
+
+
+    /**
+     * 获取当前订单最大退款金额
+     *
+     * @param OrderProduct $orderProduct
+     *
+     * @return string
+     */
+    public function getOrderProductMaxRefundAmount(OrderProduct $orderProduct):string
+    {
+        return bcsub($orderProduct->divided_discount_amount, $orderProduct->refund_amount, 2);
     }
 
 
