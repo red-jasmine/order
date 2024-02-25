@@ -42,13 +42,11 @@ class OrderCalculatePipeline
             return bcadd($sum, $product->payment_amount, 2);
         }, 0);
         // 统计成本
-        $order->cost_amount = $order->products->reduce(function ($sum, $product) {
+        $order->cost_amount     = $order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->cost_amount, 2);
         }, 0);
-        // 邮费 TODO 计算邮费
-        $order->freight_amount = bcadd(0, 0, 2);
-        // 订单优惠 TODO
-        $order->discount_amount = bcadd(0, 0, 2);
+        $order->freight_amount  = bcadd($order->freight_amount, 0, 2);
+        $order->discount_amount = bcadd($order->discount_amount, 0, 2);
         // 计算付款 金额 = 商品总金额 + 邮费 - 优惠
         $order->payment_amount = bcsub(bcadd($order->total_amount, $order->freight_amount, 2), $order->discount_amount, 2);
 

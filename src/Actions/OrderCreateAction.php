@@ -22,7 +22,7 @@ use Throwable;
 class OrderCreateAction extends AbstractOrderAction
 {
 
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.create';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.create';
 
 
     protected array $validators = [];

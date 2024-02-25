@@ -35,6 +35,8 @@ return [
         ],
         'refund' => [
             'create' => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
+            'agree'  => \RedJasmine\Order\Actions\Refunds\RefundAgreeAction::class,
+            'refuse' => \RedJasmine\Order\Actions\Refunds\RefundRefuseAction::class,
         ],
     ],
 
@@ -47,12 +49,18 @@ return [
     |
     */
     'pipelines'      => [
-        'create' => [
-            \RedJasmine\Order\Pipelines\OrderFillPipeline::class,
-            \RedJasmine\Order\Pipelines\OrderCalculatePipeline::class,
-            \RedJasmine\Order\Pipelines\OrderValidatePipeline::class,
-            \RedJasmine\Order\Pipelines\OrderAddressPipeline::class,
+        'order'  => [
+            'create' => [
+                \RedJasmine\Order\Pipelines\OrderFillPipeline::class,
+                \RedJasmine\Order\Pipelines\OrderCalculatePipeline::class,
+                \RedJasmine\Order\Pipelines\OrderValidatePipeline::class,
+                \RedJasmine\Order\Pipelines\OrderAddressPipeline::class,
+            ],
         ],
+        'refund' => [
+            'agree' => [],
+        ],
+
     ],
 
 
@@ -72,6 +80,7 @@ return [
         '商品与描述不符',
         '其他',
     ],
+
 
 
 ];

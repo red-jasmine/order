@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
 use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
@@ -37,6 +38,7 @@ class OrderProduct extends Model
         'order_status'    => OrderStatusEnum::class,
         'shipping_status' => ShippingStatusEnum::class,
         'payment_status'  => PaymentStatusEnum::class,
+        'refund_status'   => RefundStatusEnum::class,
     ];
 
     protected $fillable = [
@@ -59,8 +61,6 @@ class OrderProduct extends Model
     {
         return $this->hasOne(OrderProductInfo::class, 'id', 'id');
     }
-
-
 
 
 }

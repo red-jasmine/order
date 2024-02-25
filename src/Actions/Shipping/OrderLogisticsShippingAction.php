@@ -18,7 +18,7 @@ use RedJasmine\Order\Models\OrderLogistics;
  */
 class OrderLogisticsShippingAction extends AbstractOrderShippingAction
 {
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.logisticsShipping';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.logisticsShipping';
 
     /**
      * @param int                       $id

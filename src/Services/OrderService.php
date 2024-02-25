@@ -101,9 +101,9 @@ class OrderService extends Service
      *
      * @return string
      */
-    public function getOrderProductMaxRefundAmount(OrderProduct $orderProduct):string
+    public function getOrderProductMaxRefundAmount(OrderProduct $orderProduct) : string
     {
-        return bcsub($orderProduct->divided_discount_amount, $orderProduct->refund_amount, 2);
+        return bcsub($orderProduct->divided_payment_amount, $orderProduct->refund_amount, 2);
     }
 
 

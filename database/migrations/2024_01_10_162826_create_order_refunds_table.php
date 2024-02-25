@@ -39,17 +39,17 @@ return new class extends Migration {
 
 
             $table->string('phase')->comment('阶段');
-            $table->string('refund_status')->comment('退款状态');
             $table->string('refund_type')->comment('退款类型');
             $table->decimal('freight_amount', 12)->default(0)->comment('运费');
-            $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
             $table->unsignedTinyInteger('has_good_return')->default(0)->comment('是否需要退货');
             $table->string('good_status')->nullable()->comment('货物状态');
-
             $table->string('reason')->nullable()->comment('原因');
             $table->string('description')->nullable()->comment('描述');
             $table->json('images')->nullable()->comment('图片');
 
+            $table->string('refund_status')->comment('退款状态');
+            $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
+            $table->string('refuse_reason')->nullable()->comment('拒绝理由');
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('end_time')->nullable()->comment('完结时间');
 

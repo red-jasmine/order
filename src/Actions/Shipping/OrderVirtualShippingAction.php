@@ -15,7 +15,7 @@ use Throwable;
  */
 class OrderVirtualShippingAction extends AbstractOrderShippingAction
 {
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.virtualShipping';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.virtualShipping';
 
 
     /**

@@ -19,7 +19,7 @@ class OrderCancelAction extends AbstractOrderAction
 {
 
 
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.cancel';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.cancel';
 
 
     /**

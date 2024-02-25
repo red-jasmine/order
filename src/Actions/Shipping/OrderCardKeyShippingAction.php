@@ -17,7 +17,7 @@ use RedJasmine\Order\Models\OrderProduct;
 class OrderCardKeyShippingAction extends AbstractOrderShippingAction
 {
 
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.cardKeyShipping';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.cardKeyShipping';
 
     /**
      * @param int                     $id

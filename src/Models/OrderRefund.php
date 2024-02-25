@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Enums\Orders\OrderProductTypeEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
@@ -38,5 +39,16 @@ class OrderRefund extends Model
         'images'             => 'array',
         'extends'            => 'array',
     ];
+
+
+    public function order() : BelongsTo
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'id');
+    }
+
+    public function orderProduct() : BelongsTo
+    {
+        return $this->belongsTo(OrderProduct::class, 'order_product_id', 'id');
+    }
 
 }

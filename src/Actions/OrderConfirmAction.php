@@ -17,7 +17,7 @@ use RedJasmine\Support\Exceptions\AbstractException;
 class OrderConfirmAction extends AbstractOrderAction
 {
 
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.confirm';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.confirm';
 
     /**
      * 订单状态

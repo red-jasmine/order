@@ -41,4 +41,23 @@ class OrderProductRefundDTO extends Data
      */
     public ?RefundGoodsStatusEnum $goodStatus = null;
 
+
+    /**
+     * 包含邮费
+     * @var string|int|float|null
+     */
+    protected string|int|float|null $freightAmount = 0;
+
+    public function getFreightAmount() : float|int|string|null
+    {
+        return $this->freightAmount;
+    }
+
+    public function setFreightAmount(float|int|string|null $freightAmount) : OrderProductRefundDTO
+    {
+        $this->freightAmount = $freightAmount;
+        return $this;
+    }
+
+
 }
