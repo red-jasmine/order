@@ -32,6 +32,7 @@ return [
             'logisticsShipping' => \RedJasmine\Order\Actions\Shipping\OrderLogisticsShippingAction::class,
             'cardKeyShipping'   => \RedJasmine\Order\Actions\Shipping\OrderCardKeyShippingAction::class,
             'refundCreate'      => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
+            'productProgress'   => \RedJasmine\Order\Actions\Others\OrderProductProgressAction::class,
         ],
         'refund' => [
             'create'            => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
