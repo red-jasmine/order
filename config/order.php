@@ -37,6 +37,7 @@ return [
             'create' => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
             'agree'  => \RedJasmine\Order\Actions\Refunds\RefundAgreeAction::class,
             'refuse' => \RedJasmine\Order\Actions\Refunds\RefundRefuseAction::class,
+            'cancel' => \RedJasmine\Order\Actions\Refunds\RefundCancelAction::class,
         ],
     ],
 
@@ -80,7 +81,6 @@ return [
         '商品与描述不符',
         '其他',
     ],
-
 
 
 ];

@@ -17,6 +17,7 @@ use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Order\Models\OrderRefund;
+use RedJasmine\Order\Services\RefundService;
 
 
 /**
@@ -24,6 +25,8 @@ use RedJasmine\Order\Models\OrderRefund;
  */
 class RefundCreateAction extends AbstractOrderProductAction
 {
+
+    protected ?RefundService $service;
 
 
     /**

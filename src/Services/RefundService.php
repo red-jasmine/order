@@ -4,6 +4,7 @@ namespace RedJasmine\Order\Services;
 
 use Exception;
 use RedJasmine\Order\Actions\Refunds\RefundAgreeAction;
+use RedJasmine\Order\Actions\Refunds\RefundCancelAction;
 use RedJasmine\Order\Actions\Refunds\RefundRefuseAction;
 use RedJasmine\Order\DataTransferObjects\Refund\OrderProductRefundDTO;
 use RedJasmine\Order\DataTransferObjects\Refund\RefundAgreeDTO;
@@ -19,6 +20,8 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
  * @method static OrderRefund agree(int $id, RefundAgreeDTO $DTO)
  * @see RefundRefuseAction::execute()
  * @method static OrderRefund refuse(int $id, RefundRefuseDTO $DTO)
+ * @see RefundCancelAction::execute()
+ * @method static OrderRefund cancel(int $id)
  */
 class RefundService extends Service
 {
