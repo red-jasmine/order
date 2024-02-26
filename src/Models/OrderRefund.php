@@ -4,6 +4,7 @@ namespace RedJasmine\Order\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Enums\Orders\OrderProductTypeEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
@@ -50,5 +51,13 @@ class OrderRefund extends Model
     {
         return $this->belongsTo(OrderProduct::class, 'order_product_id', 'id');
     }
+
+
+
+    public function logistics() : MorphMany
+    {
+        return $this->morphMany(OrderLogistics::class,'shippable');
+    }
+
 
 }

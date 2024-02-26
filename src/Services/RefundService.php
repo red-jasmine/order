@@ -4,12 +4,14 @@ namespace RedJasmine\Order\Services;
 
 use Exception;
 use RedJasmine\Order\Actions\Refunds\RefundAgreeAction;
-use RedJasmine\Order\Actions\Refunds\RefundAgreeReturnAction;
+use RedJasmine\Order\Actions\Refunds\RefundAgreeReturnGoodsAction;
 use RedJasmine\Order\Actions\Refunds\RefundCancelAction;
 use RedJasmine\Order\Actions\Refunds\RefundRefuseAction;
+use RedJasmine\Order\Actions\Refunds\RefundReturnGoodsAction;
 use RedJasmine\Order\DataTransferObjects\Refund\OrderProductRefundDTO;
 use RedJasmine\Order\DataTransferObjects\Refund\RefundAgreeDTO;
 use RedJasmine\Order\DataTransferObjects\Refund\RefundRefuseDTO;
+use RedJasmine\Order\DataTransferObjects\Refund\RefundReturnGoodsDTO;
 use RedJasmine\Order\Models\OrderRefund;
 use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Helpers\ID\Snowflake;
@@ -23,8 +25,10 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
  * @method static OrderRefund refuse(int $id, RefundRefuseDTO $DTO)
  * @see RefundCancelAction::execute()
  * @method static OrderRefund cancel(int $id)
- * @see RefundAgreeReturnAction::execute()
- * @method static OrderRefund agreeReturn(int $id)
+ * @see RefundAgreeReturnGoodsAction::execute()
+ * @method static OrderRefund agreeReturnGoods(int $id)
+ * @see RefundReturnGoodsAction::execute()
+ * @method static OrderRefund returnGoods(int $id,RefundReturnGoodsDTO $DTO)
  */
 class RefundService extends Service
 {

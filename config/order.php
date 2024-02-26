@@ -34,11 +34,12 @@ return [
             'refundCreate'      => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
         ],
         'refund' => [
-            'create'      => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
-            'agree'       => \RedJasmine\Order\Actions\Refunds\RefundAgreeAction::class,
-            'refuse'      => \RedJasmine\Order\Actions\Refunds\RefundRefuseAction::class,
-            'cancel'      => \RedJasmine\Order\Actions\Refunds\RefundCancelAction::class,
-            'agreeReturn' => \RedJasmine\Order\Actions\Refunds\RefundAgreeReturnAction::class,
+            'create'           => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
+            'agree'            => \RedJasmine\Order\Actions\Refunds\RefundAgreeAction::class,
+            'refuse'           => \RedJasmine\Order\Actions\Refunds\RefundRefuseAction::class,
+            'cancel'           => \RedJasmine\Order\Actions\Refunds\RefundCancelAction::class,
+            'agreeReturnGoods' => \RedJasmine\Order\Actions\Refunds\RefundAgreeReturnGoodsAction::class,
+            'returnGoods'      => \RedJasmine\Order\Actions\Refunds\RefundReturnGoodsAction::class,
         ],
     ],
 

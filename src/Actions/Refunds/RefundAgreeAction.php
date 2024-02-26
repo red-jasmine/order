@@ -11,6 +11,7 @@ use RedJasmine\Order\Events\Refunds\RefundAgreedEvent;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderRefund;
 use RedJasmine\Support\Exceptions\AbstractException;
+use Throwable;
 
 class RefundAgreeAction extends AbstractRefundAction
 {
@@ -25,6 +26,7 @@ class RefundAgreeAction extends AbstractRefundAction
 
     protected ?array $allowRefundStatus = [
         RefundStatusEnum::WAIT_SELLER_AGREE,
+        RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS,
     ];
 
     /**
@@ -35,9 +37,7 @@ class RefundAgreeAction extends AbstractRefundAction
      */
     public function isAllow(OrderRefund $orderRefund) : bool
     {
-
         $this->allowStatus($orderRefund);
-
         return true;
     }
 
@@ -48,7 +48,7 @@ class RefundAgreeAction extends AbstractRefundAction
      *
      * @return OrderRefund
      * @throws RefundException
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function execute(int $id, RefundAgreeDTO $DTO) : OrderRefund
     {
@@ -65,7 +65,7 @@ class RefundAgreeAction extends AbstractRefundAction
         } catch (AbstractException $exception) {
             DB::rollBack();
             throw  $exception;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }

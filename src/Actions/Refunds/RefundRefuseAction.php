@@ -10,6 +10,7 @@ use RedJasmine\Order\Events\Refunds\RefundRefusedEvent;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderRefund;
 use RedJasmine\Support\Exceptions\AbstractException;
+use Throwable;
 
 /**
  * 拒绝退款
@@ -26,6 +27,7 @@ class RefundRefuseAction extends AbstractRefundAction
 
     protected ?array $allowRefundStatus = [
         RefundStatusEnum::WAIT_SELLER_AGREE,
+        RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS,
     ];
 
     /**
@@ -48,7 +50,7 @@ class RefundRefuseAction extends AbstractRefundAction
      * @param RefundRefuseDTO|null $DTO
      *
      * @return OrderRefund
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function execute(int $id, ?RefundRefuseDTO $DTO = null) : OrderRefund
     {
@@ -64,7 +66,7 @@ class RefundRefuseAction extends AbstractRefundAction
         } catch (AbstractException $exception) {
             DB::rollBack();
             throw  $exception;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
         }
