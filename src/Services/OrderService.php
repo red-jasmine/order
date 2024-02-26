@@ -30,21 +30,21 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
 /**
  * @property OrderPayingAction $paying
  * @property OrderCreateAction $create
- * @method static Order create(UserInterface $seller, UserInterface $buyer, array $orderParameters, Collection $products)
+ * @method  Order create(UserInterface $seller, UserInterface $buyer, array $orderParameters, Collection $products)
  * @see OrderCancelAction::execute()
- * @method static Order cancel(int $id)
+ * @method  Order cancel(int $id)
  * @see OrderPayingAction::execute()
- * @method static Order paying(int $id)
+ * @method  Order paying(int $id)
  * @see OrderPaidAction::execute()
- * @method static Order paid(int $id, ?OrderPaidInfoDTO $orderPaidInfoDTO = null)
+ * @method  Order paid(int $id, ?OrderPaidInfoDTO $orderPaidInfoDTO = null)
  * @see OrderVirtualShippingAction::execute()
- * @method static Order virtualShipping(int $id, OrderShippingDTO $orderShippingDTO)
+ * @method  Order virtualShipping(int $id, OrderShippingDTO $orderShippingDTO)
  * @see OrderLogisticsShippingAction::execute()
- * @method static Order logisticsShipping(int $id, OrderLogisticsShippingDTO $orderShippingDTO)
+ * @method  Order logisticsShipping(int $id, OrderLogisticsShippingDTO $orderShippingDTO)
  * @see OrderCardKeyShippingAction::execute()
- * @method static Order cardKeyShipping(int $id, OrderCardKeyShippingDTO $orderShippingDTO)
+ * @method  Order cardKeyShipping(int $id, OrderCardKeyShippingDTO $orderShippingDTO)
  * @see OrderConfirmAction::execute()
- * @method static Order confirm(int $id, OrderSplitProductDTO $DTO)
+ * @method  Order confirm(int $id, OrderSplitProductDTO $DTO)
  */
 class OrderService extends Service
 {

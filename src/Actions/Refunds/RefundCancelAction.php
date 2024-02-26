@@ -26,6 +26,7 @@ class RefundCancelAction extends AbstractRefundAction
 
     protected ?array $allowRefundStatus = [
         RefundStatusEnum::WAIT_SELLER_AGREE,
+        RefundStatusEnum::WAIT_BUYER_RETURN_GOODS,
     ];
 
 

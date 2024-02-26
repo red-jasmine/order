@@ -3,18 +3,18 @@
 namespace RedJasmine\Order\Actions\Refunds;
 
 use Illuminate\Support\Facades\DB;
+use RedJasmine\Order\DataTransferObjects\Refund\RefundRefuseDTO;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Refund\RefundTypeEnum;
-use RedJasmine\Order\Events\Refunds\RefundAgreeReturnEvent;
+use RedJasmine\Order\Events\Refunds\RefundRefusedEvent;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderRefund;
 use RedJasmine\Support\Exceptions\AbstractException;
 use Throwable;
 
-class RefundAgreeReturnGoodsAction extends AbstractRefundAction
+class RefundRefuseReturnGoodsAction extends AbstractRefundAction
 {
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.refund.agreeReturn';
-
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.refund.refuseReturnGoods';
 
     protected ?array $allowRefundType = [
 
@@ -27,7 +27,6 @@ class RefundAgreeReturnGoodsAction extends AbstractRefundAction
         RefundStatusEnum::WAIT_SELLER_AGREE_RETURN,
     ];
 
-
     /**
      * @param OrderRefund $orderRefund
      *
@@ -36,32 +35,30 @@ class RefundAgreeReturnGoodsAction extends AbstractRefundAction
      */
     public function isAllow(OrderRefund $orderRefund) : bool
     {
+
         $this->allowStatus($orderRefund);
 
         return true;
     }
 
+
     /**
-     * @param int $id
+     * @param int                  $id
+     * @param RefundRefuseDTO|null $DTO
      *
      * @return OrderRefund
-     * @throws RefundException
      * @throws Throwable
      */
-    public function execute(int $id) : OrderRefund
+    public function execute(int $id, ?RefundRefuseDTO $DTO = null) : OrderRefund
     {
         try {
             DB::beginTransaction();
             $orderRefund = $this->service->findLock($id);
-
+            $orderRefund->setDTO($DTO);
             $this->isAllow($orderRefund);
-
             $this->pipelines($orderRefund);
-
             $this->pipeline->before();
-
-            $orderRefund = $this->pipeline->then(fn(OrderRefund $orderRefund) => $this->agreeReturn($orderRefund));
-
+            $this->pipeline->then(fn(OrderRefund $orderRefund) => $this->refuseReturnGoods($orderRefund, $DTO));
             DB::commit();
         } catch (AbstractException $exception) {
             DB::rollBack();
@@ -71,25 +68,23 @@ class RefundAgreeReturnGoodsAction extends AbstractRefundAction
             throw  $throwable;
         }
         $this->pipeline->after();
-        RefundAgreeReturnEvent::dispatch($orderRefund);
+
+        RefundRefusedEvent::dispatch($orderRefund);
         return $orderRefund;
 
     }
 
-
-    /**
-     * 同意退货
-     *
-     * @param OrderRefund $orderRefund
-     *
-     * @return OrderRefund
-     */
-    public function agreeReturn(OrderRefund $orderRefund) : OrderRefund
+    public function refuseReturnGoods(OrderRefund $orderRefund, ?RefundRefuseDTO $DTO = null) : OrderRefund
     {
-        $orderRefund->refund_status               = RefundStatusEnum::WAIT_BUYER_RETURN_GOODS;
+
+        $orderRefund->refund_status               = RefundStatusEnum::SELLER_REFUSE_BUYER;
+        $orderRefund->refuse_reason               = $DTO->refuseReason;
         $orderRefund->updater                     = $this->service->getOperator();
-        $orderRefund->orderProduct->refund_status = RefundStatusEnum::WAIT_BUYER_RETURN_GOODS;
+        $orderRefund->end_time                    = now();
+        $orderRefund->orderProduct->refund_status = RefundStatusEnum::SELLER_REFUSE_BUYER;
         $orderRefund->push();
+
         return $orderRefund;
     }
+
 }
