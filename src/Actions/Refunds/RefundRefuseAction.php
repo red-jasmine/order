@@ -9,6 +9,7 @@ use RedJasmine\Order\Enums\Refund\RefundTypeEnum;
 use RedJasmine\Order\Events\Refunds\RefundRefusedEvent;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderRefund;
+use RedJasmine\Support\Exceptions\AbstractException;
 
 /**
  * 拒绝退款

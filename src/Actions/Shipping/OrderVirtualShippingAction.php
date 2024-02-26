@@ -7,6 +7,7 @@ use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderShippedEvent;
 use RedJasmine\Order\Exceptions\OrderException;
+use RedJasmine\Support\Exceptions\AbstractException;
 use RedJasmine\Order\Models\Order;
 use Throwable;
 

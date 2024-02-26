@@ -10,6 +10,7 @@ use RedJasmine\Order\Events\Orders\OrderShippedEvent;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
+use RedJasmine\Support\Exceptions\AbstractException;
 
 /**
  * 卡密发货

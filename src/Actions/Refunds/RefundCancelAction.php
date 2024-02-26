@@ -7,6 +7,7 @@ use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Events\Refunds\RefundCancelledEvent;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderRefund;
+use RedJasmine\Support\Exceptions\AbstractException;
 use Throwable;
 
 /**

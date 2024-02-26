@@ -10,6 +10,7 @@ use RedJasmine\Order\Enums\Refund\RefundTypeEnum;
 use RedJasmine\Order\Events\Refunds\RefundAgreedEvent;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderRefund;
+use RedJasmine\Support\Exceptions\AbstractException;
 
 class RefundAgreeAction extends AbstractRefundAction
 {

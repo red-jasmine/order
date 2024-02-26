@@ -10,6 +10,7 @@ use RedJasmine\Order\Events\Orders\OrderShippedEvent;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderLogistics;
+use RedJasmine\Support\Exceptions\AbstractException;
 
 ;
 
