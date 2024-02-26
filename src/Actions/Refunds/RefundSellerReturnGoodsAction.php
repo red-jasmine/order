@@ -15,23 +15,21 @@ use RedJasmine\Support\Exceptions\AbstractException;
 use Throwable;
 
 /**
- * 买家退货
+ * 卖家 发货
  */
-class RefundReturnGoodsAction extends AbstractRefundAction
+class RefundSellerReturnGoodsAction extends AbstractRefundAction
 {
 
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.refund.returnGoods';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.refund.sellerReturnGoods';
 
 
     protected ?array $allowRefundType = [
-
-        RefundTypeEnum::RETURN_GOODS_REFUND,
         RefundTypeEnum::EXCHANGE_GOODS,
         RefundTypeEnum::SERVICE,
     ];
 
     protected ?array $allowRefundStatus = [
-        RefundStatusEnum::WAIT_BUYER_RETURN_GOODS,
+        RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS,
     ];
 
 
@@ -65,7 +63,7 @@ class RefundReturnGoodsAction extends AbstractRefundAction
             $this->isAllow($orderRefund);
             $this->pipelines($orderRefund);
             $this->pipeline->before();
-            $this->pipeline->then(fn(OrderRefund $orderRefund) => $this->returnGoods($orderRefund, $DTO));
+            $this->pipeline->then(fn(OrderRefund $orderRefund) => $this->sellerReturnGoods($orderRefund, $DTO));
             DB::commit();
         } catch (AbstractException $exception) {
             DB::rollBack();
@@ -83,14 +81,15 @@ class RefundReturnGoodsAction extends AbstractRefundAction
     }
 
 
-    public function returnGoods(OrderRefund $orderRefund, RefundReturnGoodsDTO $DTO) : OrderRefund
+    public function sellerReturnGoods(OrderRefund $orderRefund, RefundReturnGoodsDTO $DTO) : OrderRefund
     {
-        $orderRefund->refund_status           = RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS;
+        $orderRefund->refund_status           = RefundStatusEnum::REFUND_SUCCESS;
+        $orderRefund->end_time                = now();
         $orderRefund->updater                 = $this->service->getOperator();
         $orderLogistics                       = new OrderLogistics();
         $orderLogistics->seller               = $orderRefund->seller;
         $orderLogistics->buyer                = $orderRefund->buyer;
-        $orderLogistics->shipper              = LogisticsShipperEnum::BUYER;
+        $orderLogistics->shipper              = LogisticsShipperEnum::SELLER;
         $orderLogistics->order_product_id     = [ $orderRefund->order_product_id ];
         $orderLogistics->express_company_code = $DTO->expressCompanyCode;
         $orderLogistics->express_no           = $DTO->expressNo;
@@ -98,7 +97,7 @@ class RefundReturnGoodsAction extends AbstractRefundAction
         $orderLogistics->shipping_time        = now();
         $orderLogistics->creator              = $this->service->getOperator();
         $orderRefund->logistics()->save($orderLogistics);
-        $orderRefund->orderProduct->refund_status = RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS;
+        $orderRefund->orderProduct->refund_status = RefundStatusEnum::REFUND_SUCCESS;
         $orderRefund->push();
         return $orderRefund;
     }

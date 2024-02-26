@@ -22,7 +22,8 @@ class RefundRefuseAction extends AbstractRefundAction
 
     protected ?array $allowRefundType = [
         RefundTypeEnum::REFUND_ONLY,
-        RefundTypeEnum::RETURN_GOODS_REFUND
+        RefundTypeEnum::RETURN_GOODS_REFUND,
+        RefundTypeEnum::EXCHANGE_GOODS,
     ];
 
     protected ?array $allowRefundStatus = [

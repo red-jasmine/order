@@ -41,6 +41,7 @@ return [
             'agreeReturnGoods'  => \RedJasmine\Order\Actions\Refunds\RefundAgreeReturnGoodsAction::class,
             'returnGoods'       => \RedJasmine\Order\Actions\Refunds\RefundReturnGoodsAction::class,
             'refuseReturnGoods' => \RedJasmine\Order\Actions\Refunds\RefundRefuseReturnGoodsAction::class,
+            'sellerReturnGoods' => \RedJasmine\Order\Actions\Refunds\RefundSellerReturnGoodsAction::class,
         ],
     ],
 
