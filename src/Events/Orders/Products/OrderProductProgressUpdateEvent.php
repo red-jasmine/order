@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\Events\Others;
+namespace RedJasmine\Order\Events\Orders\Products;
 
 use RedJasmine\Order\Events\Orders\AbstractOrderProductEvent;
 

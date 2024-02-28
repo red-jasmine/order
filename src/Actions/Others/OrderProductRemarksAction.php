@@ -15,11 +15,11 @@ use RedJasmine\Support\Exceptions\AbstractException;
 /**
  * 订单备注
  */
-class OrderRemarksAction extends AbstractOrderAction
+class OrderProductRemarksAction extends AbstractOrderAction
 {
 
 
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.remarks';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.productRemarks';
 
     protected ?OrderService $service;
 
@@ -32,13 +32,13 @@ class OrderRemarksAction extends AbstractOrderAction
      */
     public function execute(int $id, OrderRemarksDTO $DTO) : Order
     {
-        $order = $this->service->find($id);
-        $order->setDTO($DTO);
-        $this->pipelines($order);
+        $orderProduct = $this->service->findOrderProduct($id);
+        $orderProduct->setDTO($DTO);
+        $this->pipelines($orderProduct);
         $this->pipeline->before();
         try {
             DB::beginTransaction();
-            $order = $this->pipeline->then(fn(Order $order) => $this->remarks($order, $DTO));
+            $orderProduct = $this->pipeline->then(fn(OrderProduct $orderProduct) => $this->remarks($orderProduct, $DTO));
             DB::commit();
         } catch (AbstractException $exception) {
             DB::rollBack();
@@ -49,21 +49,21 @@ class OrderRemarksAction extends AbstractOrderAction
         }
         $this->pipeline->after();
 
-        return $order;
+        return $orderProduct;
     }
 
-    public function remarks(Order $order, OrderRemarksDTO $DTO) : Order
+    public function remarks(OrderProduct $orderProduct, OrderRemarksDTO $DTO) : Order
     {
         switch ($DTO->form) {
             case RemarkFormEnum::SELLER:
-                $order->info->seller_remarks = $DTO->remarks;
+                $orderProduct->info->seller_remarks = $DTO->remarks;
                 break;
             case RemarkFormEnum::BUYER:
-                $order->info->buyer_remarks = $DTO->remarks;
+                $orderProduct->info->buyer_remarks = $DTO->remarks;
                 break;
         }
-        $order->push();
-        return $order;
+        $orderProduct->save();
+        return $orderProduct;
     }
 
 }

@@ -33,6 +33,8 @@ return [
             'cardKeyShipping'   => \RedJasmine\Order\Actions\Shipping\OrderCardKeyShippingAction::class,
             'refundCreate'      => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
             'productProgress'   => \RedJasmine\Order\Actions\Others\OrderProductProgressAction::class,
+            'remarks'           => \RedJasmine\Order\Actions\Others\OrderRemarksAction::class,
+            'productRemarks'    => \RedJasmine\Order\Actions\Others\OrderProductRemarksAction::class,
         ],
         'refund' => [
             'create'            => \RedJasmine\Order\Actions\Refunds\RefundCreateAction::class,
