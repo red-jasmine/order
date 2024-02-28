@@ -5,23 +5,13 @@ namespace RedJasmine\Order\Actions\Others;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\Actions\AbstractOrderAction;
 use RedJasmine\Order\DataTransferObjects\Others\OrderRemarksDTO;
-use RedJasmine\Order\Enums\Others\RemarkFormEnum;
-use RedJasmine\Order\Events\Others\OrderProductProgressUpdateEvent;
 use RedJasmine\Order\Models\Order;
-use RedJasmine\Order\Models\OrderProduct;
-use RedJasmine\Order\Services\OrderService;
 use RedJasmine\Support\Exceptions\AbstractException;
 
-/**
- * 订单备注
- */
-class OrderRemarksAction extends AbstractOrderAction
+class OrderBuyerRemarksAction extends AbstractOrderAction
 {
 
-
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.remarks';
-
-    protected ?OrderService $service;
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.sellerRemarks';
 
     /**
      * @param int             $id
@@ -52,16 +42,10 @@ class OrderRemarksAction extends AbstractOrderAction
         return $order;
     }
 
+
     public function remarks(Order $order, OrderRemarksDTO $DTO) : Order
     {
-        switch ($DTO->form) {
-            case RemarkFormEnum::SELLER:
-                $order->info->seller_remarks = $DTO->remarks;
-                break;
-            case RemarkFormEnum::BUYER:
-                $order->info->buyer_remarks = $DTO->remarks;
-                break;
-        }
+        $order->info->seller_remarks = $DTO->remarks;
         $order->push();
         return $order;
     }

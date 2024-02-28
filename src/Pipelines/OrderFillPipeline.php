@@ -53,6 +53,7 @@ class OrderFillPipeline
         $order->payment_status       = $orderDTO->paymentStatus;
         $order->refund_status        = $orderDTO->refundStatus;
         $order->rate_status          = $orderDTO->rateStatus ?? null;
+        $order->seller_custom_status = $orderDTO->sellerCustomStatus;
         $order->freight_amount       = $orderDTO->freightAmount;
         $order->discount_amount      = $orderDTO->discountAmount;
         $order->contact              = $orderDTO->contact;
@@ -97,6 +98,7 @@ class OrderFillPipeline
         $orderProduct->payment_status         = $orderProductDTO->paymentStatus;
         $orderProduct->refund_status          = $orderProductDTO->refundStatus;
         $orderProduct->rate_status            = $orderProductDTO->rateStatus;
+        $orderProduct->seller_custom_status   = $orderProductDTO->sellerCustomStatus;
         $orderProduct->outer_order_product_id = $orderProductDTO->outerOrderProductId;
         $orderProduct->info->seller_remarks   = $orderProductDTO->info?->sellerRemarks;
         $orderProduct->info->seller_message   = $orderProductDTO->info?->sellerMessage;

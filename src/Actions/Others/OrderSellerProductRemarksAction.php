@@ -5,7 +5,7 @@ namespace RedJasmine\Order\Actions\Others;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\Actions\AbstractOrderAction;
 use RedJasmine\Order\DataTransferObjects\Others\OrderRemarksDTO;
-use RedJasmine\Order\Enums\Others\RemarkFormEnum;
+use RedJasmine\Order\Enums\Others\OrderActionFromEnum;
 use RedJasmine\Order\Events\Others\OrderProductProgressUpdateEvent;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
@@ -13,13 +13,13 @@ use RedJasmine\Order\Services\OrderService;
 use RedJasmine\Support\Exceptions\AbstractException;
 
 /**
- * 订单备注
+ * 订单商品备注
  */
-class OrderProductRemarksAction extends AbstractOrderAction
+class OrderSellerProductRemarksAction extends AbstractOrderAction
 {
 
 
-    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.productRemarks';
+    protected ?string $pipelinesConfigKey = 'red-jasmine.order.pipelines.order.sellerProductRemarks';
 
     protected ?OrderService $service;
 
@@ -54,14 +54,7 @@ class OrderProductRemarksAction extends AbstractOrderAction
 
     public function remarks(OrderProduct $orderProduct, OrderRemarksDTO $DTO) : Order
     {
-        switch ($DTO->form) {
-            case RemarkFormEnum::SELLER:
-                $orderProduct->info->seller_remarks = $DTO->remarks;
-                break;
-            case RemarkFormEnum::BUYER:
-                $orderProduct->info->buyer_remarks = $DTO->remarks;
-                break;
-        }
+        $orderProduct->info->seller_remarks = $DTO->remarks;
         $orderProduct->save();
         return $orderProduct;
     }

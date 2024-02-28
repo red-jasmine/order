@@ -46,6 +46,7 @@ class OrderProductDTO extends Data
     public ?PaymentStatusEnum        $paymentStatus       = null;
     public ?RefundStatusEnum         $refundStatus        = null;
     public ?RateStatusEnum           $rateStatus          = null;
+    public ?string                   $sellerCustomStatus  = null;
     public ?string                   $outerOrderProductId = null;
     public ?OrderProductInfoDTO      $info;
 }

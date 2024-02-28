@@ -24,17 +24,18 @@ class OrderDTO extends Data
     public ShippingTypeEnum    $shippingType;
     public OrderTypeEnum       $orderType;
     public OrderStatusEnum     $orderStatus;
-    public ?ShippingStatusEnum $shippingStatus = null;
-    public ?PaymentStatusEnum  $paymentStatus  = null;
-    public ?RefundStatusEnum   $refundStatus   = null;
-    public ?RateStatusEnum     $rateStatus     = null;
-    public ?string             $source         = null;
-    public ?string             $outerOrderId   = null;
-    public ?UserDTO            $channel        = null;
-    public ?UserDTO            $store          = null;
-    public ?UserDTO            $guide          = null;
-    public string|float|int    $freightAmount  = 0;
-    public string|float|int    $discountAmount = 0;
+    public ?ShippingStatusEnum $shippingStatus     = null;
+    public ?PaymentStatusEnum  $paymentStatus      = null;
+    public ?RefundStatusEnum   $refundStatus       = null;
+    public ?RateStatusEnum     $rateStatus         = null;
+    public ?string             $source             = null;
+    public ?string             $outerOrderId       = null;
+    public ?string             $sellerCustomStatus = null;
+    public ?UserDTO            $channel            = null;
+    public ?UserDTO            $store              = null;
+    public ?UserDTO            $guide              = null;
+    public string|float|int    $freightAmount      = 0;
+    public string|float|int    $discountAmount     = 0;
 
 
     // 虚拟商品 通知方

@@ -60,8 +60,7 @@ return new class extends Migration {
             $table->timestamp('arbitrate_time')->nullable()->comment('时间');
             $table->string('arbitrate_handler_type')->nullable()->comment('仲裁者类型');
             $table->unsignedBigInteger('arbitrate_handler_id')->nullable()->comment('仲裁者ID');
-
-
+            $table->string('seller_custom_status', 30)->nullable()->comment('卖家自定义状态');
             $table->string('seller_remarks')->nullable()->comment('卖家备注');
             $table->string('buyer_remarks')->nullable()->comment('买家备注');
             $table->json('extends')->nullable()->comment('扩展');

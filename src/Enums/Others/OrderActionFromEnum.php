@@ -4,9 +4,8 @@ namespace RedJasmine\Order\Enums\Others;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
-enum RemarkFormEnum: string
+enum OrderActionFromEnum: string
 {
-
     use EnumsHelper;
 
     case SELLER = 'seller';

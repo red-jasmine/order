@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
+            $table->string('seller_custom_status', 30)->nullable()->comment('卖家自定义状态');
             $table->decimal('total_amount', 12)->default(0)->comment('商品总金额');
             $table->decimal('freight_amount', 12)->default(0)->comment('运费');
             $table->decimal('discount_amount', 12)->default(0)->comment('订单优惠');

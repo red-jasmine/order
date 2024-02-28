@@ -44,23 +44,25 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'order_type'      => OrderTypeEnum::class,
-        'shipping_type'   => ShippingTypeEnum::class,
-        'order_status'    => OrderStatusEnum::class,
-        'payment_status'  => PaymentStatusEnum::class,
-        'shipping_status' => ShippingStatusEnum::class,
-        'refund_status'   => RefundStatusEnum::class,
-        'created_time'    => 'datetime',
-        'payment_time'    => 'datetime',
-        'close_time'      => 'datetime',
-        'shipping_time'   => 'datetime',
-        'collect_time'    => 'datetime',
-        'dispatch_time'   => 'datetime',
-        'signed_time'     => 'datetime',
-        'end_time'        => 'datetime',
-        'refund_time'     => 'datetime',
-        'rate_time'       => 'datetime',
-        'contact'         => AesEncrypted::class
+        'order_type'       => OrderTypeEnum::class,
+        'shipping_type'    => ShippingTypeEnum::class,
+        'order_status'     => OrderStatusEnum::class,
+        'payment_status'   => PaymentStatusEnum::class,
+        'shipping_status'  => ShippingStatusEnum::class,
+        'refund_status'    => RefundStatusEnum::class,
+        'created_time'     => 'datetime',
+        'payment_time'     => 'datetime',
+        'close_time'       => 'datetime',
+        'shipping_time'    => 'datetime',
+        'collect_time'     => 'datetime',
+        'dispatch_time'    => 'datetime',
+        'signed_time'      => 'datetime',
+        'end_time'         => 'datetime',
+        'refund_time'      => 'datetime',
+        'rate_time'        => 'datetime',
+        'contact'          => AesEncrypted::class,
+        'is_seller_delete' => 'boolean',
+        'is_buyer_delete'  => 'boolean'
     ];
 
 

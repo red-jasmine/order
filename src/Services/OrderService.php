@@ -10,9 +10,12 @@ use RedJasmine\Order\Actions\OrderCreateAction;
 use RedJasmine\Order\Actions\OrderPaidAction;
 use RedJasmine\Order\Actions\OrderPayingAction;
 use RedJasmine\Order\Actions\OrderQueryAction;
+use RedJasmine\Order\Actions\Others\OrderBuyerHiddenAction;
+use RedJasmine\Order\Actions\Others\OrderBuyerRemarksAction;
 use RedJasmine\Order\Actions\Others\OrderProductProgressAction;
-use RedJasmine\Order\Actions\Others\OrderProductRemarksAction;
-use RedJasmine\Order\Actions\Others\OrderRemarksAction;
+use RedJasmine\Order\Actions\Others\OrderSellerProductRemarksAction;
+use RedJasmine\Order\Actions\Others\OrderSellerHiddenAction;
+use RedJasmine\Order\Actions\Others\OrderSellerRemarksAction;
 use RedJasmine\Order\Actions\Shipping\OrderCardKeyShippingAction;
 use RedJasmine\Order\Actions\Shipping\OrderLogisticsShippingAction;
 use RedJasmine\Order\Actions\Shipping\OrderVirtualShippingAction;
@@ -48,12 +51,20 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
  * @method  Order cardKeyShipping(int $id, OrderCardKeyShippingDTO $orderShippingDTO)
  * @see OrderConfirmAction::execute()
  * @method  Order confirm(int $id, OrderSplitProductDTO $DTO)
- * @see OrderRemarksAction::execute()
- * @method  Order remarks(int $id, OrderRemarksDTO $DTO)
  * @see OrderProductProgressAction::execute()
  * @method  OrderProduct productProgress(int $id, OrderProductProgressDTO $DTO)
- * @see OrderProductRemarksAction::execute()
- * @method  OrderProduct productRemarks(int $id, OrderRemarksDTO $DTO)
+ * @see OrderSellerHiddenAction::execute()
+ * @method  OrderProduct sellerHidden(int $id)
+ * @see OrderBuyerHiddenAction::execute()
+ * @method  OrderProduct buyerHidden(int $id)
+ * @see OrderSellerRemarksAction::execute()
+ * @method  Order sellerRemarks(int $id, OrderRemarksDTO $DTO)
+ * @see OrderBuyerRemarksAction::execute()
+ * @method  Order buyerRemarks(int $id, OrderRemarksDTO $DTO)
+ * @see OrderSellerProductRemarksAction::execute()
+ * @method  OrderProduct sellerProductRemarks(int $id, OrderRemarksDTO $DTO)
+ * @see OrderBuyerProductRemarksAction::execute()
+ * @method  OrderProduct buyerProductRemarks(int $id, OrderRemarksDTO $DTO)
  */
 class OrderService extends Service
 {

@@ -43,6 +43,7 @@ return new class extends Migration {
             $table->string('shipping_status', 30)->nullable()->comment('发货状态');
             $table->string('refund_status', 30)->nullable()->comment('退款状态');
             $table->string('rate_status', 30)->nullable()->comment('评价状态');
+            $table->string('seller_custom_status', 30)->nullable()->comment('卖家自定义状态');
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
             $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
             $table->string('warehouse_code', 32)->nullable()->comment('仓库编码');
