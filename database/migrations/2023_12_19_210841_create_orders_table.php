@@ -55,6 +55,7 @@ return new class extends Migration {
             $table->string('payment_channel')->nullable()->comment('支付渠道');
             $table->unsignedTinyInteger('is_seller_delete')->default(0)->comment('卖家删除');
             $table->unsignedTinyInteger('is_buyer_delete')->default(0)->comment('买家删除');
+            $table->string('outer_order_id', 64)->nullable()->comment('外部订单号');
             $table->nullableMorphs('creator'); // 创建人
             $table->nullableMorphs('updater'); // 更新人
             $table->timestamps();

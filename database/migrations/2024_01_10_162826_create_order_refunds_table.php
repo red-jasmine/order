@@ -46,6 +46,8 @@ return new class extends Migration {
             $table->string('reason')->nullable()->comment('原因');
             $table->string('description')->nullable()->comment('描述');
             $table->json('images')->nullable()->comment('图片');
+            $table->string('outer_refund_id', 64)->nullable()->comment('外部退款单号');
+
 
             $table->string('refund_status')->comment('退款状态');
             $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
@@ -59,11 +61,12 @@ return new class extends Migration {
             $table->string('arbitrate_handler_type')->nullable()->comment('仲裁者类型');
             $table->unsignedBigInteger('arbitrate_handler_id')->nullable()->comment('仲裁者ID');
 
-            $table->string('remarks')->nullable()->comment('备注');
+
+            $table->string('seller_remarks')->nullable()->comment('卖家备注');
+            $table->string('buyer_remarks')->nullable()->comment('买家备注');
             $table->json('extends')->nullable()->comment('扩展');
             $table->nullableMorphs('creator'); // 创建人
             $table->nullableMorphs('updater'); // 更新人
-            $table->unsignedBigInteger('version')->nullable()->comment('版本');
             $table->timestamps();
             $table->softDeletes();
             $table->comment('订单表');
