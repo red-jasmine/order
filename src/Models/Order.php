@@ -15,6 +15,7 @@ use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
+use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\DataTransferObjects\UserDTO;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;

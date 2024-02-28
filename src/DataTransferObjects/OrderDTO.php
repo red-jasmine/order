@@ -18,28 +18,28 @@ class OrderDTO extends Data
 
     public ?array $parameters = [];
 
-    public string             $title;
-    public UserDTO            $seller;
-    public UserDTO            $buyer;
-    public ShippingTypeEnum       $shippingType;
-    public OrderTypeEnum      $orderType;
-    public OrderStatusEnum    $orderStatus;
-    public ?ShippingStatusEnum    $shippingStatus    = null;
-    public ?PaymentStatusEnum $paymentStatus = null;
-    public ?RefundStatusEnum  $refundStatus  = null;
-    public ?RateStatusEnum    $rateStatus    = null;
-    public ?string            $source        = null;
-
-    public ?UserDTO         $channel        = null;
-    public ?UserDTO         $store          = null;
-    public ?UserDTO         $guide          = null;
-    public string|float|int $freightAmount  = 0;
-    public string|float|int $discountAmount = 0;
+    public string              $title;
+    public UserDTO             $seller;
+    public UserDTO             $buyer;
+    public ShippingTypeEnum    $shippingType;
+    public OrderTypeEnum       $orderType;
+    public OrderStatusEnum     $orderStatus;
+    public ?ShippingStatusEnum $shippingStatus = null;
+    public ?PaymentStatusEnum  $paymentStatus  = null;
+    public ?RefundStatusEnum   $refundStatus   = null;
+    public ?RateStatusEnum     $rateStatus     = null;
+    public ?string             $source         = null;
+    public ?string             $outerOrderId   = null;
+    public ?UserDTO            $channel        = null;
+    public ?UserDTO            $store          = null;
+    public ?UserDTO            $guide          = null;
+    public string|float|int    $freightAmount  = 0;
+    public string|float|int    $discountAmount = 0;
 
 
     // 虚拟商品 通知方
-    public ?string $contact = null;
-    public ?string $password   = null;
+    public ?string $contact  = null;
+    public ?string $password = null;
 
     public ?string $clientType;
     public ?string $clientIp;

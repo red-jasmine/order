@@ -264,6 +264,7 @@ class RefundCreateAction extends AbstractOrderProductAction
         $orderRefund->reason          = $DTO->reason;
         $orderRefund->description     = $DTO->description;
         $orderRefund->images          = $DTO->images;
+        $orderRefund->outer_refund_id = $DTO->outerRefundId;
         $orderRefund->created_time    = now();
         $orderProduct->refund_id      = $orderRefund->id; // 最新售后单ID
         $orderProduct->refund_status  = $orderRefund->refund_status; // 同步退款单状态

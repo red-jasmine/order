@@ -62,6 +62,7 @@ return new class extends Migration {
             $table->nullableMorphs('updater');
             $table->timestamps();
             $table->softDeletes();
+            $table->index('order_id', 'idx_order_id');
             $table->comment('订单-商品表');
         });
     }

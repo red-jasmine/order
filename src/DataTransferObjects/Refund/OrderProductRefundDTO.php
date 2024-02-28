@@ -29,6 +29,13 @@ class OrderProductRefundDTO extends Data
      */
     public ?string $description;
 
+
+    /**
+     * 外部退款单ID
+     * @var string|null
+     */
+    public ?string $outerRefundId = null;
+
     /**
      * 图片
      * @var array|null
