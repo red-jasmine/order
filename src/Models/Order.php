@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Models;
 
-use Illuminate\Database\Eloquent\Builder;
+
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -59,6 +59,7 @@ class Order extends Model
         'end_time'        => 'datetime',
         'refund_time'     => 'datetime',
         'rate_time'       => 'datetime',
+        'contact'         => AesEncrypted::class
     ];
 
 
@@ -79,7 +80,7 @@ class Order extends Model
 
     public function logistics() : MorphMany
     {
-        return $this->morphMany(OrderLogistics::class,'shippable');
+        return $this->morphMany(OrderLogistics::class, 'shippable');
     }
 
 
