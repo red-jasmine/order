@@ -2,16 +2,11 @@
 
 namespace RedJasmine\Order\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Enums\Logistics\LogisticsStatusEnum;
-use RedJasmine\Support\Contracts\UserInterface;
-use RedJasmine\Support\DataTransferObjects\UserDTO;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 

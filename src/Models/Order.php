@@ -17,7 +17,7 @@ use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
-use RedJasmine\Support\DataTransferObjects\UserDTO;
+use RedJasmine\Support\DataTransferObjects\UserData;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use RedJasmine\Support\Traits\Models\WithDTO;
@@ -90,7 +90,7 @@ class Order extends Model
     public function guide() : Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => UserDTO::from([
+            get: fn(mixed $value, array $attributes) => UserData::from([
                                                                           'type' => $attributes['guide_type'],
                                                                           'id'   => $attributes['guide_id'],
                                                                       ]),

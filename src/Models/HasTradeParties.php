@@ -5,7 +5,7 @@ namespace RedJasmine\Order\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use RedJasmine\Support\Contracts\UserInterface;
-use RedJasmine\Support\DataTransferObjects\UserDTO;
+use RedJasmine\Support\DataTransferObjects\UserData;
 
 trait HasTradeParties
 {
@@ -21,7 +21,7 @@ trait HasTradeParties
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                return UserDTO::from([
+                return UserData::from([
                                          'type'     => $attributes['seller_type'],
                                          'id'       => $attributes['seller_id'],
                                          'nickname' => $attributes['seller_nickname'] ?? null
@@ -51,7 +51,7 @@ trait HasTradeParties
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                return UserDTO::from([
+                return UserData::from([
                                          'type'     => $attributes['buyer_type'],
                                          'id'       => $attributes['buyer_id'],
                                          'nickname' => $attributes['buyer_nickname'] ?? null
