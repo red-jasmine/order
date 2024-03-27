@@ -4,7 +4,7 @@ namespace RedJasmine\Order\DataTransferObjects;
 
 
 use Illuminate\Support\Carbon;
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Attributes\WithTransformer;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;

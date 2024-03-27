@@ -8,7 +8,7 @@ use RedJasmine\Order\Enums\Orders\RateStatusEnum;
 use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
 use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Optional;
 
 class OrderProductDTO extends Data

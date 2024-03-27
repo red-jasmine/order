@@ -5,7 +5,7 @@ namespace RedJasmine\Order\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use RedJasmine\Support\Contracts\UserInterface;
-use RedJasmine\Support\DataTransferObjects\UserData;
+use RedJasmine\Support\Data\UserData;
 
 trait HasTradeParties
 {

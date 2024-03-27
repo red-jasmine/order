@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\DataTransferObjects;
 
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 
 
 class OrderProductInfoDTO extends Data

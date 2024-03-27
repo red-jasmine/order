@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\DataTransferObjects\Refund;
 
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 
 class RefundRefuseDTO extends Data
 {

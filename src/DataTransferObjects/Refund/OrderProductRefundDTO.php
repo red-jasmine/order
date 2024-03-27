@@ -4,7 +4,7 @@ namespace RedJasmine\Order\DataTransferObjects\Refund;
 
 use RedJasmine\Order\Enums\Refund\RefundGoodsStatusEnum;
 use RedJasmine\Order\Enums\Refund\RefundTypeEnum;
-use RedJasmine\Support\DataTransferObjects\Data;
+use RedJasmine\Support\Data\Data;
 
 class OrderProductRefundDTO extends Data
 {
