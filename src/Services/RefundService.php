@@ -47,6 +47,7 @@ class RefundService extends Service
     public function __construct(OrderService $orderService)
     {
         $this->orderService = $orderService;
+        parent::__construct();
     }
 
 
@@ -62,13 +63,5 @@ class RefundService extends Service
     }
 
 
-    /**
-     * 生成订单ID
-     * @return int
-     * @throws Exception
-     */
-    public function buildID() : int
-    {
-        return Snowflake::getInstance()->nextId();
-    }
+
 }

@@ -103,15 +103,7 @@ class OrderService extends Service
     }
 
 
-    /**
-     * 生成订单ID
-     * @return int
-     * @throws Exception
-     */
-    public function buildID() : int
-    {
-        return Snowflake::getInstance()->nextId();
-    }
+
 
 
     /**
