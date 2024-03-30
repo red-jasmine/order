@@ -4,8 +4,8 @@ namespace RedJasmine\Order\Actions\Refunds;
 
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\DataTransferObjects\Refund\RefundAgreeDTO;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
-use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\RefundStatusEnum;
 use RedJasmine\Order\Enums\Refund\RefundTypeEnum;
 use RedJasmine\Order\Events\Refunds\RefundAgreedEvent;
 use RedJasmine\Order\Exceptions\RefundException;

@@ -19,5 +19,6 @@ class OrderInfo extends Model
         'buyer_extends'  => 'array',
         'seller_extends' => 'array',
         'other_extends'  => 'array',
+        'tools'          => 'array',
     ];
 }

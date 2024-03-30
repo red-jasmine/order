@@ -10,12 +10,16 @@
         }
     ],
     "homepage": "https://github.com/red-jasmine/order",
-    "keywords": ["Laravel", "Order"],
+    "keywords": [
+        "Laravel",
+        "Order"
+    ],
     "require": {
         "red-jasmine/support": "1.0.x-dev"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0"
+        "orchestra/testbench": "^8.0",
+        "nunomaduro/collision": "^7.10"
     },
     "autoload": {
         "psr-4": {
@@ -24,13 +28,16 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "RedJasmine\\Order\\Tests\\": "tests"
+            "RedJasmine\\Order\\Tests\\": "tests",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-              "RedJasmine\\Order\\OrderDomainServiceProvider"
+                "RedJasmine\\Order\\OrderDomainServiceProvider"
             ],
             "aliases": {
                 "OrderService": "RedJasmine\\Order\\Facades\\OrderService"
@@ -43,7 +50,32 @@
     },
     "scripts": {
         "post-autoload-dump": [
+            "@clear",
+            "@prepare",
             "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "lint": [
+            "@php vendor/bin/phpstan analyse"
+        ],
+        "test": [
+            "@php vendor/bin/phpunit"
         ]
+    },
+    "repositories": {
+        "red-jasmine/support": {
+            "type": "path",
+            "url": "../support",
+            "options": {
+                "symlink": true
+            }
+        }
     }
 }

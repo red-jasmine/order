@@ -4,9 +4,9 @@ namespace RedJasmine\Order\Actions\Shipping;
 
 use RedJasmine\Order\Actions\AbstractOrderAction;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
-use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;

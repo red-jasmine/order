@@ -7,12 +7,14 @@ use Illuminate\Support\ServiceProvider;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderRefund;
 use RedJasmine\Order\Services\OrderService;
-
+use Illuminate\Contracts\Config\Repository;
 /**
  * 订单 领域 服务提供者
  */
 class OrderDomainServiceProvider extends ServiceProvider
 {
+
+
     /**
      * Perform post-registration booting of services.
      *

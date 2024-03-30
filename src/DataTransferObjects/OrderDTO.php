@@ -2,13 +2,13 @@
 
 namespace RedJasmine\Order\DataTransferObjects;
 
-use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
-use RedJasmine\Order\Enums\Orders\OrderTypeEnum;
-use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
-use RedJasmine\Order\Enums\Orders\RateStatusEnum;
-use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderTypeEnum;
+use RedJasmine\Order\Services\Order\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\RateStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\RefundStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
 use Spatie\LaravelData\DataCollection;

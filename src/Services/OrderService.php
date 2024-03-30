@@ -29,6 +29,7 @@ use RedJasmine\Order\DataTransferObjects\Shipping\OrderShippingDTO;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Support\Contracts\UserInterface;
+use RedJasmine\Support\Foundation\Service\ResourceService;
 use RedJasmine\Support\Foundation\Service\Service;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
@@ -66,10 +67,20 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
  * @see OrderBuyerProductRemarksAction::execute()
  * @method  OrderProduct buyerProductRemarks(int $id, OrderRemarksDTO $DTO)
  */
-class OrderService extends Service
+class OrderService extends ResourceService
 {
 
-    protected static ?string $actionsConfigKey = 'red-jasmine.order.actions.order';
+
+    protected static string $modelClass = Order::class;
+
+    protected static ?string $serviceConfigKey = 'red-jasmine.order.services.order';
+
+
+
+    protected array $actions = [
+
+
+    ];
 
     /**
      * @param int $id
@@ -101,9 +112,6 @@ class OrderService extends Service
     {
         return app(OrderQueryAction::class)->setService($this);
     }
-
-
-
 
 
     /**

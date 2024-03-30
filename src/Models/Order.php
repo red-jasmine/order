@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
-use RedJasmine\Order\Enums\Orders\OrderTypeEnum;
-use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
-use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderTypeEnum;
+use RedJasmine\Order\Services\Order\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\RefundStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
@@ -38,10 +38,7 @@ class Order extends Model
 
     public $incrementing = false;
 
-    protected $fillable = [
-        'order_type',
-        'shipping_type',
-    ];
+
 
     protected $casts = [
         'order_type'       => OrderTypeEnum::class,
@@ -90,11 +87,11 @@ class Order extends Model
     public function guide() : Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attributes) => UserData::from([
-                                                                          'type' => $attributes['guide_type'],
-                                                                          'id'   => $attributes['guide_id'],
-                                                                      ]),
-            set: fn(?UserInterface $user) => [
+            get: static fn(mixed $value, array $attributes) => UserData::from([
+                                                                                  'type' => $attributes['guide_type'],
+                                                                                  'id'   => $attributes['guide_id'],
+                                                                              ]),
+            set: static fn(?UserInterface $user) => [
                 'guide_type' => $user?->getType(),
                 'guide_id'   => $user?->getID(),
             ]

@@ -37,8 +37,9 @@ class OrderAddress extends Model
         'street_id',
         'address',
         'zip_code',
-        'long',
+        'lon',
         'lat',
+        'extends',
     ];
 
     protected $casts = [

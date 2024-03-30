@@ -3,8 +3,8 @@
 namespace RedJasmine\Order\Actions;
 
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
-use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderPayingEvent;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;

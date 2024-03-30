@@ -3,7 +3,7 @@
 namespace RedJasmine\Order\Actions\Refunds;
 
 use Illuminate\Support\Facades\DB;
-use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\RefundStatusEnum;
 use RedJasmine\Order\Events\Refunds\RefundCancelledEvent;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderRefund;

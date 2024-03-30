@@ -4,11 +4,11 @@ namespace RedJasmine\Order\Validators;
 
 
 use Illuminate\Validation\Rules\Enum;
-use RedJasmine\Order\Enums\Orders\OrderStatusEnum;
-use RedJasmine\Order\Enums\Orders\OrderTypeEnum;
-use RedJasmine\Order\Enums\Orders\PaymentStatusEnum;
-use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
-use RedJasmine\Order\Enums\Orders\ShippingTypeEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\OrderTypeEnum;
+use RedJasmine\Order\Services\Order\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\RefundStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\ShippingTypeEnum;
 
 class OrderValidate
 {

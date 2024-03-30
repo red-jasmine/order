@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Actions\Refunds;
 
-use RedJasmine\Order\Enums\Orders\RefundStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\RefundStatusEnum;
 use RedJasmine\Order\Enums\Refund\RefundTypeEnum;
 use RedJasmine\Order\Exceptions\RefundException;
 use RedJasmine\Order\Models\OrderRefund;

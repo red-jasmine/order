@@ -5,7 +5,7 @@ namespace RedJasmine\Order\Actions\Shipping;
 use Illuminate\Support\Facades\DB;
 use RedJasmine\Order\DataTransferObjects\Shipping\OrderLogisticsShippingDTO;
 use RedJasmine\Order\Enums\Logistics\LogisticsShipperEnum;
-use RedJasmine\Order\Enums\Orders\ShippingStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Events\Orders\OrderShippedEvent;
 use RedJasmine\Order\Exceptions\OrderException;
 use RedJasmine\Order\Models\Order;
