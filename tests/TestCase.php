@@ -66,10 +66,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function defineDatabaseMigrations()
     {
-        // artisan($this, 'migrate', ['--database' => 'testbench']);
-        //
+        // artisan($this, 'migrate' );
+        // //
         // $this->beforeApplicationDestroyed(
-        //     fn () => artisan($this, 'migrate:rollback', ['--database' => 'testbench'])
+        //     fn () => artisan($this, 'migrate:rollback')
         // );
     }
 

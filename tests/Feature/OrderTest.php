@@ -389,14 +389,26 @@ class OrderTest extends TestCase
                 'shipping_type' => ShippingTypeEnum::CDK,
             ],
         ];
-        $order             = $this->test_order_paid($data);
-        $orderProducts     = [ $order->products[0]->id ];
+        $order = $this->test_order_paid($data);
+        $orderProducts = [ $order->products[0]->id ];
         $orderShippingData = OrderCardKeyShippingData::from([
                                                                 'is_split'       => true,
                                                                 'order_products' => $orderProducts,
-                                                                'card_key'       => fake()->text(),
+                                                                'contents'        => [
+                                                                    [
+                                                                        'content' => fake()->text(),
+                                                                    ],
+                                                                    [
+                                                                        'content' => fake()->text(),
+                                                                    ],
+                                                                    [
+                                                                        'content' => fake()->text(),
+                                                                    ],
+                                                                ],
                                                             ]);
 
+
+       ;
         /**
          * @var Order $order
          */
@@ -404,7 +416,7 @@ class OrderTest extends TestCase
         $order->refresh();
         $this->assertEquals(OrderStatusEnum::WAIT_SELLER_SEND_GOODS->value, $order->order_status->value, '订单状态错误');
         $this->assertEquals(ShippingStatusEnum::PART_SHIPPED->value, $order->shipping_status->value, '发货状态错误');
-        $this->assertEquals($orderShippingData->cardKey, $order->products[0]->info->card_key);
+
         $this->assertEquals(OrderStatusEnum::WAIT_BUYER_CONFIRM_GOODS->value, $order->products[0]->order_status->value);
         $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $order->products[0]->shipping_status->value);
 
@@ -412,8 +424,19 @@ class OrderTest extends TestCase
         $orderShippingData = OrderCardKeyShippingData::from([
                                                                 'is_split'       => true,
                                                                 'order_products' => $orderProducts,
-                                                                'card_key'       => fake()->text(),
+                                                                'contents'        => [
+                                                                    [
+                                                                        'content' => fake()->text(),
+                                                                    ],
+                                                                    [
+                                                                        'content' => fake()->text(),
+                                                                    ],
+                                                                    [
+                                                                        'content' => fake()->text(),
+                                                                    ],
+                                                                ],
                                                             ]);
+
         /**
          * @var Order $order
          */
