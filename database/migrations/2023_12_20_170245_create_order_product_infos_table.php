@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->json('buyer_extends')->nullable()->comment('买家扩展信息');
             $table->json('other_extends')->nullable()->comment('其他扩展信息');
             $table->json('tools')->nullable()->comment('商品工具');
-            $table->text('card_key')->nullable()->comment('卡密');
             $table->timestamps();
             $table->softDeletes();
             $table->comment('订单商品-附加信息表');

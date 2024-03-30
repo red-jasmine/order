@@ -11,20 +11,20 @@ return new class extends Migration {
             $table->unsignedBigInteger('id')->primary()->comment('退款单号');
             $table->unsignedBigInteger('order_id')->comment('订单号');
             $table->unsignedBigInteger('order_product_id')->comment('订单商品单号');
-            $table->string('seller_type')->comment('卖家类型');
+            $table->string('seller_type', 32)->comment('卖家类型');
             $table->unsignedBigInteger('seller_id')->comment('卖家ID');
-            $table->string('buyer_type')->comment('买家类型');
+            $table->string('buyer_type', 32)->comment('买家类型');
             $table->unsignedBigInteger('buyer_id')->comment('买家类型');
-            $table->string('shipping_type', 30)->comment('发货类型');
-            $table->string('order_product_type', 30)->comment('订单商品类型');
+            $table->string('shipping_type', 32)->comment('发货类型');
+            $table->string('order_product_type', 32)->comment('订单商品类型');
             $table->string('title')->comment('商品标题');
             $table->string('sku_name')->nullable()->comment('SKU名称');
             $table->string('image')->nullable()->comment('图片');
-            $table->string('product_type', 30)->comment('商品多态类型');
+            $table->string('product_type', 32)->comment('商品多态类型');
             $table->unsignedBigInteger('product_id')->comment('商品ID');
-            $table->unsignedBigInteger('sku_id')->default(0)->comment('规格ID');
+            $table->unsignedBigInteger('sku_id')->default(0)->comment('SKU ID');
             $table->unsignedBigInteger('category_id')->nullable()->comment('类目ID');
-            $table->unsignedBigInteger('seller_category_id')->nullable()->comment('店内分类编号');
+            $table->unsignedBigInteger('seller_category_id')->nullable()->comment('卖家分类ID');
             $table->string('outer_id', 64)->nullable()->comment('商品外部编码');
             $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
             $table->string('barcode', 64)->nullable()->comment('条形码');
@@ -38,8 +38,8 @@ return new class extends Migration {
             $table->decimal('divided_payment_amount', 12)->default(0)->comment('分摊后实际付款金额');
 
 
-            $table->string('phase')->comment('阶段');
-            $table->string('refund_type')->comment('退款类型');
+            $table->string('phase',32)->comment('阶段');
+            $table->string('refund_type',32)->comment('退款类型');
             $table->decimal('freight_amount', 12)->default(0)->comment('运费');
             $table->unsignedTinyInteger('has_good_return')->default(0)->comment('是否需要退货');
             $table->string('good_status')->nullable()->comment('货物状态');
