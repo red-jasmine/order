@@ -9,6 +9,7 @@ use RedJasmine\Order\Models\Order;
 use RedJasmine\Order\Models\OrderProduct;
 use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
 use RedJasmine\Order\Services\Order\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Services\Order\Enums\RefundStatusEnum;
 use RedJasmine\Order\Services\Order\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Services\Order\OrderService;
 use RedJasmine\Support\Data\Data;
@@ -61,6 +62,15 @@ abstract class AbstractOrderAction extends ResourceAction
 
     protected ?array $forbidShippingStatus = null;
 
+
+    /**
+     * @var array|null|RefundStatusEnum[]
+     */
+    protected ?array $allowRefundStatus = null;
+
+
+    protected ?array $forbidRefundStatus = null;
+
     /**
      * @param Order|OrderProduct $model
      *
@@ -72,6 +82,7 @@ abstract class AbstractOrderAction extends ResourceAction
         $this->checkStatus($model->order_status, $this->allowOrderStatus, $this->forbidOrderStatus);
         $this->checkStatus($model->payment_status, $this->allowPaymentStatus, $this->forbidPaymentStatus);
         $this->checkStatus($model->shipping_status, $this->allowShippingStatus, $this->forbidShippingStatus);
+        $this->checkStatus($model->refund_status, $this->allowRefundStatus, $this->forbidRefundStatus);
         return true;
     }
 
