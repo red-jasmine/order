@@ -22,6 +22,7 @@ class OrderDomainServiceProvider extends ServiceProvider
      */
     public function boot() : void
     {
+
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'red-jasmine');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'red-jasmine');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');

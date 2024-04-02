@@ -171,8 +171,7 @@ class OrderCreatePipelines
     public function fillOrder(Order $order, OrderData $orderData) : void
     {
 
-        $order->seller = $orderData->seller;
-
+        $order->seller               = $orderData->seller;
         $order->buyer                = $orderData->buyer;
         $order->title                = $orderData->title;
         $order->order_type           = $orderData->orderType;
@@ -199,7 +198,6 @@ class OrderCreatePipelines
         $order->info->buyer_extends  = $orderData->info?->buyerExtends;
         $order->info->other_extends  = $orderData->info?->otherExtends;
         $order->info->tools          = $orderData->info?->tools;
-
 
 
         if ($orderData->address) {

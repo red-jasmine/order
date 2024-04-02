@@ -8,7 +8,11 @@ use RedJasmine\Order\Application\Order\UserCases\Commands\OrderCreateCommand;
 
 class OrderService implements OrderServiceInterface
 {
-    public function create(OrderCreateData $data) : OrderData
+    // has Commands
+    // has queries
+
+
+    public function create(OrderData $data) : OrderData
     {
         return app()->make(OrderCreateCommand::class)->execute($data);
     }

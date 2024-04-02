@@ -11,6 +11,6 @@ use RedJasmine\Order\Application\Order\Data\OrderData;
 interface OrderServiceInterface
 {
     // 待定
-    public function create(OrderCreateData $data) : OrderData;
+    public function create(OrderData $data) : OrderData;
 
 }

@@ -3,10 +3,9 @@
 namespace RedJasmine\Order\Application\Order\Data;
 
 use Illuminate\Support\Collection;
-use RedJasmine\Order\Services\Order\Data\OrderAddressData;
-use RedJasmine\Order\Services\Order\Data\OrderInfoData;
-use RedJasmine\Order\Services\Order\Enums\OrderTypeEnum;
-use RedJasmine\Order\Services\Order\Enums\ShippingTypeEnum;
+
+use RedJasmine\Order\Domain\Order\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domain\Order\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
 
@@ -47,6 +46,7 @@ class OrderData extends Data
 
 
     public ?OrderInfoData $info;
+
 
 
 }

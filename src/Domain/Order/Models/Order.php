@@ -25,6 +25,8 @@ use Spatie\LaravelData\WithData;
 class Order extends Model
 {
 
+    // TODO  has $events
+
     use WithData;
 
     use HasDateTimeFormatter;
@@ -111,4 +113,13 @@ class Order extends Model
         return $this;
     }
 
+
+    public function create()
+    {
+        // 计算金额
+        $this->calculateAmount();
+
+
+        event();
+    }
 }
