@@ -16,6 +16,7 @@ class OrderData extends Data
         return [ 'seller', 'buyer', 'channel', 'store', 'guide' ];
     }
 
+    public ?int             $id;
     public string           $title;
     public UserData         $seller;
     public UserData         $buyer;
@@ -46,7 +47,6 @@ class OrderData extends Data
 
 
     public ?OrderInfoData $info;
-
 
 
 }

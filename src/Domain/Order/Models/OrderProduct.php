@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Order\Domain\Order\Models\ValueObjects\PriceCasts;
 use RedJasmine\Order\Models\HasTradeParties;
 use RedJasmine\Order\Models\OrderProductCardKey;
 use RedJasmine\Order\Domain\Order\Enums\OrderStatusEnum;
@@ -40,6 +41,7 @@ class OrderProduct extends Model
         'shipping_status' => ShippingStatusEnum::class,
         'payment_status'  => PaymentStatusEnum::class,
         'refund_status'   => RefundStatusEnum::class,
+        //'price'           => PriceCasts::class
     ];
 
     protected $fillable = [

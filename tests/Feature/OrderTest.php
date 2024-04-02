@@ -136,23 +136,18 @@ class OrderTest extends TestCase
 
     /**
      * 创建订单
-     * @return Order
+     * @return OrderData
      */
-    public function test_create_for_array() : Order
+    public function test_create_for_array() : OrderData
     {
         $orderDataArray               = $this->fakeOrderArray();
         $orderDataArray['products'][] = $this->fakeProductArray();
         $orderDataArray['products'][] = $this->fakeProductArray();
         $orderDataArray['products'][] = $this->fakeProductArray();
         $orderData                    = OrderData::from($orderDataArray);
-
-        $result                       = $this->service()->create($orderData);
-        $this->assertInstanceOf(Order::class, $result, '');
-        $this->assertModelExists($result);
-
-        // 创建订单验证 TODO
-
-        return $result;
+        $resultDataData               = $this->service()->create($orderData);
+        $this->assertInstanceOf(OrderData::class, $resultDataData);
+        return $resultDataData;
     }
 
 }

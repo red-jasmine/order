@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Domain\Order\Models;
 
 
+use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,15 +16,19 @@ use RedJasmine\Order\Domain\Order\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Order\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Order\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Order\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Order\Events\OrderCreatedEvent;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
+use RedJasmine\Support\Helpers\ID\Snowflake;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use Spatie\LaravelData\WithData;
 
 class Order extends Model
 {
+
+    protected array $events = [];
 
     // TODO  has $events
 
@@ -61,7 +66,7 @@ class Order extends Model
         'rate_time'        => 'datetime',
         'contact'          => AesEncrypted::class,
         'is_seller_delete' => 'boolean',
-        'is_buyer_delete'  => 'boolean'
+        'is_buyer_delete'  => 'boolean',
     ];
 
 
@@ -110,16 +115,126 @@ class Order extends Model
 
     public function calculateAmount() : static
     {
+        // 统计商品金额
+        $this->calculateProducts();
+        // 汇总订单金额
+        $this->calculateOrder();
+        // 分摊订单数据
+        $this->calculateDivideDiscount();
         return $this;
     }
 
 
+    protected function calculateProducts() : void
+    {
+        foreach ($this->products as $product) {
+            // 商品总金额   < 0 TODO 验证金额
+
+            $product->product_amount = bcmul($product->num, $product->price, 2);
+            // 成本金额
+            $product->cost_amount = bcmul($product->num, $product->cost_price, 2);
+            // 计算税费
+            $product->tax_amount = bcadd($product->tax_amount, 0, 2);
+            // 单品优惠
+            $product->discount_amount = bcadd($product->discount_amount, 0, 2);
+            // 应付金额  = 商品金额 + 税费 - 单品优惠
+
+            $product->payable_amount = bcsub(bcadd($product->product_amount, $product->tax_amount, 2), $product->discount_amount, 2);
+
+            // 实付金额 完成支付时
+            $product->payment_amount = 0;
+
+        }
+    }
+
+
+    protected function calculateOrder() : void
+    {
+        $order = $this;
+        // 商品金额
+        $order->total_product_amount = $order->products->reduce(function ($sum, $product) {
+            return bcadd($sum, $product->product_amount, 2);
+        }, 0);
+        // 商品成本
+        $order->total_cost_amount = $order->products->reduce(function ($sum, $product) {
+            return bcadd($sum, $product->cost_amount, 2);
+        }, 0);
+        // 商品应付
+        $order->total_payable_amount = $order->products->reduce(function ($sum, $product) {
+            return bcadd($sum, $product->payable_amount, 2);
+        }, 0);
+
+        // 邮费
+        $order->freight_amount = bcadd($order->freight_amount, 0, 2);
+        // 订单优惠
+        $order->discount_amount = bcadd($order->discount_amount, 0, 2);
+
+        // 订单应付金额 = 商品总应付金额 + 邮费 - 优惠
+        $order->payable_amount = bcsub(bcadd($order->total_payable_amount, $order->freight_amount, 2), $order->discount_amount, 2);
+
+    }
+
+    /**
+     * 计算分摊优惠
+     * @return void
+     */
+    public function calculateDivideDiscount()
+    {
+        $order = $this;
+        $order->discount_amount;
+        // 对商品进行排序 从小到大
+        $products = $order->products->sortBy('product_amount')->values();
+        // TODO
+    }
+
+    /**
+     * @return $this|Model|Order
+     * @throws Exception
+     */
     public function create()
     {
+        $this->id       = Snowflake::getInstance()->nextId();
+        $this->info->id = $this->id;
+        // 初始化订单状态
+        // TODO 策略模式
+        $this->order_status    = OrderStatusEnum::WAIT_BUYER_PAY;
+        $this->payment_status  = null;
+        $this->shipping_status = null;
+        $this->refund_status   = null;
+        $this->rate_status     = null;
+
+
+        $this->created_time = now();
+        $this->products->each(function (OrderProduct $orderProduct) {
+            $orderProduct->id = Snowflake::getInstance()->nextId();;
+            $orderProduct->order_id     = $this->id;
+            $orderProduct->order_status = $this->order_status;
+            $orderProduct->seller       = $this->seller;
+            $orderProduct->buyer        = $this->buyer;
+            $orderProduct->created_time = $this->created_time;
+            $orderProduct->creator      = $this->creator;
+            $orderProduct->info->id     = $orderProduct->id;
+        });
+        if ($this->address) {
+            $this->address->id = $this->id;
+        }
+
         // 计算金额
         $this->calculateAmount();
 
 
-        event();
+        $this->events[] = (new OrderCreatedEvent());
+
+        return $this;
+    }
+
+
+    public function dispatch() : void
+    {
+
+        foreach (array_pop($this->events) as $event) {
+            event($event);
+        }
+
     }
 }
