@@ -1,9 +1,8 @@
 <?php
 
-namespace RedJasmine\Order\Application\Http\Buyer\Resources;
+namespace RedJasmine\Order\Presentation\Http\Buyer\Resources;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Http\Resources\Json\JsonResource;
 use RedJasmine\Support\Http\Resources\WithCollectionResource;
 

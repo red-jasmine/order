@@ -1,9 +1,9 @@
 <?php
 
-namespace RedJasmine\Order\Application\Http\Buyer\Routes;
+namespace RedJasmine\Order\Presentation\Http\Buyer\Routes;
 
 use Illuminate\Support\Facades\Route;
-use RedJasmine\Order\Application\Http\Buyer\Controllers\Api\OrderController;
+use RedJasmine\Order\Presentation\Http\Buyer\Controllers\Api\OrderController;
 
 
 class OrderBuyerRoutes

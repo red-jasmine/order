@@ -9,7 +9,7 @@ use RedJasmine\Order\Models\OrderRefund;
 use RedJasmine\Order\Services\OrderService;
 use Illuminate\Contracts\Config\Repository;
 /**
- * 订单 领域 服务提供者
+ *  TODO 这里的服务提供者着  仅仅是包的提供者
  */
 class OrderDomainServiceProvider extends ServiceProvider
 {

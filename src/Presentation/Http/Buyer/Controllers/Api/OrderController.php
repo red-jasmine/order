@@ -1,11 +1,11 @@
 <?php
 
-namespace RedJasmine\Order\Application\Http\Buyer\Controllers\Api;
+namespace RedJasmine\Order\Presentation\Http\Buyer\Controllers\Api;
 
 
 use Illuminate\Http\Request;
 use RedJasmine\Order\Business\Buyer\OrderService;
-use RedJasmine\Order\Application\Http\Buyer\Resources\OrderResource;
+use RedJasmine\Order\Presentation\Http\Buyer\Resources\OrderResource;
 
 class OrderController extends Controller
 {
