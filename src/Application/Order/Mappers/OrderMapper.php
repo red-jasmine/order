@@ -10,7 +10,6 @@ use RedJasmine\Order\Domain\Order\Models\OrderInfo;
 class OrderMapper
 {
 
-
     public function fromData(OrderData $orderData) : Order
     {
         $order = new  Order();
