@@ -1,9 +1,9 @@
 <?php
 
-namespace RedJasmine\Order\Application\Order\Data;
-
 namespace RedJasmine\Order\Domains\Order\Application\Data;
 
+
+use RedJasmine\Support\Data\Data;
 
 class OrderInfoData extends Data
 {

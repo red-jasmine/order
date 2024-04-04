@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Domains\Order\Domain;
 
 use RedJasmine\Order\Domains\Order\Domain\Models\Order;
+use RedJasmine\Order\Domains\Order\Domain\Models\OrderAddress;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderInfo;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderProduct;
 use RedJasmine\Support\Helpers\ID\Snowflake;
@@ -41,6 +42,14 @@ class OrderFactory
         $info->id         = $orderProduct->id;
         $orderProduct->setRelation('info', $info);
         return $orderProduct;
+    }
+
+
+    public function createOrderAddress() : OrderAddress
+    {
+        $address = new OrderAddress();
+
+        return $address;
     }
 
 

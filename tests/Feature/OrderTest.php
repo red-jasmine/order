@@ -3,11 +3,10 @@
 namespace RedJasmine\Order\Tests\Feature;
 
 
-use RedJasmine\Order\Application\Order\Data\OrderData;
-use RedJasmine\Order\Application\Order\OrderService;
-use RedJasmine\Order\Domain\Order\Enums\OrderTypeEnum;
-use RedJasmine\Order\Domain\Order\Enums\ShippingTypeEnum;
-use RedJasmine\Order\Domain\Order\Models\Order;
+use RedJasmine\Order\Domains\Order\Application\Services\OrderService;
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCreateCommand;
+use RedJasmine\Order\Domains\Order\Domain\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -16,7 +15,7 @@ class OrderTest extends TestCase
     protected function fakeAddressArray() : array
     {
         return [
-            'contacts'   => fake()->title,
+            'contacts'   => fake()->name,
             'mobile'     => fake()->phoneNumber(),
             'country'    => fake()->country(),
             'province'   => fake()->city(),
@@ -49,7 +48,7 @@ class OrderTest extends TestCase
                 'type' => 'buyer',
                 'id'   => 1,
             ],
-            'title'          => fake()->title(),
+            'title'          => fake()->name,
             'order_type'     => OrderTypeEnum::MALL->value,
             'shipping_type'  => ShippingTypeEnum::EXPRESS->value,
             'source'         => fake()->randomElement([ 'product', 'activity' ]),
@@ -134,19 +133,16 @@ class OrderTest extends TestCase
     }
 
 
-    /**
-     * 创建订单
-     * @return OrderData
-     */
-    public function test_create_for_array() : OrderData
+    public function test_create_for_array()
     {
         $orderDataArray               = $this->fakeOrderArray();
         $orderDataArray['products'][] = $this->fakeProductArray();
         $orderDataArray['products'][] = $this->fakeProductArray();
         $orderDataArray['products'][] = $this->fakeProductArray();
-        $orderData                    = OrderData::from($orderDataArray);
-        $resultDataData               = $this->service()->create($orderData);
-        $this->assertInstanceOf(OrderData::class, $resultDataData);
+        $orderCreateCommand           = OrderCreateCommand::from($orderDataArray);
+
+        $resultDataData = $this->service()->create($orderCreateCommand);
+        dd($orderCreateCommand);
         return $resultDataData;
     }
 

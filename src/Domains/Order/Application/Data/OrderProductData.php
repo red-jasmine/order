@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Domains\Order\Application\Data;
 
-use RedJasmine\Order\Services\Order\Data\OrderProductInfoData;
+
 use RedJasmine\Order\Services\Order\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Optional;
