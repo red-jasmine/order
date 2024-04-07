@@ -11,6 +11,7 @@ class OrderMapper
 
     public function fromData(OrderData $orderData, Order $order) : Order
     {
+
         $order->seller               = $orderData->seller;
         $order->buyer                = $orderData->buyer;
         $order->title                = $orderData->title;
@@ -43,5 +44,8 @@ class OrderMapper
         return $order;
     }
 
-
+    public function fromModel(Order $order) : OrderData
+    {
+        return OrderData::from($order->toArray());
+    }
 }

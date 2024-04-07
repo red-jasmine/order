@@ -142,7 +142,7 @@ class OrderTest extends TestCase
         $orderCreateCommand           = OrderCreateCommand::from($orderDataArray);
 
         $resultDataData = $this->service()->create($orderCreateCommand);
-        dd($orderCreateCommand);
+        dd($resultDataData->toArray());
         return $resultDataData;
     }
 

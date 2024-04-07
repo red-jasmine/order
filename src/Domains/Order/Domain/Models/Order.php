@@ -19,7 +19,6 @@ use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderCreatedEvent;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderPaidEvent;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderPayingEvent;
-use RedJasmine\Order\Domains\Order\Domain\Models\ValueObjects\Money;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
@@ -114,6 +113,12 @@ class Order extends Model
         return $this;
     }
 
+
+    public function setAddress(OrderAddress $orderAddress) : static
+    {
+        $this->setRelation('address', $orderAddress);
+        return $this;
+    }
 
     public function calculateAmount() : static
     {
@@ -226,7 +231,6 @@ class Order extends Model
     }
 
 
-
     public function payments() : HasMany
     {
         return $this->hasMany(OrderPayment::class, 'order_id', 'id');
@@ -264,7 +268,6 @@ class Order extends Model
 
         return $order;
     }
-
 
 
     /**

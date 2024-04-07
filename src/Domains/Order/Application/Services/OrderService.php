@@ -2,7 +2,8 @@
 
 namespace RedJasmine\Order\Domains\Order\Application\Services;
 
-use RedJasmine\Order\Application\Order\Data\OrderData;
+
+use RedJasmine\Order\Domains\Order\Application\Data\OrderData;
 use RedJasmine\Order\Domains\Order\Application\Services\Handlers\OrderCreateCommandHandler;
 use RedJasmine\Order\Domains\Order\Application\Services\Handlers\OrderPaidCommandHandler;
 use RedJasmine\Order\Domains\Order\Application\Services\Handlers\OrderPayingCommandHandler;

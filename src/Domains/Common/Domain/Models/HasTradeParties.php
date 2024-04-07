@@ -28,6 +28,7 @@ trait HasTradeParties
                                      ]);
             },
             set: function (?UserInterface $user) {
+
                 $attributes = [
                     'seller_type' => $user?->getType(),
                     'seller_id'   => $user?->getID(),
@@ -35,6 +36,7 @@ trait HasTradeParties
                 if ($this->withTradePartiesNickname) {
                     $attributes['seller_nickname'] = $user?->getNickname();
                 }
+
                 return $attributes;
             }
 
