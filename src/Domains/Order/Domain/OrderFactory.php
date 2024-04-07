@@ -5,7 +5,9 @@ namespace RedJasmine\Order\Domains\Order\Domain;
 use RedJasmine\Order\Domains\Order\Domain\Models\Order;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderAddress;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderInfo;
+use RedJasmine\Order\Domains\Order\Domain\Models\OrderPayment;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderProduct;
+use RedJasmine\Order\Domains\Order\Domain\Models\OrderLogistics;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
 class OrderFactory
@@ -50,6 +52,21 @@ class OrderFactory
         $address = new OrderAddress();
 
         return $address;
+    }
+
+
+    public function createOrderPayment() : OrderPayment
+    {
+        $payment     = new OrderPayment();
+        $payment->id = $this->buildID();
+        return $payment;
+    }
+
+    public function createOrderLogistics() : OrderLogistics
+    {
+        $orderLogistics     = new OrderLogistics();
+        $orderLogistics->id = $this->buildID();
+        return $orderLogistics;
     }
 
 

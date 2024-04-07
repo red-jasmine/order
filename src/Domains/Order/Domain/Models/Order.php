@@ -1,7 +1,7 @@
 <?php
 
-namespace RedJasmine\Order\Domains\Order\Domain\Models;
 
+namespace RedJasmine\Order\Domains\Order\Domain\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +17,9 @@ use RedJasmine\Order\Domains\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderCreatedEvent;
+use RedJasmine\Order\Domains\Order\Domain\Events\OrderPaidEvent;
+use RedJasmine\Order\Domains\Order\Domain\Events\OrderPayingEvent;
+use RedJasmine\Order\Domains\Order\Domain\Models\ValueObjects\Money;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
@@ -177,7 +180,7 @@ class Order extends Model
      * 计算分摊优惠
      * @return void
      */
-    public function calculateDivideDiscount()
+    public function calculateDivideDiscount() : void
     {
         $order = $this;
         $order->discount_amount;
@@ -187,10 +190,9 @@ class Order extends Model
     }
 
     /**
-     * @return $this|Model|Order
-     * @throws Exception
+     * @return Order
      */
-    public function create()
+    public function create() : static
     {
 
         // 初始化订单状态
@@ -221,6 +223,79 @@ class Order extends Model
         $this->addEvent((new OrderCreatedEvent(id: $this->id)));
 
         return $this;
+    }
+
+
+
+    public function payments() : HasMany
+    {
+        return $this->hasMany(OrderPayment::class, 'order_id', 'id');
+    }
+
+    public function addPayment(OrderPayment $orderPayment) : void
+    {
+        $this->payments->add($orderPayment);
+    }
+
+
+    public function addLogistics(OrderLogistics $logistics)
+    {
+        $this->logistics->add($logistics);
+    }
+
+
+    public function shipping() : Order
+    {
+
+        $order = $this;
+
+        // 查询未发货的订单商品
+        // TODO  正常有效单订单商品 未退款
+        $count = $order->products->whereIn('shipping_status', [ null, ShippingStatusEnum::WAIT_SEND ])->count();
+        // 如果还有未发货的订单商品 那么订单只能是部分发货
+        $order->shipping_status = $count > 0 ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
+        $order->shipping_time   = $order->shipping_time ?? now();
+
+        // 如果都发货了，那么久状态流转
+        if ($order->shipping_status === ShippingStatusEnum::SHIPPED) {
+            $order->order_status = OrderStatusEnum::WAIT_BUYER_CONFIRM_GOODS;
+        }
+        // TODO 存在退款单 那么就直接关闭？
+
+        return $order;
+    }
+
+
+
+    /**
+     * 发起支付
+     *
+     * @param OrderPayment $orderPayment
+     *
+     * @return void
+     */
+    public function paying(OrderPayment $orderPayment) : void
+    {
+        // 添加支付单
+        $this->addPayment($orderPayment);
+        // 设置为支付中
+        if (!$this->payment_status) {
+            $this->payment_status = PaymentStatusEnum::PAYING;
+        }
+        $this->addEvent(new OrderPayingEvent(id: $this->id));
+    }
+
+
+    public function paid(OrderPayment $orderPayment) : void
+    {
+        $orderPayment->status = PaymentStatusEnum::PAID;
+        $this->payment_amount = bcadd($this->payment_amount, $orderPayment->payment_amount, 2);
+        $this->payment_status = PaymentStatusEnum::PART_PAY;
+        if (bccomp($this->payment_amount, $this->payable_amount, 2) >= 0) {
+            $this->payment_status = PaymentStatusEnum::PAID;
+        }
+
+        $this->addEvent(new OrderPaidEvent(id: $this->id));
     }
 
 

@@ -14,12 +14,12 @@ use RedJasmine\Order\Domains\Order\Domain\Repositories\OrderRepositoryInterface;
 
 class OrderCreateCommandHandler
 {
-    public function __construct(private readonly OrderRepositoryInterface $orderRepository)
+    public function __construct(protected OrderRepositoryInterface $orderRepository)
     {
     }
 
 
-    public function execute(OrderCreateCommand $data)
+    public function execute(OrderCreateCommand $data) : OrderData
     {
         // 1、业务验证 TODO
         //$orderModel = $this->pipelines->send($data)->call('validate', fn() => $this->validate());
