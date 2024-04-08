@@ -91,6 +91,11 @@ class Order extends Model
         return $this->morphMany(OrderLogistics::class, 'shippable');
     }
 
+    public function payments() : HasMany
+    {
+        return $this->hasMany(OrderPayment::class, 'order_id', 'id');
+    }
+
     public function guide() : Attribute
     {
         return Attribute::make(
@@ -231,18 +236,13 @@ class Order extends Model
     }
 
 
-    public function payments() : HasMany
-    {
-        return $this->hasMany(OrderPayment::class, 'order_id', 'id');
-    }
-
     public function addPayment(OrderPayment $orderPayment) : void
     {
         $this->payments->add($orderPayment);
     }
 
 
-    public function addLogistics(OrderLogistics $logistics)
+    public function addLogistics(OrderLogistics $logistics) : void
     {
         $this->logistics->add($logistics);
     }
@@ -280,6 +280,11 @@ class Order extends Model
     public function paying(OrderPayment $orderPayment) : void
     {
         // 添加支付单
+        $orderPayment->order_id = $this->id;
+        $orderPayment->seller   = $this->seller;
+        $orderPayment->buyer    = $this->buyer;
+        $orderPayment->status   = PaymentStatusEnum::PAYING;
+
         $this->addPayment($orderPayment);
         // 设置为支付中
         if (!$this->payment_status) {
@@ -292,8 +297,10 @@ class Order extends Model
     public function paid(OrderPayment $orderPayment) : void
     {
         $orderPayment->status = PaymentStatusEnum::PAID;
+
         $this->payment_amount = bcadd($this->payment_amount, $orderPayment->payment_amount, 2);
         $this->payment_status = PaymentStatusEnum::PART_PAY;
+        $this->payment_time   = $this->payment_time ?? now();
         if (bccomp($this->payment_amount, $this->payable_amount, 2) >= 0) {
             $this->payment_status = PaymentStatusEnum::PAID;
         }

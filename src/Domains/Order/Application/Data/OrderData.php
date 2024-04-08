@@ -50,4 +50,6 @@ class OrderData extends Data
     public ?OrderInfoData $info;
 
 
+    public ?string $payableAmount;
+
 }

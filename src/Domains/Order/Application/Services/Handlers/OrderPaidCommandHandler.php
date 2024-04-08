@@ -13,17 +13,20 @@ class OrderPaidCommandHandler
     }
 
 
-    public function handle(OrderPaidCommand $command) : bool
+    public function execute(OrderPaidCommand $command) : bool
     {
         // 加锁处理
         $order = $this->orderRepository->find($command->id);
 
-        $orderPayment                 = $order->payments->where('id', $command->orderPaymentId)->first;
-        $orderPayment->payment_type   = $command->paymentType;
-        $orderPayment->payment_id     = $command->paymentId;
-        $orderPayment->payment_time   = $command->paymentTime;
-        $orderPayment->payment_mode   = $command->paymentMode;
-        $orderPayment->payment_amount = $command->amount;
+        $orderPayment                     = $order->payments->where('id', $command->orderPaymentId)->firstOrFail();
+        $orderPayment->payment_amount     = $command->amount;
+        $orderPayment->payment_time       = $command->paymentTime;
+        $orderPayment->payment_type       = $command->paymentType;
+        $orderPayment->payment_id         = $command->paymentId;
+        $orderPayment->payment_channel    = $command->paymentChannel;
+        $orderPayment->payment_channel_no = $command->paymentChannelNo;
+        $orderPayment->payment_method     = $command->paymentMethod;
+
         // 执行逻辑
         $order->paid($orderPayment);
         // 持久化

@@ -2,12 +2,14 @@
 
 namespace RedJasmine\Order\Domains\Order\Domain;
 
+use Illuminate\Database\Eloquent\Collection;
 use RedJasmine\Order\Domains\Order\Domain\Models\Order;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderAddress;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderInfo;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderPayment;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderLogistics;
+use RedJasmine\Order\Domains\Order\Domain\Models\OrderProductInfo;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
 class OrderFactory
@@ -30,7 +32,8 @@ class OrderFactory
         $orderInfo     = new OrderInfo();
         $orderInfo->id = $order->id;
         $order->setRelation('info', $orderInfo);
-        $order->setRelation('products', collect([]));
+        $order->setRelation('products', new Collection([]));
+        $order->setRelation('payments', new Collection([]));
         $order->setRelation('address', null);
         return $order;
     }
@@ -40,7 +43,7 @@ class OrderFactory
     {
         $orderProduct     = new OrderProduct();
         $orderProduct->id = $this->buildID();
-        $info             = new OrderProduct();
+        $info             = new OrderProductInfo();
         $info->id         = $orderProduct->id;
         $orderProduct->setRelation('info', $info);
         return $orderProduct;

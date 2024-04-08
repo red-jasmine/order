@@ -16,12 +16,18 @@ class OrderPayingCommandHandler
 
     public function execute(OrderPayingCommand $command) : int
     {
-        $order                  = $this->orderRepository->find($command->id);
-        $orderPayment           = app(OrderFactory::class)->createOrderPayment();
-        $orderPayment->order_id = $order->id;
+        $order = $this->orderRepository->find($command->id);
+
+        $orderPayment                 = app(OrderFactory::class)->createOrderPayment();
+
+        $orderPayment->payment_amount = $command->amount;
+
         $order->paying($orderPayment);
+
         $this->orderRepository->update($order);
+
         $order->dispatchEvents();
+
         return $orderPayment->id;
     }
 

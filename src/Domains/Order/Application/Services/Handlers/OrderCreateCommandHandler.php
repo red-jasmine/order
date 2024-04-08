@@ -31,6 +31,7 @@ class OrderCreateCommandHandler
             app(OrderProductMapper::class)->fromData($productData, $product);
             $order->addProduct($product);
         }
+
         if ($data->address) {
             $address = app(OrderFactory::class)->createOrderAddress();
             app(OrderAddressMapper::class)->fromData($data->address, $address);

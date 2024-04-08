@@ -14,7 +14,13 @@ class OrderPaidCommand extends Data
         public string   $paymentType,
         public int      $paymentId,
         public DateTime $paymentTime,
-        public ?string  $paymentMode = null,
+        public ?string  $paymentChannel = null,
+        /**
+         * 支付渠道单号
+         * @var string|null
+         */
+        public ?string  $paymentChannelNo = null,
+        public ?string  $paymentMethod = null,
     )
     {
     }

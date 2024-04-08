@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('title')->nullable()->comment('标题');
             $table->string('order_type', 32)->comment('订单类型');
             $table->string('shipping_type', 32)->comment('发货类型');
-            $table->string('source', 30)->nullable()->comment('来源');   // 普通 、活动、
+            $table->string('source', 30)->nullable()->comment('来源');
             $table->string('order_status')->comment('订单状态');
             $table->string('payment_status', 32)->nullable()->comment('付款状态');
             $table->string('shipping_status', 32)->nullable()->comment('发货状态');
@@ -46,19 +46,22 @@ return new class extends Migration {
             $table->timestamp('end_time')->nullable()->comment('确认时间');
             $table->timestamp('refund_time')->nullable()->comment('退款时间');
             $table->timestamp('rate_time')->nullable()->comment('评价时间');
-            $table->string('client_type', 32)->nullable()->comment('客户端');
-            $table->string('client_ip', 32)->nullable()->comment('IP');
+
             $table->string('channel_type', 32)->nullable()->comment('渠道类型');
             $table->unsignedBigInteger('channel_id')->nullable()->comment('渠道ID');
             $table->string('store_type', 32)->nullable()->comment('门店类型');
             $table->unsignedBigInteger('store_id')->nullable()->comment('门店ID');
             $table->string('guide_type', 32)->nullable()->comment('导购类型');
             $table->unsignedBigInteger('guide_id')->nullable()->comment('导购ID');
+
+
+            $table->string('client_type', 32)->nullable()->comment('客户端');
+            $table->string('client_ip', 32)->nullable()->comment('IP');
+
+
             $table->string('contact')->nullable()->comment('联系方式');
             $table->string('password')->nullable()->comment('查询密码');
-            $table->string('payment_type', 32)->nullable()->comment('支付类型');
-            $table->unsignedBigInteger('payment_id')->nullable()->comment('支付单号');
-            $table->string('payment_channel')->nullable()->comment('支付渠道');
+
             $table->unsignedTinyInteger('is_seller_delete')->default(0)->comment('卖家删除');
             $table->unsignedTinyInteger('is_buyer_delete')->default(0)->comment('买家删除');
             $table->string('outer_order_id', 64)->nullable()->comment('外部订单号');

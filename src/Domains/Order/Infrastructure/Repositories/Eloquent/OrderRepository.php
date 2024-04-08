@@ -13,7 +13,14 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function find(int $id) : Order
     {
-        return Order::findOrFail($id);
+       return  Order::with([ 'products',
+                               'products.info',
+                               'info',
+                               'logistics',
+                               'payments' ])
+                      ->findOrFail($id);
+
+
     }
 
     /**
@@ -26,6 +33,7 @@ class OrderRepository implements OrderRepositoryInterface
     {
         try {
             DB::beginTransaction();
+
             $order->push();
             DB::commit();
         } catch (Throwable $throwable) {

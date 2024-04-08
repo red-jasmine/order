@@ -29,9 +29,9 @@ return new class extends Migration {
             $table->string('barcode', 64)->nullable()->comment('条形码');
             $table->unsignedBigInteger('num')->default(0)->comment('数量');
             $table->decimal('price', 12)->default(0)->comment('价格');
-            $table->decimal('product_amount', 12)->default(0)->comment('商品金额');
             $table->decimal('cost_price', 12)->default(0)->comment('成本价格');$table->decimal('cost_amount', 12)->default(0)->comment('成本金额');
-
+            // 金额类
+            $table->decimal('product_amount', 12)->default(0)->comment('商品金额');
             $table->decimal('tax_amount', 12)->default(0)->comment('税费');
             $table->decimal('discount_amount', 12)->default(0)->comment('优惠金额');
             $table->decimal('payable_amount', 12)->default(0)->comment('应付金额');
