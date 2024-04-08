@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\Domains\Order\Application\UserCases\Commands;
+namespace RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping;
 
 use RedJasmine\Order\Domains\Order\Domain\Enums\Logistics\LogisticsStatusEnum;
 use RedJasmine\Support\Data\Data;
@@ -23,8 +23,16 @@ class OrderShippingLogisticsCommand extends Data
     public ?array $orderProducts = null;
 
 
+    /**
+     * 快递公司
+     * @var string
+     */
     public string $expressCompanyCode;
 
+    /**
+     * 快递单号
+     * @var string
+     */
     public string $expressNo;
 
 

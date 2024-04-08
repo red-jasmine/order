@@ -5,10 +5,14 @@ namespace RedJasmine\Order\Tests;
 use Illuminate\Contracts\Config\Repository;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use function Orchestra\Testbench\artisan;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     use WithWorkbench;
+    use DatabaseTransactions;
+
 
 
     /**
@@ -22,7 +26,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // // Setup default database to use sqlite :memory:
         tap($app['config'], function (Repository $config) {
             $config->set('app.faker_locale', 'zh_CN');
-            $config->set('database.default', 'mysql');
+            // $config->set('database.default', 'test');
 
 
             // // Setup queue database connections.
@@ -67,11 +71,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function defineDatabaseMigrations()
     {
-        // artisan($this, 'migrate' );
-        // //
-        // $this->beforeApplicationDestroyed(
-        //     fn () => artisan($this, 'migrate:rollback')
-        // );
+        artisan($this, 'migrate');
+
+
     }
 
 }

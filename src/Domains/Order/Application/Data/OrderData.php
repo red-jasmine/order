@@ -3,8 +3,8 @@
 namespace RedJasmine\Order\Domains\Order\Application\Data;
 
 use Illuminate\Support\Collection;
-use RedJasmine\Order\Domain\Order\Enums\OrderTypeEnum;
-use RedJasmine\Order\Domain\Order\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domains\Order\Domain\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
 

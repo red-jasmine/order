@@ -16,6 +16,7 @@ use RedJasmine\Order\Domains\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domains\Order\Domain\Events\OrderCanceledEvent;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderCreatedEvent;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderPaidEvent;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderPayingEvent;
@@ -250,25 +251,30 @@ class Order extends Model
 
     public function shipping() : Order
     {
-
         $order = $this;
-
         // 查询未发货的订单商品
         // TODO  正常有效单订单商品 未退款
         $count = $order->products->whereIn('shipping_status', [ null, ShippingStatusEnum::WAIT_SEND ])->count();
         // 如果还有未发货的订单商品 那么订单只能是部分发货
         $order->shipping_status = $count > 0 ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
         $order->shipping_time   = $order->shipping_time ?? now();
-
-        // 如果都发货了，那么久状态流转
-        if ($order->shipping_status === ShippingStatusEnum::SHIPPED) {
-            $order->order_status = OrderStatusEnum::WAIT_BUYER_CONFIRM_GOODS;
-        }
         // TODO 存在退款单 那么就直接关闭？
 
         return $order;
     }
 
+
+    public function cancel(?string $reason = null) : void
+    {
+        $this->order_status  = OrderStatusEnum::CANCEL;
+        $this->cancel_reason = $reason;
+        $this->close_time    = now();
+        $this->products->each(function (OrderProduct $orderProduct) {
+            $orderProduct->order_status = OrderStatusEnum::CANCEL;
+            $orderProduct->close_time   = now();
+        });
+        $this->addEvent(new OrderCanceledEvent(id: $this->id));
+    }
 
     /**
      * 发起支付

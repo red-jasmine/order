@@ -5,14 +5,17 @@ namespace RedJasmine\Order\Tests\Application;
 
 use RedJasmine\Order\Domains\Order\Application\Data\OrderData;
 use RedJasmine\Order\Domains\Order\Application\Services\OrderService;
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCancelCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPayingCommand;
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
+use RedJasmine\Order\Domains\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domains\Order\Domain\Repositories\OrderRepositoryInterface;
-use RedJasmine\Order\Domains\Order\Infrastructure\Repositories\Eloquent\OrderRepository;
 use RedJasmine\Order\Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -48,11 +51,11 @@ class OrderTest extends TestCase
         $fake = [
             'buyer'          => [
                 'type' => 'buyer',
-                'id'   => 1,
+                'id'   => fake()->numberBetween(1000000, 999999999),
             ],
             'seller'         => [
                 'type' => 'seller',
-                'id'   => 1,
+                'id'   => fake()->numberBetween(1000000, 999999999),
             ],
             'title'          => fake()->name,
             'order_type'     => OrderTypeEnum::MALL->value,
@@ -101,7 +104,7 @@ class OrderTest extends TestCase
     {
         $fake = [
             'shipping_type'          => ShippingTypeEnum::EXPRESS->value,
-            'order_product_type'     => fake()->randomElement([ 'goods', 'card' ]),
+            'order_product_type'     => fake()->randomElement([ 'goods' ]),
             'title'                  => fake()->sentence(),
             'sku_name'               => fake()->words(1, true),
             'image'                  => fake()->imageUrl,
@@ -144,7 +147,7 @@ class OrderTest extends TestCase
     }
 
 
-    public function test_create_order_for_array()
+    public function test_order_create()
     {
         $orderDataArray               = $this->fakeOrderArray();
         $orderDataArray['products'][] = $this->fakeProductArray();
@@ -161,15 +164,11 @@ class OrderTest extends TestCase
     }
 
 
-    /**
-     * @depends  test_create_order_for_array
-     *
-     * @param OrderData $orderData
-     *
-     * @return array
-     */
-    public function test_order_paying(OrderData $orderData) : array
+    public function test_order_paying() : array
     {
+
+        $orderData = $this->test_order_create();
+
 
         $command = OrderPayingCommand::from([
                                                 'id'          => $orderData->id,
@@ -195,12 +194,9 @@ class OrderTest extends TestCase
     }
 
 
-    /**
-     * @depends order_paying
-     * @return void
-     */
-    public function test_order_paid(array $data)
+    public function test_order_paid() : \RedJasmine\Order\Domains\Order\Domain\Models\Order
     {
+        $data           = $this->test_order_paying();
         $id             = $data['id'];
         $orderPaymentId = $data['order_payment_id'];
 
@@ -228,10 +224,122 @@ class OrderTest extends TestCase
         $this->assertEquals($command->paymentChannel, $orderPayment->payment_channel);
         $this->assertEquals($command->paymentChannelNo, $orderPayment->payment_channel_no);
         $this->assertEquals($command->paymentMethod, $orderPayment->payment_method);
-        
+
         $this->assertEquals(PaymentStatusEnum::PAID->value, $order->payment_status->value, '支付状态错误');
 
         $this->assertEquals($order->payable_amount, $order->payment_amount, '实付金额不一致');
+
+        return $order;
+    }
+
+
+    public function test_order_cancel() : void
+    {
+        $data = $this->test_order_create();
+
+        $command = OrderCancelCommand::from([ 'id' => $data->id, 'cancel_reason' => '不想要了' ]);
+
+        $this->service()->cancel($command);
+
+        $order = $this->orderRepository()->find($data->id);
+
+        $this->assertEquals(OrderStatusEnum::CANCEL->value, $order->order_status->value);
+        $this->assertEquals($command->cancelReason, $order->cancel_reason);
+        $order->products->each(function ($product) use ($command) {
+            $this->assertEquals(OrderStatusEnum::CANCEL->value, $product->order_status->value);
+        });
+
+    }
+
+
+    // 测试发货流程
+    public function test_order_shipping_logistics() : void
+    {
+        $order = $this->test_order_paid();
+
+
+        $command = OrderShippingLogisticsCommand::from([
+                                                           'id'                   => $order->id,
+                                                           'is_split'             => false,
+                                                           'express_company_code' => 'shunfeng',
+                                                           'express_no'           => fake()->numerify('##########')
+                                                       ]);
+
+        $this->service()->shippingLogistics($command);
+
+        $order = $this->orderRepository()->find($command->id);
+
+        $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $order->shipping_status->value);
+
+        $order->products->each(function ($product) use ($command) {
+            $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $product->shipping_status->value);
+        });
+
+        $logistics = $order->logistics->first();
+        $this->assertEquals($command->expressCompanyCode, $logistics->express_company_code);
+        $this->assertEquals($command->expressNo, $logistics->express_no);
+
+    }
+
+
+    public function test_order_part_shipping_logistics()
+
+    {
+        $order         = $this->test_order_paid();
+        $orderProducts = $order->products->pluck('id')->toArray();
+
+
+        $shippingOrderProducts = [ $orderProducts[0], $orderProducts[1] ];
+        $command               = OrderShippingLogisticsCommand::from([
+                                                                         'id'                   => $order->id,
+                                                                         'is_split'             => true,
+                                                                         'order_products'       => $shippingOrderProducts,
+                                                                         'express_company_code' => 'shunfeng',
+                                                                         'express_no'           => fake()->numerify('##########')
+                                                                     ]);
+
+
+        $this->service()->shippingLogistics($command);
+
+        $order = $this->orderRepository()->find($command->id);
+
+        $this->assertEquals(ShippingStatusEnum::PART_SHIPPED->value, $order->shipping_status->value);
+
+
+        $order->products->each(function ($product) use ($command, $shippingOrderProducts) {
+            if (in_array($product->id, $shippingOrderProducts, true)) {
+                $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $product?->shipping_status?->value);
+            }
+        });
+
+        $logistics = $order->logistics->first();
+        $this->assertEquals($command->expressCompanyCode, $logistics->express_company_code);
+        $this->assertEquals($command->expressNo, $logistics->express_no);
+        $this->assertEquals($command->orderProducts, $logistics->order_product_id);
+
+
+        // 完成发货
+        $shippingOrderProducts  = [ $orderProducts[2] ];
+        $command->orderProducts = $shippingOrderProducts;
+
+        $order = $this->orderRepository()->find($command->id);
+
+        // TODO 有问题
+        $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $order->shipping_status->value);
+
+
+        $order->products->each(function ($product) use ($command, $shippingOrderProducts) {
+            if (in_array($product->id, $shippingOrderProducts, true)) {
+                $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $product?->shipping_status?->value);
+            }
+        });
+
+        $logistics = $order->logistics->first();
+        $this->assertEquals($command->expressCompanyCode, $logistics->express_company_code);
+        $this->assertEquals($command->expressNo, $logistics->express_no);
+        $this->assertEquals($command->orderProducts, $logistics->order_product_id);
+
+
     }
 
 }
