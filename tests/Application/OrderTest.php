@@ -52,10 +52,12 @@ class OrderTest extends TestCase
             'buyer'          => [
                 'type' => 'buyer',
                 'id'   => fake()->numberBetween(1000000, 999999999),
+                'nickname'=> fake()->name()
             ],
             'seller'         => [
                 'type' => 'seller',
                 'id'   => fake()->numberBetween(1000000, 999999999),
+                'nickname'=> fake()->name()
             ],
             'title'          => fake()->name,
             'order_type'     => OrderTypeEnum::MALL->value,
@@ -283,8 +285,9 @@ class OrderTest extends TestCase
 
 
     public function test_order_part_shipping_logistics()
-
     {
+
+        // 部分发货
         $order         = $this->test_order_paid();
         $orderProducts = $order->products->pluck('id')->toArray();
 
@@ -322,9 +325,11 @@ class OrderTest extends TestCase
         $shippingOrderProducts  = [ $orderProducts[2] ];
         $command->orderProducts = $shippingOrderProducts;
 
+        $this->service()->shippingLogistics($command);
+
         $order = $this->orderRepository()->find($command->id);
 
-        // TODO 有问题
+
         $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $order->shipping_status->value);
 
 
@@ -334,12 +339,13 @@ class OrderTest extends TestCase
             }
         });
 
-        $logistics = $order->logistics->first();
+        $logistics = $order->logistics->last();
         $this->assertEquals($command->expressCompanyCode, $logistics->express_company_code);
         $this->assertEquals($command->expressNo, $logistics->express_no);
         $this->assertEquals($command->orderProducts, $logistics->order_product_id);
 
-
     }
+
+
 
 }
