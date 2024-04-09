@@ -3,18 +3,22 @@
 namespace RedJasmine\Order\Tests\Application;
 
 
+use Dflydev\DotAccessData\Data;
 use RedJasmine\Order\Domains\Order\Application\Data\OrderData;
 use RedJasmine\Order\Domains\Order\Application\Services\OrderService;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCancelCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPayingCommand;
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
+use RedJasmine\Order\Domains\Order\Domain\Enums\OrderCardKeyStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domains\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domains\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Tests\TestCase;
 
@@ -50,18 +54,18 @@ class OrderTest extends TestCase
     {
         $fake = [
             'buyer'          => [
-                'type' => 'buyer',
-                'id'   => fake()->numberBetween(1000000, 999999999),
-                'nickname'=> fake()->name()
+                'type'     => 'buyer',
+                'id'       => fake()->numberBetween(1000000, 999999999),
+                'nickname' => fake()->name()
             ],
             'seller'         => [
-                'type' => 'seller',
-                'id'   => fake()->numberBetween(1000000, 999999999),
-                'nickname'=> fake()->name()
+                'type'     => 'seller',
+                'id'       => fake()->numberBetween(1000000, 999999999),
+                'nickname' => fake()->name()
             ],
             'title'          => fake()->name,
             'order_type'     => OrderTypeEnum::MALL->value,
-            'shipping_type'  => ShippingTypeEnum::EXPRESS->value,
+            'shipping_type'  => fake()->randomElement([ ShippingTypeEnum::EXPRESS->value, ShippingTypeEnum::VIRTUAL->value, ShippingTypeEnum::CDK->value ]),
             'source'         => fake()->randomElement([ 'product', 'activity' ]),
             'outer_order_id' => fake()->numerify('out-order-id-########'),
             //'channel_type'    => fake()->randomElement([ 'channel', 'promoter' ]),
@@ -105,7 +109,7 @@ class OrderTest extends TestCase
     protected function fakeProductArray(array $product = []) : array
     {
         $fake = [
-            'shipping_type'          => ShippingTypeEnum::EXPRESS->value,
+            'shipping_type'          => fake()->randomElement([ ShippingTypeEnum::EXPRESS->value, ShippingTypeEnum::VIRTUAL->value, ShippingTypeEnum::CDK->value ]),
             'order_product_type'     => fake()->randomElement([ 'goods' ]),
             'title'                  => fake()->sentence(),
             'sku_name'               => fake()->words(1, true),
@@ -118,7 +122,7 @@ class OrderTest extends TestCase
             'outer_id'               => fake()->numerify('out-id-########'),
             'outer_sku_id'           => fake()->numerify('out-sku-id-########'),
             'barcode'                => fake()->ean13(),
-            'num'                    => fake()->numberBetween(1, 200),
+            'num'                    => fake()->numberBetween(2, 5),
             'price'                  => fake()->randomFloat(2, 90, 100),
             'cost_price'             => fake()->randomFloat(2, 70, 80),
             'tax_amount'             => fake()->randomFloat(2, 10, 20),
@@ -347,5 +351,56 @@ class OrderTest extends TestCase
     }
 
 
+    public function test_order_shipping_card_key()
+    {
+        $order = $this->test_order_paid();
+
+        $orderProducts = $order->products->pluck('id')->toArray();
+
+
+        foreach ($order->products as $orderProduct) {
+            $shippingOrderProductId = $orderProduct->id;
+            $command                = OrderShippingCardKeyCommand::from([
+                                                                            'id'               => $order->id,
+                                                                            'order_product_id' => $shippingOrderProductId,
+                                                                            'content'          => fake()->numerify('##########'),
+                                                                            'status'           => OrderCardKeyStatusEnum::SHIPPED->value
+                                                                        ]);
+            $this->service()->shippingCardKey($command);
+        }
+
+
+        $order = $this->orderRepository()->find($order->id);
+        $order->products->each(function (OrderProduct $orderProduct) {
+            $this->assertEquals(1, $orderProduct->progress);
+            $this->assertEquals(ShippingStatusEnum::PART_SHIPPED->value, $orderProduct?->shipping_status?->value);
+        });
+
+
+        foreach ($order->products as $orderProduct) {
+            $shippingOrderProductId = $orderProduct->id;
+            $command                = OrderShippingCardKeyCommand::from([
+                                                                            'id'               => $order->id,
+                                                                            'order_product_id' => $shippingOrderProductId,
+                                                                            'content'          => fake()->numerify('##########'),
+                                                                            'status'           => OrderCardKeyStatusEnum::SHIPPED->value
+                                                                        ]);
+
+            for ($i = 1; $i <= $orderProduct->num - 1; $i++) {
+                $this->service()->shippingCardKey($command);
+            }
+        }
+
+        $order = $this->orderRepository()->find($order->id);
+
+        $order->products->each(function (OrderProduct $orderProduct) {
+            $this->assertEquals($orderProduct->num, $orderProduct->progress);
+            $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $orderProduct?->shipping_status?->value);
+        });
+
+        $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $order->shipping_status->value);
+
+
+    }
 
 }

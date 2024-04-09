@@ -69,5 +69,11 @@ class OrderProduct extends Model
         return $this->hasMany(OrderProductCardKey::class, 'order_product_id', 'id');
     }
 
+    public function addCardKey(OrderProductCardKey $cardKey) : void
+    {
+        $this->cardKeys->add($cardKey);
+
+    }
+
 
 }

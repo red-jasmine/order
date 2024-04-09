@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Domains\Order\Application\Services\Handlers\Shipping;
 
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Domains\Order\Domain\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Domains\Order\Domain\OrderFactory;
@@ -19,24 +20,19 @@ class OrderShippingCardKeyCommandHandler
     }
 
 
-    public function execute(OrderShippingLogisticsCommand $command) : void
+    public function execute(OrderShippingCardKeyCommand $command) : void
     {
 
         $order = $this->orderRepository->find($command->id);
 
-        $orderLogistics                       = app(OrderFactory::class)->createOrderLogistics();
-        $orderLogistics->shippable_type       = 'order';
-        $orderLogistics->shippable_id         = $order->id;
-        $orderLogistics->seller               = $order->seller;
-        $orderLogistics->buyer                = $order->buyer;
-        $orderLogistics->shipper              = LogisticsShipperEnum::SELLER;
-        $orderLogistics->order_product_id     = $command->orderProducts;
-        $orderLogistics->express_company_code = $command->expressCompanyCode;
-        $orderLogistics->express_no           = $command->expressNo;
-        $orderLogistics->status               = $command->status;
-        $orderLogistics->shipping_time        = now();
+        $orderProductCardKey = app(OrderFactory::class)->createOrderProductCardKey();
 
-        $this->orderShippingService->logistics($order, $command->isSplit, $orderLogistics);
+        $orderProductCardKey->order_product_id = $command->orderProductId;
+        $orderProductCardKey->content          = $command->content;
+        $orderProductCardKey->extends          = $command->extends;
+        $orderProductCardKey->status           = $command->status;
+
+        $this->orderShippingService->cardKey($order, $orderProductCardKey);
 
         $this->orderRepository->update($order);
 

@@ -34,9 +34,21 @@ class OrderShippingService
     }
 
 
-    public function cardKey(Order $order, OrderProductCardKey $orderProductCardKey)
+    public function cardKey(Order $order, OrderProductCardKey $orderProductCardKey) : void
     {
+        $orderProductCardKey->seller   = $order->seller;
+        $orderProductCardKey->buyer    = $order->buyer;
+        $orderProductCardKey->order_id = $order->id;
+        $orderProduct                  = $order->products->where('id', $orderProductCardKey->order_product_id)->firstOrFail();
+        $orderProduct->addCardKey($orderProductCardKey);
+        $orderProduct->shipping_status = ShippingStatusEnum::PART_SHIPPED;
+        $orderProduct->shipping_time   = $orderProduct->shipping_time ?? now();
 
+        if ($orderProduct->cardKeys->count() >= $orderProduct->num) {
+            $orderProduct->shipping_status = ShippingStatusEnum::SHIPPED;
+        }
+        ++$orderProduct->progress;
+        $order->shipping();
     }
 
     public function virtual()

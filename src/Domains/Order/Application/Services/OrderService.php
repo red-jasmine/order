@@ -8,11 +8,13 @@ use RedJasmine\Order\Domains\Order\Application\Services\Handlers\OrderCancelComm
 use RedJasmine\Order\Domains\Order\Application\Services\Handlers\OrderCreateCommandHandler;
 use RedJasmine\Order\Domains\Order\Application\Services\Handlers\OrderPaidCommandHandler;
 use RedJasmine\Order\Domains\Order\Application\Services\Handlers\OrderPayingCommandHandler;
+use RedJasmine\Order\Domains\Order\Application\Services\Handlers\Shipping\OrderShippingCardKeyCommandHandler;
 use RedJasmine\Order\Domains\Order\Application\Services\Handlers\Shipping\OrderShippingLogisticsCommandHandler;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCancelCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPayingCommand;
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 
 
@@ -43,6 +45,11 @@ class OrderService
     public function shippingLogistics(OrderShippingLogisticsCommand $command)
     {
         return app(OrderShippingLogisticsCommandHandler::class)->execute($command);
+    }
+
+    public function shippingCardKey(OrderShippingCardKeyCommand $command)
+    {
+        return app(OrderShippingCardKeyCommandHandler::class)->execute($command);
     }
 
 }

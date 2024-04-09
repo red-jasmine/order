@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping;
 
+use RedJasmine\Order\Domains\Order\Domain\Enums\OrderCardKeyStatusEnum;
 use RedJasmine\Support\Data\Data;
 
 class OrderShippingCardKeyCommand extends Data
@@ -24,7 +25,7 @@ class OrderShippingCardKeyCommand extends Data
     public array $extends = [];
 
 
-    // TODO 状态
-    public string $status = 'init';
+
+    public OrderCardKeyStatusEnum $status = OrderCardKeyStatusEnum::SHIPPED;
 
 }
