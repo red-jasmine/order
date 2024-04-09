@@ -310,6 +310,14 @@ class Order extends Model
         if (bccomp($this->payment_amount, $this->payable_amount, 2) >= 0) {
             $this->payment_status = PaymentStatusEnum::PAID;
         }
+        $this->products->each(function (OrderProduct $orderProduct) {
+            $orderProduct->payment_status = $this->payment_status;
+            $orderProduct->payment_time   = $this->payment_time;
+            // 全部支付成功是 才能设置 订单商品的支付金额
+            if ($orderProduct->payment_status = PaymentStatusEnum::PAID) {
+                $orderProduct->payment_amount = $orderProduct->payable_amount;
+            }
+        });
 
         $this->addEvent(new OrderPaidEvent(id: $this->id));
     }

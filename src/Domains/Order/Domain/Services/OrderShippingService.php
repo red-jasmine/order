@@ -7,6 +7,7 @@ use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Models\Order;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderLogistics;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderProduct;
+use RedJasmine\Order\Domains\Order\Domain\Models\OrderProductCardKey;
 
 class OrderShippingService
 {
@@ -33,7 +34,7 @@ class OrderShippingService
     }
 
 
-    public function cardKey()
+    public function cardKey(Order $order, OrderProductCardKey $orderProductCardKey)
     {
 
     }
