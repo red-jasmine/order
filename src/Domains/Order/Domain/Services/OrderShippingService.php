@@ -4,6 +4,7 @@ namespace RedJasmine\Order\Domains\Order\Domain\Services;
 
 use RedJasmine\Order\Domains\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domains\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domains\Order\Domain\Models\Order;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderLogistics;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderProduct;
@@ -34,12 +35,24 @@ class OrderShippingService
     }
 
 
+    /**
+     * @param Order               $order
+     * @param OrderProductCardKey $orderProductCardKey
+     *
+     * @return void
+     * @throws OrderException
+     */
     public function cardKey(Order $order, OrderProductCardKey $orderProductCardKey) : void
     {
         $orderProductCardKey->seller   = $order->seller;
         $orderProductCardKey->buyer    = $order->buyer;
         $orderProductCardKey->order_id = $order->id;
-        $orderProduct                  = $order->products->where('id', $orderProductCardKey->order_product_id)->firstOrFail();
+
+        $orderProduct = $order->products->where('id', $orderProductCardKey->order_product_id)->firstOrFail();
+        if ($orderProduct->shipping_status === ShippingStatusEnum::SHIPPED) {
+            throw new OrderException('已完成发货');
+        }
+
         $orderProduct->addCardKey($orderProductCardKey);
         $orderProduct->shipping_status = ShippingStatusEnum::PART_SHIPPED;
         $orderProduct->shipping_time   = $orderProduct->shipping_time ?? now();
@@ -48,12 +61,23 @@ class OrderShippingService
             $orderProduct->shipping_status = ShippingStatusEnum::SHIPPED;
         }
         ++$orderProduct->progress;
+
         $order->shipping();
     }
 
+    /**
+     * @throws OrderException
+     */
     public function virtual(Order $order, int $orderProductId, bool $isPartShipped = false) : void
     {
-        $orderProduct                  = $order->products->where('id', $orderProductId)->firstOrFail();
+
+
+        $orderProduct = $order->products->where('id', $orderProductId)->firstOrFail();
+
+        if ($orderProduct->shipping_status === ShippingStatusEnum::SHIPPED) {
+            throw new OrderException('已完成发货');
+        }
+
         $orderProduct->shipping_status = $isPartShipped ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
         $orderProduct->shipping_time   = now();
         $order->shipping();

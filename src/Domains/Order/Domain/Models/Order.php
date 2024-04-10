@@ -18,8 +18,11 @@ use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderCanceledEvent;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderCreatedEvent;
+use RedJasmine\Order\Domains\Order\Domain\Events\OrderFinishedEvent;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderPaidEvent;
 use RedJasmine\Order\Domains\Order\Domain\Events\OrderPayingEvent;
+use RedJasmine\Order\Domains\Order\Domain\Exceptions\OrderException;
+use RedJasmine\Order\Domains\Order\Domain\Models\ValueObjects\Progress;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
@@ -51,6 +54,7 @@ class Order extends Model
         'canceled' => OrderCanceledEvent::class,
         'paying'   => OrderPayingEvent::class,
         'paid'     => OrderPaidEvent::class,
+        'finished' => OrderFinishedEvent::class
     ];
 
 
@@ -142,8 +146,6 @@ class Order extends Model
         $this->calculateDivideDiscount();
         return $this;
     }
-
-
 
 
     protected function calculateProducts() : void
@@ -332,4 +334,33 @@ class Order extends Model
     }
 
 
+    /**
+     * @return void
+     * @throws OrderException
+     */
+    public function confirm() : void
+    {
+
+        if (in_array($this->order_status, [ OrderStatusEnum::CANCEL, OrderStatusEnum::FINISHED, OrderStatusEnum::CLOSED ], true)) {
+            throw new OrderException('订单完成');
+        }
+        $this->order_status = OrderStatusEnum::FINISHED;
+        $this->end_time     = now();
+        $this->products->each(function (OrderProduct $orderProduct) {
+            // TODO 过滤 已退款的订单
+            $orderProduct->order_status = $this->order_status;
+            $orderProduct->end_time     = $this->end_time;
+        });
+
+
+        $this->fireModelEvent('finished');
+    }
+
+
+    public function setProductProgress(int $orderProductId, Progress $progress) : void
+    {
+        $orderProduct                 = $this->products->where('id', $orderProductId)->firstOrFail();
+        $orderProduct->progress       = $progress->progress ?? $orderProduct->progress;
+        $orderProduct->progress_total = $progress->progressTotal ?? $orderProduct->progress_total;
+    }
 }

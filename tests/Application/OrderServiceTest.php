@@ -7,9 +7,11 @@ use Dflydev\DotAccessData\Data;
 use RedJasmine\Order\Domains\Order\Application\Data\OrderData;
 use RedJasmine\Order\Domains\Order\Application\Services\OrderService;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCancelCommand;
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderConfirmCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPayingCommand;
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderProgressCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
@@ -21,9 +23,10 @@ use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domains\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domains\Order\Domain\Repositories\OrderRepositoryInterface;
+use RedJasmine\Order\Facades\Order;
 use RedJasmine\Order\Tests\TestCase;
 
-class OrderTest extends TestCase
+class OrderServiceTest extends TestCase
 {
 
     protected function fakeAddressArray() : array
@@ -260,7 +263,7 @@ class OrderTest extends TestCase
 
 
     // 测试发货流程
-    public function test_order_shipping_logistics() : void
+    public function test_order_shipping_logistics()
     {
         $order = $this->test_order_paid();
 
@@ -285,6 +288,8 @@ class OrderTest extends TestCase
         $logistics = $order->logistics->first();
         $this->assertEquals($command->expressCompanyCode, $logistics->express_company_code);
         $this->assertEquals($command->expressNo, $logistics->express_no);
+
+        return $order;
 
     }
 
@@ -349,6 +354,8 @@ class OrderTest extends TestCase
         $this->assertEquals($command->expressNo, $logistics->express_no);
         $this->assertEquals($command->orderProducts, $logistics->order_product_id);
 
+
+        return $order;
     }
 
 
@@ -418,12 +425,80 @@ class OrderTest extends TestCase
             $this->service()->shippingVirtual($command);
         }
 
-        $order= $this->orderRepository()->find($order->id);
+        $order = $this->orderRepository()->find($order->id);
         $order->products->each(function (OrderProduct $orderProduct) {
             $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $orderProduct?->shipping_status?->value);
         });
 
         $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $order->shipping_status->value);
+
+
+    }
+
+
+    public function test_order_confirm()
+    {
+
+        $order = $this->test_order_shipping_logistics();
+
+
+        $command = OrderConfirmCommand::from([ 'id' => $order->id ]);
+
+
+        $this->service()->confirm($command);
+
+
+        $order = $this->orderRepository()->find($order->id);
+
+        $this->assertEquals(OrderStatusEnum::FINISHED->value, $order->order_status->value);
+
+        $order->products->each(function ($product) {
+            $this->assertEquals(OrderStatusEnum::FINISHED->value, $product->order_status->value);
+
+        });
+
+
+    }
+
+
+    public function test_order_progress()
+    {
+        $order = $this->test_order_shipping_logistics();
+
+        $order_product_id = $order->products[0]->id;
+        $command          = OrderProgressCommand::from([
+                                                           'id'               => $order->id,
+                                                           'order_product_id' => $order_product_id,
+                                                           'progress'         => fake()->numberBetween(1, 100),
+                                                           'progress_total'   => 100,
+                                                       ]);
+
+
+        $this->service()->progress($command);
+
+        $order        = $this->orderRepository()->find($order->id);
+        $orderProduct = $order->products[0];
+
+
+        $this->assertEquals($command->progress, $orderProduct->progress);
+        $this->assertEquals($command->progressTotal, $orderProduct->progress_total);
+
+
+        $command2 = OrderProgressCommand::from([
+                                                   'id'               => $order->id,
+                                                   'order_product_id' => $order_product_id,
+                                                   'progress'         => fake()->numberBetween(1, 100),
+                                                   // 'progress_total'   => 100,
+                                               ]);
+
+
+        $this->service()->progress($command2);
+
+
+        $order        = $this->orderRepository()->find($order->id);
+        $orderProduct = $order->products[0];
+        $this->assertEquals($command2->progress, $command2->progress);
+        $this->assertEquals($command->progressTotal, $orderProduct->progress_total);
 
 
     }
