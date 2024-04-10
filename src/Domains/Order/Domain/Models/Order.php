@@ -359,8 +359,16 @@ class Order extends Model
 
     public function setProductProgress(int $orderProductId, Progress $progress) : void
     {
-        $orderProduct                 = $this->products->where('id', $orderProductId)->firstOrFail();
-        $orderProduct->progress       = $progress->progress ?? $orderProduct->progress;
+        // TODO 是否允许 小于之前的值
+        $orderProduct = $this->products->where('id', $orderProductId)->firstOrFail();
+
+        if ($progress->progress > ($orderProduct->progress ?? 0)) {
+            $orderProduct->progress = $progress->progress ?? $orderProduct->progress;
+        } elseif ($progress->isAllowLess) {
+            $orderProduct->progress = $progress->progress ?? $orderProduct->progress;
+        }
         $orderProduct->progress_total = $progress->progressTotal ?? $orderProduct->progress_total;
+        // 触发事件
+        $this->fireModelEvent('progress');
     }
 }

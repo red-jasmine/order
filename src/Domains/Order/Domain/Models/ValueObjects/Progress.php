@@ -11,4 +11,11 @@ class Progress extends Data
 
     public ?int $progressTotal = null;
 
+
+    /**
+     * 是否可以小于历史值
+     * @var bool
+     */
+    public bool $isAllowLess = false;
+
 }
