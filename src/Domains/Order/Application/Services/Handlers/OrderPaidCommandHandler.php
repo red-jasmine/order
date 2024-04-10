@@ -31,8 +31,7 @@ class OrderPaidCommandHandler
         $order->paid($orderPayment);
         // 持久化
         $this->orderRepository->update($order);
-        // 事件调度
-        $order->dispatchEvents();
+
 
         return true;
     }

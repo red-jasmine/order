@@ -15,7 +15,7 @@ class OrderCancelCommandHandler extends AbstractOrderCommandHandler
 
         $this->orderRepository->update($order);
 
-        $order->dispatchEvents();
+
 
     }
 

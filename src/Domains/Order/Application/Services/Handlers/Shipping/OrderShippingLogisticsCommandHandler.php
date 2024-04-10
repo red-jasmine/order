@@ -22,10 +22,8 @@ class OrderShippingLogisticsCommandHandler
     public function execute(OrderShippingLogisticsCommand $command) : void
     {
 
-        $order = $this->orderRepository->find($command->id);
-
+        $order                                = $this->orderRepository->find($command->id);
         $orderLogistics                       = app(OrderFactory::class)->createOrderLogistics();
-        $orderLogistics->shippable_type       = 'order';
         $orderLogistics->shippable_id         = $order->id;
         $orderLogistics->seller               = $order->seller;
         $orderLogistics->buyer                = $order->buyer;
@@ -39,8 +37,6 @@ class OrderShippingLogisticsCommandHandler
         $this->orderShippingService->logistics($order, $command->isSplit, $orderLogistics);
 
         $this->orderRepository->update($order);
-
-        $order->dispatchEvents();
     }
 
 

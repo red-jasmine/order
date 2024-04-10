@@ -26,7 +26,7 @@ class OrderPayingCommandHandler
 
         $this->orderRepository->update($order);
 
-        $order->dispatchEvents();
+
 
         return $orderPayment->id;
     }

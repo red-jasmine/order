@@ -68,8 +68,9 @@ class OrderFactory
 
     public function createOrderLogistics() : OrderLogistics
     {
-        $orderLogistics     = new OrderLogistics();
-        $orderLogistics->id = $this->buildID();
+        $orderLogistics                 = new OrderLogistics();
+        $orderLogistics->id             = $this->buildID();
+        $orderLogistics->shippable_type = 'order';
         return $orderLogistics;
     }
 

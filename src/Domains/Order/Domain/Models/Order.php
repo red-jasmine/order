@@ -27,12 +27,9 @@ use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use Spatie\LaravelData\WithData;
 
+
 class Order extends Model
 {
-
-    use HasEvents;
-
-    // TODO  has $events
 
     use WithData;
 
@@ -47,6 +44,14 @@ class Order extends Model
     public bool $withTradePartiesNickname = true;
 
     public $incrementing = false;
+
+
+    protected $dispatchesEvents = [
+        'created'  => OrderCreatedEvent::class,
+        'canceled' => OrderCanceledEvent::class,
+        'paying'   => OrderPayingEvent::class,
+        'paid'     => OrderPaidEvent::class,
+    ];
 
 
     protected $casts = [
@@ -100,15 +105,16 @@ class Order extends Model
     public function guide() : Attribute
     {
         return Attribute::make(
-            get: static fn(mixed $value, array $attributes) => UserData::from([
-                                                                                  'type' => $attributes['guide_type'],
-                                                                                  'id'   => $attributes['guide_id'],
-                                                                              ]),
-            set: static fn(?UserInterface $user) => [
-                'guide_type' => $user?->getType(),
-                'guide_id'   => $user?->getID(),
-            ]
+            get: static fn(mixed $value, array $attributes) => UserData::from([ 'type' => $attributes['guide_type'], 'id' => $attributes['guide_id'], ]),
+            set: static fn(?UserInterface $user) => [ 'guide_type' => $user?->getType(), 'guide_id' => $user?->getID(), ]
+        );
+    }
 
+    public function store() : Attribute
+    {
+        return Attribute::make(
+            get: static fn(mixed $value, array $attributes) => UserData::from([ 'type' => $attributes['store_type'], 'id' => $attributes['store_id'], ]),
+            set: static fn(?UserInterface $user) => [ 'store_type' => $user?->getType(), 'store_id' => $user?->getID(), ]
         );
     }
 
@@ -136,6 +142,8 @@ class Order extends Model
         $this->calculateDivideDiscount();
         return $this;
     }
+
+
 
 
     protected function calculateProducts() : void
@@ -191,7 +199,7 @@ class Order extends Model
      * 计算分摊优惠
      * @return void
      */
-    public function calculateDivideDiscount() : void
+    protected function calculateDivideDiscount() : void
     {
         $order = $this;
         $order->discount_amount;
@@ -231,7 +239,7 @@ class Order extends Model
         $this->calculateAmount();
 
 
-        $this->addEvent((new OrderCreatedEvent(id: $this->id)));
+        $this->fireModelEvent('created');
 
         return $this;
     }
@@ -273,7 +281,8 @@ class Order extends Model
             $orderProduct->order_status = OrderStatusEnum::CANCEL;
             $orderProduct->close_time   = now();
         });
-        $this->addEvent(new OrderCanceledEvent(id: $this->id));
+
+        $this->fireModelEvent('canceled');
     }
 
     /**
@@ -296,7 +305,7 @@ class Order extends Model
         if (!$this->payment_status) {
             $this->payment_status = PaymentStatusEnum::PAYING;
         }
-        $this->addEvent(new OrderPayingEvent(id: $this->id));
+        $this->fireModelEvent('paying');
     }
 
 
@@ -319,7 +328,7 @@ class Order extends Model
             }
         });
 
-        $this->addEvent(new OrderPaidEvent(id: $this->id));
+        $this->fireModelEvent('paid');
     }
 
 

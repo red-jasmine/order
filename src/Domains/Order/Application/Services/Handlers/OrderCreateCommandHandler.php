@@ -42,8 +42,6 @@ class OrderCreateCommandHandler
         // 3、持久化
         $this->orderRepository->store($order);
 
-        // 4、领域事件
-        $order->dispatchEvents();
         // 5、转换成 DTO
         return app(OrderMapper::class)->fromModel($order);
 

@@ -36,7 +36,6 @@ class OrderShippingCardKeyCommandHandler
 
         $this->orderRepository->update($order);
 
-        $order->dispatchEvents();
     }
 
 

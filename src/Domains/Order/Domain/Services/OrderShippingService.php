@@ -51,9 +51,12 @@ class OrderShippingService
         $order->shipping();
     }
 
-    public function virtual()
+    public function virtual(Order $order, int $orderProductId, bool $isPartShipped = false) : void
     {
-
+        $orderProduct                  = $order->products->where('id', $orderProductId)->firstOrFail();
+        $orderProduct->shipping_status = $isPartShipped ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
+        $orderProduct->shipping_time   = now();
+        $order->shipping();
     }
 
 }

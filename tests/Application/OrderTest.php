@@ -12,6 +12,7 @@ use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPaidComma
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
+use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\Domains\Order\Domain\Enums\OrderCardKeyStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\OrderTypeEnum;
@@ -403,4 +404,27 @@ class OrderTest extends TestCase
 
     }
 
+
+    public function test_order_shipping_virtual()
+    {
+        $order = $this->test_order_paid();
+
+        foreach ($order->products as $orderProduct) {
+            $command = OrderShippingVirtualCommand::from([
+                                                             'id'               => $order->id,
+                                                             'order_product_id' => $orderProduct->id,
+                                                         ]);
+
+            $this->service()->shippingVirtual($command);
+        }
+
+        $order= $this->orderRepository()->find($order->id);
+        $order->products->each(function (OrderProduct $orderProduct) {
+            $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $orderProduct?->shipping_status?->value);
+        });
+
+        $this->assertEquals(ShippingStatusEnum::SHIPPED->value, $order->shipping_status->value);
+
+
+    }
 }
