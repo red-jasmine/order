@@ -4,7 +4,6 @@ namespace RedJasmine\Order\Domains\Order\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RedJasmine\Order\Domains\Common\Domain\Models\HasTradeParties;
 use RedJasmine\Order\Domains\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;

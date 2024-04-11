@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\Domains\Common\Domain\Models;
+namespace RedJasmine\Order\Domains\Order\Domain\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;

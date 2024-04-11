@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Order\Domains\Common\Domain\Models\HasTradeParties;
 use RedJasmine\Order\Domains\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\RefundGoodsStatusEnum;
 use RedJasmine\Order\Domains\Order\Domain\Enums\RefundPhaseEnum;
