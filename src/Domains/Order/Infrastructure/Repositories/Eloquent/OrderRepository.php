@@ -13,12 +13,14 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function find(int $id) : Order
     {
-       return  Order::with([ 'products',
-                               'products.info',
-                               'info',
-                               'logistics',
-                               'payments' ])
-                      ->findOrFail($id);
+        // with([ 'products',
+        //        'products.info',
+        //        'info',
+        //        'logistics',
+        //        'payments' ])
+
+
+       return  Order::findOrFail($id);
 
 
     }
