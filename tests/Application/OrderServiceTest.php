@@ -3,27 +3,25 @@
 namespace RedJasmine\Order\Tests\Application;
 
 
-use Dflydev\DotAccessData\Data;
-use RedJasmine\Order\Domains\Order\Application\Data\OrderData;
-use RedJasmine\Order\Domains\Order\Application\Services\OrderService;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCancelCommand;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderConfirmCommand;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderCreateCommand;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPaidCommand;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderPayingCommand;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\OrderProgressCommand;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
-use RedJasmine\Order\Domains\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
-use RedJasmine\Order\Domains\Order\Domain\Enums\OrderCardKeyStatusEnum;
-use RedJasmine\Order\Domains\Order\Domain\Enums\OrderStatusEnum;
-use RedJasmine\Order\Domains\Order\Domain\Enums\OrderTypeEnum;
-use RedJasmine\Order\Domains\Order\Domain\Enums\PaymentStatusEnum;
-use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingStatusEnum;
-use RedJasmine\Order\Domains\Order\Domain\Enums\ShippingTypeEnum;
-use RedJasmine\Order\Domains\Order\Domain\Models\OrderProduct;
-use RedJasmine\Order\Domains\Order\Domain\Repositories\OrderRepositoryInterface;
-use RedJasmine\Order\Facades\Order;
+use RedJasmine\Order\Application\Data\OrderData;
+use RedJasmine\Order\Application\Services\OrderService;
+use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
+use RedJasmine\Order\Domain\Enums\OrderCardKeyStatusEnum;
+use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
+use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Models\OrderProduct;
+use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Tests\TestCase;
 
 class OrderServiceTest extends TestCase
@@ -204,7 +202,7 @@ class OrderServiceTest extends TestCase
     }
 
 
-    public function test_order_paid() : \RedJasmine\Order\Domains\Order\Domain\Models\Order
+    public function test_order_paid() : \RedJasmine\Order\Domain\Models\Order
     {
         $data           = $this->test_order_paying();
         $id             = $data['id'];

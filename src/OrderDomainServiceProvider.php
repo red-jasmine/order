@@ -4,10 +4,10 @@ namespace RedJasmine\Order;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
-use RedJasmine\Order\Domains\Order\Domain\Models\Order;
+use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Models\OrderRefund;
 use RedJasmine\Order\Services\OrderService;
-use Illuminate\Contracts\Config\Repository;
+
 /**
  *  TODO 这里的服务提供者着  仅仅是包的提供者
  */

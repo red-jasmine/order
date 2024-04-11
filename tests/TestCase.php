@@ -65,7 +65,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         return [
             'RedJasmine\Order\OrderDomainServiceProvider',
-            "RedJasmine\Order\Domains\Order\Application\OrderApplicationServiceProvider",
+            "RedJasmine\Order\Application\OrderApplicationServiceProvider",
         ];
     }
 
