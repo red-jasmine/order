@@ -62,6 +62,12 @@ class OrderProduct extends Model
     }
 
 
+    public function refunds() : HasMany
+    {
+        return $this->hasMany(OrderRefund::class, 'order_product_id', 'id');
+    }
+
+
     public function cardKeys() : HasMany
     {
         return $this->hasMany(OrderProductCardKey::class, 'order_product_id', 'id');

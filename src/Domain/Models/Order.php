@@ -22,6 +22,8 @@ use RedJasmine\Order\Domain\Events\OrderPaidEvent;
 use RedJasmine\Order\Domain\Events\OrderPayingEvent;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Models\ValueObjects\Progress;
+use RedJasmine\Order\Domain\Services\OrderRefundService;
+use RedJasmine\Order\Services\OrderService;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
@@ -369,5 +371,17 @@ class Order extends Model
         $orderProduct->progress_total = $progress->progressTotal ?? $orderProduct->progress_total;
         // 触发事件
         $this->fireModelEvent('progress');
+    }
+
+
+    public function refunds() : HasMany
+    {
+        return $this->hasMany(OrderRefund::class, 'order_id', 'id');
+    }
+
+    public function createRefund(OrderRefund $orderRefund) : void
+    {
+        app(OrderRefundService::class)->create($this, $orderRefund);
+
     }
 }

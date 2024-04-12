@@ -13,18 +13,24 @@ class RefundCreateCommand extends Data
 
     public int $orderProductId;
 
+    /**
+     * 图片
+     * @var array|null
+     */
+    public ?array $images;
 
     public RefundTypeEnum $refundType;
 
 
     public ?string $refundAmount = null;
-
+    public ?string $reason;
 
     /**
      * 描述
      * @var string|null
      */
     public ?string $description;
+
 
 
     /**

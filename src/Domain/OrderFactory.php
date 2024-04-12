@@ -11,6 +11,7 @@ use RedJasmine\Order\Domain\Models\OrderPayment;
 use RedJasmine\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domain\Models\OrderProductCardKey;
 use RedJasmine\Order\Domain\Models\OrderProductInfo;
+use RedJasmine\Order\Domain\Models\OrderRefund;
 use RedJasmine\Support\Helpers\ID\Snowflake;
 
 class OrderFactory
@@ -81,5 +82,14 @@ class OrderFactory
         return $orderProductCardKey;
     }
 
+
+    public function createRefund(Order $order) : OrderRefund
+    {
+        $orderRefund           = new OrderRefund();
+        $orderRefund->id       = $this->buildID();
+        $orderRefund->order_id = $order->id;
+
+        return $orderRefund;
+    }
 
 }

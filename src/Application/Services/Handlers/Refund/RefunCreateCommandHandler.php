@@ -4,18 +4,27 @@ namespace RedJasmine\Order\Application\Services\Handlers\Refund;
 
 use RedJasmine\Order\Application\Services\Handlers\AbstractOrderCommandHandler;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
+use RedJasmine\Order\Domain\OrderFactory;
 
 class RefunCreateCommandHandler extends AbstractOrderCommandHandler
 {
 
 
-    public function execute(RefundCreateCommand $command)
+    public function execute(RefundCreateCommand $command):void
     {
-
 
         $order = $this->orderRepository->find($command->id);
 
+        $orderRefund                   = app(OrderFactory::class)->createRefund($order);
+        $orderRefund->order_product_id = $command->orderProductId;
+        $orderRefund->refund_type      = $command->refundType;
+        $orderRefund->refund_amount    = $command->refundAmount;
+        $orderRefund->description      = $command->description;
+        $orderRefund->images           = $command->images;
+        $orderRefund->reason           = $command->reason;
+        $order->createRefund($orderRefund);
 
+        $this->orderRepository->update($order);
     }
 
 }
