@@ -6,11 +6,11 @@ use RedJasmine\Order\Application\Services\Handlers\AbstractOrderCommandHandler;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Domain\OrderFactory;
 
-class RefunCreateCommandHandler extends AbstractOrderCommandHandler
+class RefundCreateCommandHandler extends AbstractOrderCommandHandler
 {
 
 
-    public function execute(RefundCreateCommand $command):void
+    public function execute(RefundCreateCommand $command) : int
     {
 
         $order = $this->orderRepository->find($command->id);
@@ -25,6 +25,9 @@ class RefunCreateCommandHandler extends AbstractOrderCommandHandler
         $order->createRefund($orderRefund);
 
         $this->orderRepository->update($order);
+
+
+        return $orderRefund->id;
     }
 
 }

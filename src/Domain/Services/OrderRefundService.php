@@ -14,7 +14,7 @@ class OrderRefundService
 {
 
 
-    public function create(Order $order, OrderRefund $orderRefund)
+    public function create(Order $order, OrderRefund $orderRefund):void
     {
         $orderProduct = $order->products->where('id', $orderRefund->order_product_id)->firstOrFail();
 

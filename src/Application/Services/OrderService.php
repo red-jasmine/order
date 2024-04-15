@@ -68,7 +68,6 @@ class OrderService
         return app(OrderConfirmCommandHandler::class)->execute($command);
     }
 
-
     public function progress(OrderProgressCommand $command)
     {
         return app(OrderProgressCommandHandler::class)->execute($command);

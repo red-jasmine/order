@@ -13,7 +13,7 @@ abstract class AbstractOrderEvent
     use Dispatchable;
 
     public function __construct(
-        public Order $order
+        public readonly Order $order
     )
     {
     }

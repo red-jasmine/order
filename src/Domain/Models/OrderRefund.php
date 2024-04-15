@@ -12,6 +12,8 @@ use RedJasmine\Order\Domain\Enums\RefundPhaseEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Events\RefundAgreedEvent;
+use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 
@@ -41,6 +43,10 @@ class OrderRefund extends Model
         'extends'            => 'array',
     ];
 
+    protected $dispatchesEvents = [
+        'agreed' => RefundAgreedEvent::class
+    ];
+
 
     public function order() : BelongsTo
     {
@@ -56,6 +62,35 @@ class OrderRefund extends Model
     public function logistics() : MorphMany
     {
         return $this->morphMany(OrderLogistics::class, 'shippable');
+    }
+
+
+    /**
+     * 同意退款
+     *
+     * @param string|null $amount
+     *
+     * @return void
+     * @throws RefundException
+     */
+    public function agree(?string $amount = null) : void
+    {
+        // 验证状态
+        if (!in_array($this->refund_status, [ RefundStatusEnum::WAIT_SELLER_AGREE, RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS, ], true)) {
+            throw new RefundException();
+        }
+        if (!in_array($this->refund_type, [ RefundTypeEnum::REFUND_ONLY, RefundTypeEnum::RETURN_GOODS_REFUND ], true)) {
+            throw new RefundException();
+        }
+
+        $amount                            = $amount ?: $this->refund_amount;
+        $this->end_time                    = now();
+        $this->refund_amount               = $amount;
+        $this->refund_status               = RefundStatusEnum::REFUND_SUCCESS;
+        $this->orderProduct->refund_amount = bcadd($this->orderProduct->refund_amount, $amount, 2);
+
+
+        $this->fireModelEvent('agreed');
     }
 
 
