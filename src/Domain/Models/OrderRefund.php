@@ -13,6 +13,7 @@ use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Events\RefundAgreedEvent;
+use RedJasmine\Order\Domain\Events\RefundRejectedEvent;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
@@ -44,7 +45,8 @@ class OrderRefund extends Model
     ];
 
     protected $dispatchesEvents = [
-        'agreed' => RefundAgreedEvent::class
+        'agreed'   => RefundAgreedEvent::class,
+        'rejected' => RefundRejectedEvent::class,
     ];
 
 
@@ -82,8 +84,8 @@ class OrderRefund extends Model
         if (!in_array($this->refund_type, [ RefundTypeEnum::REFUND_ONLY, RefundTypeEnum::RETURN_GOODS_REFUND ], true)) {
             throw new RefundException();
         }
-
-        $amount                            = $amount ?: $this->refund_amount;
+        $amount = $amount ?: $this->refund_amount;
+        // TODO 验证金额
         $this->end_time                    = now();
         $this->refund_amount               = $amount;
         $this->refund_status               = RefundStatusEnum::REFUND_SUCCESS;
@@ -93,5 +95,15 @@ class OrderRefund extends Model
         $this->fireModelEvent('agreed');
     }
 
+
+    public function reject(string $reason) : void
+    {
+
+        $this->reject_reason = $reason;
+        $this->refund_status = RefundStatusEnum::SELLER_REJECT_BUYER;
+
+        $this->fireModelEvent('rejected');
+
+    }
 
 }

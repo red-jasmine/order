@@ -8,7 +8,7 @@ use RedJasmine\Order\Domain\Models\OrderRefund;
 class AbstractRefundEvent
 {
 
-    use Dispatchabl;
+    use Dispatchable;
 
     public function __construct(public readonly OrderRefund $orderRefund)
     {

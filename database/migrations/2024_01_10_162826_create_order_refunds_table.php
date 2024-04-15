@@ -52,7 +52,7 @@ return new class extends Migration {
 
             $table->string('refund_status')->comment('退款状态');
             $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
-            $table->string('refuse_reason')->nullable()->comment('拒绝理由');
+            $table->string('reject_reason')->nullable()->comment('拒绝理由');
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('end_time')->nullable()->comment('完结时间');
 
