@@ -66,6 +66,7 @@ return new class extends Migration {
             $table->unsignedTinyInteger('is_buyer_delete')->default(0)->comment('买家删除');
             $table->string('outer_order_id', 64)->nullable()->comment('外部订单号');
             $table->string('cancel_reason')->nullable()->comment('取消原因');
+            $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->nullableMorphs('creator'); // 创建人
             $table->nullableMorphs('updater'); // 更新人
             $table->timestamps();

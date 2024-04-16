@@ -16,7 +16,7 @@ use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\RefundRepository;
 use RedJasmine\Order\Tests\TestCase;
 
-class OrderBaseTest extends TestCase
+class OrderBase extends TestCase
 {
 
     //ShippingTypeEnum::EXPRESS->value, ShippingTypeEnum::VIRTUAL->value, ShippingTypeEnum::CDK->value
@@ -193,7 +193,7 @@ class OrderBaseTest extends TestCase
         $command = OrderPayingCommand::from([
                                                 'id'          => $orderData->id,
                                                 'amount'      => $orderData->payableAmount,
-                                                'amount_type' => 'all'
+                                                'amount_type' => 'full'
                                             ]);
 
 

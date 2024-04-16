@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('order_payments', function (Blueprint $table) {
             $table->unsignedBigInteger('id')->primary()->comment('商品单号');
             $table->unsignedBigInteger('order_id')->comment('订单ID');
-
+            $table->unsignedBigInteger('refund_id')->default(0)->comment('退款单ID');
             $table->string('seller_type', 32)->comment('卖家类型');
             $table->unsignedBigInteger('seller_id')->comment('卖家ID');
             $table->string('buyer_type', 32)->comment('买家类型');
@@ -27,10 +27,10 @@ return new class extends Migration {
             $table->string('payment_channel')->nullable()->comment('支付渠道');
             $table->string('payment_channel_no')->nullable()->comment('支付渠道单号');
 
-            $table->timestamps();
-
+            $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->nullableMorphs('creator'); // 创建人
             $table->nullableMorphs('updater'); // 更新人
+            $table->timestamps();
             $table->comment('订单-支付单');
         });
     }

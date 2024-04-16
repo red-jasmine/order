@@ -65,6 +65,7 @@ return new class extends Migration {
             $table->string('seller_remarks')->nullable()->comment('卖家备注');
             $table->string('buyer_remarks')->nullable()->comment('买家备注');
             $table->json('extends')->nullable()->comment('扩展');
+            $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->nullableMorphs('creator'); // 创建人
             $table->nullableMorphs('updater'); // 更新人
             $table->timestamps();

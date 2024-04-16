@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Application\UserCases\Commands;
 
+use RedJasmine\Order\Domain\Enums\Payments\AmountTypeEnum;
 use RedJasmine\Support\Data\Data;
 
 class OrderPayingCommand extends Data
@@ -13,7 +14,7 @@ class OrderPayingCommand extends Data
     public function __construct(
         public int    $id,
         public string $amount,
-        public string $amountType
+        public AmountTypeEnum $amountType = AmountTypeEnum::FULL
     )
     {
     }

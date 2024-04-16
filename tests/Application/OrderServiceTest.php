@@ -25,7 +25,7 @@ use RedJasmine\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Tests\TestCase;
 
-class OrderServiceTest extends OrderBaseTest
+class OrderServiceTest extends OrderBase
 {
 
     public function test_order_cancel() : void

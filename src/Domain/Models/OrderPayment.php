@@ -4,6 +4,7 @@ namespace RedJasmine\Order\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use RedJasmine\Order\Domain\Enums\Payments\AmountTypeEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Models\Order;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
@@ -29,6 +30,7 @@ class OrderPayment extends Model
     }
 
     protected $casts = [
-        'status' => PaymentStatusEnum::class,
+        'amount_type' => AmountTypeEnum::class,
+        'status'      => PaymentStatusEnum::class,
     ];
 }

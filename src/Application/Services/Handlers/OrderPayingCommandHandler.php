@@ -18,14 +18,14 @@ class OrderPayingCommandHandler
     {
         $order = $this->orderRepository->find($command->id);
 
-        $orderPayment                 = app(OrderFactory::class)->createOrderPayment();
+        $orderPayment = app(OrderFactory::class)->createOrderPayment();
 
         $orderPayment->payment_amount = $command->amount;
+        $orderPayment->amount_type    = $command->amountType;
 
         $order->paying($orderPayment);
 
         $this->orderRepository->update($order);
-
 
 
         return $orderPayment->id;

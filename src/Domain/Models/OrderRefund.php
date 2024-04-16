@@ -4,9 +4,12 @@ namespace RedJasmine\Order\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
+use RedJasmine\Order\Domain\Enums\Payments\AmountTypeEnum;
+use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundGoodsStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundPhaseEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
@@ -20,6 +23,7 @@ use RedJasmine\Order\Domain\Events\RefundRejectedReturnGoodsEvent;
 use RedJasmine\Order\Domain\Events\RefundReshippedGoodsEvent;
 use RedJasmine\Order\Domain\Events\RefundReturnedGoodsEvent;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
+use RedJasmine\Order\Domain\OrderFactory;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 
@@ -76,6 +80,11 @@ class OrderRefund extends Model
         return $this->morphMany(OrderLogistics::class, 'shippable');
     }
 
+    public function payments() : HasMany
+    {
+        return $this->hasMany(OrderPayment::class, 'refund_id', 'id');
+    }
+
 
     /**
      * 同意退款
@@ -100,6 +109,19 @@ class OrderRefund extends Model
         $this->refund_amount               = $amount;
         $this->refund_status               = RefundStatusEnum::REFUND_SUCCESS;
         $this->orderProduct->refund_amount = bcadd($this->orderProduct->refund_amount, $amount, 2);
+
+
+        $payment                 = app(OrderFactory::class)->createOrderPayment();
+        $payment->order_id       = $this->order_id;
+        $payment->refund_id      = $this->id;
+        $payment->seller         = $this->seller;
+        $payment->buyer          = $this->buyer;
+        $payment->amount_type    = AmountTypeEnum::REFUND;
+        $payment->payment_amount = $this->refund_amount;
+        $payment->status         = PaymentStatusEnum::WAIT_PAY;
+
+
+        $this->payments->add($payment);
 
 
         $this->fireModelEvent('agreed');

@@ -26,6 +26,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('district_id')->nullable()->comment('区县ID');
             $table->unsignedBigInteger('street_id')->nullable()->comment('乡镇街道ID');
             $table->json('extends')->nullable()->comment('扩展字段');
+
+            $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->timestamps();
             $table->softDeletes();
             $table->comment('订单-地址表');

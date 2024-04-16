@@ -61,6 +61,7 @@ return new class extends Migration {
             $table->timestamp('refund_time')->nullable()->comment('退款时间');
             $table->timestamp('rate_time')->nullable()->comment('评价时间');
             $table->string('outer_order_product_id', 64)->nullable()->comment('外部商品单号');
+            $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->nullableMorphs('creator');
             $table->nullableMorphs('updater');
             $table->timestamps();
