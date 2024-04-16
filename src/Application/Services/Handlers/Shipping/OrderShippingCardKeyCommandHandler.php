@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Application\Services\Handlers\Shipping;
 
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Domain\OrderFactory;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Domain\Services\OrderShippingService;
@@ -17,7 +18,7 @@ class OrderShippingCardKeyCommandHandler
     }
 
 
-    public function execute(\RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand $command) : void
+    public function execute(OrderShippingCardKeyCommand $command) : void
     {
 
         $order = $this->orderRepository->find($command->id);
