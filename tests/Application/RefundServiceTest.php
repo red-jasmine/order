@@ -11,6 +11,7 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoo
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Order\Domain\Enums\Logistics\LogisticsShipperEnum;
+use RedJasmine\Order\Domain\Enums\Payments\AmountTypeEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
@@ -70,6 +71,12 @@ class RefundServiceTest extends OrderServiceTest
 
         $this->assertEquals(RefundStatusEnum::REFUND_SUCCESS->value, $refund->refund_status->value);
         $this->assertEquals($refund->refund_amount, $refund->refund_amount);
+
+        $payment = $refund->payments->first();
+
+        $this->assertEquals($refund->refund_amount, $payment->payment_amount);
+        $this->assertEquals($refund->id, $payment->refund_id);
+        $this->assertEquals(AmountTypeEnum::REFUND->value, $payment->amount_type->value);
 
     }
 
