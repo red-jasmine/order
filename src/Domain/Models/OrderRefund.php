@@ -17,6 +17,7 @@ use RedJasmine\Order\Domain\Events\RefundAgreedReturnGoodsEvent;
 use RedJasmine\Order\Domain\Events\RefundCanceledEvent;
 use RedJasmine\Order\Domain\Events\RefundRejectedEvent;
 use RedJasmine\Order\Domain\Events\RefundRejectedReturnGoodsEvent;
+use RedJasmine\Order\Domain\Events\RefundReshippedGoodsEvent;
 use RedJasmine\Order\Domain\Events\RefundReturnedGoodsEvent;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
@@ -54,7 +55,8 @@ class OrderRefund extends Model
         'canceled'            => RefundCanceledEvent::class,
         'agreedReturnGoods'   => RefundAgreedReturnGoodsEvent::class,
         'rejectedReturnGoods' => RefundRejectedReturnGoodsEvent::class,
-        'returnedGoods'       => RefundReturnedGoodsEvent::class
+        'returnedGoods'       => RefundReturnedGoodsEvent::class,
+        'reshippedGoods'      => RefundReshippedGoodsEvent::class,
     ];
 
 
@@ -138,7 +140,7 @@ class OrderRefund extends Model
     {
         if (!in_array($this->refund_type, [
             RefundTypeEnum::RETURN_GOODS_REFUND,
-            RefundTypeEnum::EXCHANGE_GOODS,
+            RefundTypeEnum::EXCHANGE,
             RefundTypeEnum::SERVICE,
         ],            true)) {
             throw new RefundException('refund type not allowed');
@@ -159,7 +161,7 @@ class OrderRefund extends Model
     {
         if (!in_array($this->refund_type, [
             RefundTypeEnum::RETURN_GOODS_REFUND,
-            RefundTypeEnum::EXCHANGE_GOODS,
+            RefundTypeEnum::EXCHANGE,
             RefundTypeEnum::SERVICE,
         ],            true)) {
             throw new RefundException('refund type not allowed');
@@ -190,4 +192,14 @@ class OrderRefund extends Model
     }
 
 
+    public function reshipGoods(OrderLogistics $orderLogistics) : void
+    {
+        $this->refund_status = RefundStatusEnum::REFUND_SUCCESS;
+        $this->end_time      = now();
+
+        $orderLogistics->shippable_type = 'refund';
+
+        $this->logistics->add($orderLogistics);
+
+    }
 }

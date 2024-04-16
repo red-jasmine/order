@@ -8,6 +8,7 @@ use RedJasmine\Order\Application\Services\Handlers\Refund\RefundCancelCommandHan
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundCreateCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectReturnGoodsCommandHandler;
+use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReshipGoodsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReturnGoodsCommandHandler;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeReturnGoodsCommand;
@@ -15,6 +16,7 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
 
@@ -74,6 +76,12 @@ class RefundService
     public function rejectReturnGoods(RefundRejectReturnGoodsCommand $command) : void
     {
         app(RefundRejectReturnGoodsCommandHandler::class)->execute($command);
+    }
+
+
+    public function reshipGoods(RefundReshipGoodsCommand $command) : void
+    {
+        app(RefundReshipGoodsCommandHandler::class)->execute($command);
     }
 
 }

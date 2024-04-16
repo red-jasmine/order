@@ -12,13 +12,15 @@ enum RefundTypeEnum: string
 {
     use EnumsHelper;
 
-    case REFUND_ONLY = 'refund_only';
+    case REFUND_ONLY = 'refund';
 
     case  RETURN_GOODS_REFUND = 'return_goods_refund';
 
-    case  EXCHANGE_GOODS = 'exchange_goods';
+    case  EXCHANGE = 'exchange';
 
     case  SERVICE = 'service';
+
+    case  OTHER = 'other';
 
 
     public static function labels() : array
@@ -26,8 +28,9 @@ enum RefundTypeEnum: string
         return [
             self::REFUND_ONLY->value         => '仅退款',
             self::RETURN_GOODS_REFUND->value => '退货退款',
-            self::EXCHANGE_GOODS->value      => '换货',
+            self::EXCHANGE->value            => '换货',
             self::SERVICE->value             => '维修',
+            self::OTHER->value               => '其他',
         ];
 
     }

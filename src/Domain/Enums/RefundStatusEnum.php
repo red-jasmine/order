@@ -22,6 +22,7 @@ enum RefundStatusEnum: string
     case  SELLER_REJECT_BUYER = 'seller_reject_buyer';
 
     case  REFUND_SUCCESS = 'refund_success';
+
     case  REFUND_CLOSED = 'closed';
 
     public static function labels() : array

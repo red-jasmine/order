@@ -8,6 +8,7 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Order\Domain\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
@@ -65,10 +66,10 @@ class RefundServiceTest extends OrderServiceTest
                                             ]);
         $this->refundService()->agree($command);
 
-        $latestRefund = $this->refundRepository()->find($command->rid);
+        $refund = $this->refundRepository()->find($command->rid);
 
-        $this->assertEquals(RefundStatusEnum::REFUND_SUCCESS->value, $latestRefund->refund_status->value);
-        $this->assertEquals($refund->refund_amount, $latestRefund->refund_amount);
+        $this->assertEquals(RefundStatusEnum::REFUND_SUCCESS->value, $refund->refund_status->value);
+        $this->assertEquals($refund->refund_amount, $refund->refund_amount);
 
     }
 
@@ -81,11 +82,11 @@ class RefundServiceTest extends OrderServiceTest
 
         $this->refundService()->reject($command);
 
-        $latestRefund = $this->refundRepository()->find($command->rid);
+        $refund = $this->refundRepository()->find($command->rid);
 
-        $this->assertEquals(RefundStatusEnum::SELLER_REJECT_BUYER->value, $latestRefund->refund_status->value);
+        $this->assertEquals(RefundStatusEnum::SELLER_REJECT_BUYER->value, $refund->refund_status->value);
 
-        $this->assertEquals($command->reason, $latestRefund->reject_reason);
+        $this->assertEquals($command->reason, $refund->reject_reason);
 
 
         return $refund;
@@ -230,10 +231,10 @@ class RefundServiceTest extends OrderServiceTest
 
         $this->refundService()->agree($command);
 
-        $latestRefund = $this->refundRepository()->find($command->rid);
+        $refund = $this->refundRepository()->find($command->rid);
 
-        $this->assertEquals(RefundStatusEnum::REFUND_SUCCESS->value, $latestRefund->refund_status->value);
-        $this->assertEquals($refund->refund_amount, $latestRefund->refund_amount);
+        $this->assertEquals(RefundStatusEnum::REFUND_SUCCESS->value, $refund->refund_status->value);
+        $this->assertEquals($refund->refund_amount, $refund->refund_amount);
 
 
     }
@@ -252,11 +253,11 @@ class RefundServiceTest extends OrderServiceTest
         $this->refundService()->rejectReturnGoods($command);
 
 
-        $latestRefund = $this->refundRepository()->find($command->rid);
+        $refund = $this->refundRepository()->find($command->rid);
 
-        $this->assertEquals(RefundStatusEnum::SELLER_REJECT_BUYER->value, $latestRefund->refund_status->value);
+        $this->assertEquals(RefundStatusEnum::SELLER_REJECT_BUYER->value, $refund->refund_status->value);
 
-        $this->assertEquals($command->reason, $latestRefund->reject_reason);
+        $this->assertEquals($command->reason, $refund->reject_reason);
 
 
         return $refund;
@@ -284,7 +285,7 @@ class RefundServiceTest extends OrderServiceTest
     }
 
 
-
+    // 换行逻辑
 
     public function test_refund_change_goods_create()
     {
@@ -302,7 +303,7 @@ class RefundServiceTest extends OrderServiceTest
             [
                 'id'               => $order->id,
                 'order_product_id' => $orderProduct->id,
-                'refund_type'      => RefundTypeEnum::EXCHANGE_GOODS,
+                'refund_type'      => RefundTypeEnum::EXCHANGE,
                 'refund_amount'    => 0,
                 'out_refund_id'    => fake()->numerify('out-sku-id-########'),
                 'description'      => 'test refund',
@@ -319,10 +320,93 @@ class RefundServiceTest extends OrderServiceTest
         $this->assertEquals($order->id, $refund->order_id);
         $this->assertEquals($orderProduct->id, $refund->order_product_id);
 
-        $this->assertEquals(RefundTypeEnum::EXCHANGE_GOODS, $refund->refund_type);
+        $this->assertEquals(RefundTypeEnum::EXCHANGE, $refund->refund_type);
         $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE_RETURN->value, $refund->refund_status->value);
+        $this->assertEquals(0, $refund->refund_amount);
 
 
         return $refund;
     }
+
+    /**
+     * 同意换货
+     * @return OrderRefund
+     */
+    public function test_refund_change_goods_agree() : OrderRefund
+    {
+        $refund = $this->test_refund_change_goods_create();
+
+        $command = RefundAgreeReturnGoodsCommand::from([ 'rid' => $refund->id ]);
+
+        $this->refundService()->agreeReturnGoods($command);
+
+        $refund = $this->refundRepository()->find($command->rid);
+
+        $this->assertEquals(RefundStatusEnum::WAIT_BUYER_RETURN_GOODS->value, $refund->refund_status->value);
+
+        return $refund;
+    }
+
+
+    /**
+     * 换货 买家发货
+     * @return OrderRefund
+     */
+    public function test_refund_change_return_goods()
+    {
+        $refund = $this->test_refund_change_goods_agree();
+
+        $command = RefundReturnGoodsCommand::from([
+                                                      'rid'                  => $refund->id,
+                                                      'express_company_code' => 'shunfeng',
+                                                      'express_no'           => fake()->numerify('##########')
+                                                  ]);
+        $this->refundService()->returnGoods($command);
+
+
+        $refund = $this->refundRepository()->find($command->rid);
+
+        $this->assertEquals(RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS->value, $refund->refund_status->value);
+
+        $logistics = $refund->logistics->first();
+
+        $this->assertEquals($command->expressNo, $logistics->express_no);
+        $this->assertEquals($command->expressCompanyCode, $logistics->express_company_code);
+        $this->assertEquals(LogisticsShipperEnum::BUYER->value, $logistics->shipper->value);
+
+
+        return $refund;
+
+
+    }
+
+
+    public function test_refund_change_return_goods_after_reship_goods()
+    {
+
+        $refund = $this->test_refund_change_return_goods();
+
+
+        $command = RefundReshipGoodsCommand::from([ 'rid'                  => $refund->id,
+                                                    'express_company_code' => 'shunfeng',
+                                                    'express_no'           => fake()->numerify('##########')
+                                                  ]);
+
+
+        $this->refundService()->reshipGoods($command);
+
+        $refund = $this->refundRepository()->find($command->rid);
+
+        $this->assertEquals(RefundStatusEnum::REFUND_SUCCESS->value, $refund->refund_status->value);
+
+
+        $logistics = $refund->logistics->last();
+
+        $this->assertEquals($command->expressNo, $logistics->express_no);
+        $this->assertEquals($command->expressCompanyCode, $logistics->express_company_code);
+        $this->assertEquals(LogisticsShipperEnum::SELLER->value, $logistics->shipper->value);
+        $this->assertNotNull($refund->end_time);
+
+    }
+
 }
