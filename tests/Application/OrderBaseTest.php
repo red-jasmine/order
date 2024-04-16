@@ -18,6 +18,17 @@ use RedJasmine\Order\Tests\TestCase;
 
 class OrderBaseTest extends TestCase
 {
+
+    //ShippingTypeEnum::EXPRESS->value, ShippingTypeEnum::VIRTUAL->value, ShippingTypeEnum::CDK->value
+
+    /**
+     * 发货类型
+     * @var ShippingTypeEnum
+     */
+    protected ShippingTypeEnum $shippingType = ShippingTypeEnum::VIRTUAL;
+    // 商品数量
+    protected int $productCount = 3;
+
     protected function fakeAddressArray() : array
     {
         return [
@@ -58,7 +69,7 @@ class OrderBaseTest extends TestCase
             ],
             'title'          => fake()->name,
             'order_type'     => OrderTypeEnum::MALL->value,
-            'shipping_type'  => fake()->randomElement([ ShippingTypeEnum::EXPRESS->value, ShippingTypeEnum::VIRTUAL->value, ShippingTypeEnum::CDK->value ]),
+            'shipping_type'  => $this->shippingType->value,
             'source'         => fake()->randomElement([ 'product', 'activity' ]),
             'outer_order_id' => fake()->numerify('out-order-id-########'),
             //'channel_type'    => fake()->randomElement([ 'channel', 'promoter' ]),
@@ -102,7 +113,7 @@ class OrderBaseTest extends TestCase
     protected function fakeProductArray(array $product = []) : array
     {
         $fake = [
-            'shipping_type'          => fake()->randomElement([ ShippingTypeEnum::EXPRESS->value, ShippingTypeEnum::VIRTUAL->value, ShippingTypeEnum::CDK->value ]),
+            'shipping_type'          => $this->shippingType->value,
             'order_product_type'     => fake()->randomElement([ 'goods' ]),
             'title'                  => fake()->sentence(),
             'sku_name'               => fake()->words(1, true),
@@ -156,16 +167,13 @@ class OrderBaseTest extends TestCase
     }
 
 
-
-
-
     public function test_order_create()
     {
-        $orderDataArray               = $this->fakeOrderArray();
-        $orderDataArray['products'][] = $this->fakeProductArray();
-        $orderDataArray['products'][] = $this->fakeProductArray();
-        $orderDataArray['products'][] = $this->fakeProductArray();
-        $orderCreateCommand           = OrderCreateCommand::from($orderDataArray);
+        $orderDataArray = $this->fakeOrderArray();
+        for ($i = 1; $i <= $this->productCount; $i++) {
+            $orderDataArray['products'][] = $this->fakeProductArray();
+        }
+        $orderCreateCommand = OrderCreateCommand::from($orderDataArray);
 
         $orderDTO = $this->orderService()->create($orderCreateCommand);
 

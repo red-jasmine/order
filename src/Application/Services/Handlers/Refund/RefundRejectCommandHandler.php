@@ -12,9 +12,7 @@ class RefundRejectCommandHandler extends AbstractRefundCommandHandler
     {
         $refund = $this->refundRepository->find($command->rid);
 
-
         $refund->reject($command->reason);
-
 
         $this->refundRepository->update($refund);
     }

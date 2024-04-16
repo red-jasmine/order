@@ -20,6 +20,7 @@ use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Tests\TestCase;
@@ -47,7 +48,7 @@ class OrderServiceTest extends OrderBaseTest
 
 
     // 测试发货流程
-    public function test_order_shipping_logistics()
+    public function test_order_shipping_logistics():Order
     {
         $order = $this->test_order_paid();
 

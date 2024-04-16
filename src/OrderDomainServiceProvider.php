@@ -5,7 +5,7 @@ namespace RedJasmine\Order;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use RedJasmine\Order\Domain\Models\Order;
-use RedJasmine\Order\Models\OrderRefund;
+use RedJasmine\Order\Domain\Models\OrderRefund;
 use RedJasmine\Order\Services\OrderService;
 
 /**

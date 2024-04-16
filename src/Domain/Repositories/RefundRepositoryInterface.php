@@ -10,8 +10,8 @@ interface RefundRepositoryInterface
     public function find(int $rid) : OrderRefund;
 
 
-    public function store(OrderRefund $orderRefund) : void;
+    public function store(OrderRefund $refund) : void;
 
 
-    public function update(OrderRefund $orderRefund) : void;
+    public function update(OrderRefund $refund) : void;
 }

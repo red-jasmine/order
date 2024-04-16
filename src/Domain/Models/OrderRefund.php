@@ -13,7 +13,11 @@ use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Events\RefundAgreedEvent;
+use RedJasmine\Order\Domain\Events\RefundAgreedReturnGoodsEvent;
+use RedJasmine\Order\Domain\Events\RefundCanceledEvent;
 use RedJasmine\Order\Domain\Events\RefundRejectedEvent;
+use RedJasmine\Order\Domain\Events\RefundRejectedReturnGoodsEvent;
+use RedJasmine\Order\Domain\Events\RefundReturnedGoodsEvent;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
@@ -45,8 +49,12 @@ class OrderRefund extends Model
     ];
 
     protected $dispatchesEvents = [
-        'agreed'   => RefundAgreedEvent::class,
-        'rejected' => RefundRejectedEvent::class,
+        'agreed'              => RefundAgreedEvent::class,
+        'rejected'            => RefundRejectedEvent::class,
+        'canceled'            => RefundCanceledEvent::class,
+        'agreedReturnGoods'   => RefundAgreedReturnGoodsEvent::class,
+        'rejectedReturnGoods' => RefundRejectedReturnGoodsEvent::class,
+        'returnedGoods'       => RefundReturnedGoodsEvent::class
     ];
 
 
@@ -99,11 +107,87 @@ class OrderRefund extends Model
     public function reject(string $reason) : void
     {
 
+        // TODO 状态
         $this->reject_reason = $reason;
         $this->refund_status = RefundStatusEnum::SELLER_REJECT_BUYER;
 
         $this->fireModelEvent('rejected');
 
     }
+
+    /**
+     * @return void
+     */
+    public function cancel() : void
+    {
+        $this->refund_status = RefundStatusEnum::REFUND_CLOSED;
+        $this->end_time      = now();
+
+        $this->fireModelEvent('canceled');
+    }
+
+
+    // 同意退货
+
+    /**
+     * 同意退货
+     * @return void
+     * @throws RefundException
+     */
+    public function agreeReturnGoods() : void
+    {
+        if (!in_array($this->refund_type, [
+            RefundTypeEnum::RETURN_GOODS_REFUND,
+            RefundTypeEnum::EXCHANGE_GOODS,
+            RefundTypeEnum::SERVICE,
+        ],            true)) {
+            throw new RefundException('refund type not allowed');
+        }
+        if (!in_array($this->refund_status, [ RefundStatusEnum::WAIT_SELLER_AGREE_RETURN ], true)) {
+            throw new RefundException('refund status not allowed');
+        }
+
+        $this->refund_status = RefundStatusEnum::WAIT_BUYER_RETURN_GOODS;
+
+
+        $this->fireModelEvent('agreedReturnGoods');
+
+    }
+
+
+    public function rejectReturnGoods(string $reason) : void
+    {
+        if (!in_array($this->refund_type, [
+            RefundTypeEnum::RETURN_GOODS_REFUND,
+            RefundTypeEnum::EXCHANGE_GOODS,
+            RefundTypeEnum::SERVICE,
+        ],            true)) {
+            throw new RefundException('refund type not allowed');
+        }
+        if (!in_array($this->refund_status, [ RefundStatusEnum::WAIT_SELLER_AGREE_RETURN ], true)) {
+            throw new RefundException('refund status not allowed');
+        }
+
+        $this->refund_status = RefundStatusEnum::SELLER_REJECT_BUYER;
+        $this->reject_reason = $reason;
+
+
+        $this->fireModelEvent('rejectedReturnGoods');
+
+    }
+
+    public function returnGoods(OrderLogistics $orderLogistics) : void
+    {
+
+        $this->refund_status = RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS;
+
+        $orderLogistics->shippable_type = 'refund';
+
+        $this->logistics->add($orderLogistics);
+
+        $this->fireModelEvent('returnedGoods');
+
+    }
+
 
 }
