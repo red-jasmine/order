@@ -292,7 +292,7 @@ class RefundServiceTest extends OrderServiceTest
     }
 
 
-    // 换行逻辑
+    // 换货逻辑
 
     public function test_refund_change_goods_create()
     {
@@ -388,6 +388,10 @@ class RefundServiceTest extends OrderServiceTest
     }
 
 
+    /**
+     * 换货 卖家重新发货
+     * @return void
+     */
     public function test_refund_change_return_goods_after_reship_goods()
     {
 

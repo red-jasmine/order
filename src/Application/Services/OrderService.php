@@ -10,6 +10,8 @@ use RedJasmine\Order\Application\Services\Handlers\OrderCreateCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderPaidCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderPayingCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderProgressCommandHandler;
+use RedJasmine\Order\Application\Services\Handlers\Others\OrderHiddenCommandHandler;
+use RedJasmine\Order\Application\Services\Handlers\Others\OrderRemarksCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingCardKeyCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingLogisticsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingVirtualCommandHandler;
@@ -19,9 +21,11 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
+use RedJasmine\Order\Domain\Enums\TradePartyEnums;
 
 
 class OrderService
@@ -73,5 +77,30 @@ class OrderService
         return app(OrderProgressCommandHandler::class)->execute($command);
     }
 
+
+    public function sellerRemarks(OrderRemarksCommand $command)
+    {
+        return app(OrderRemarksCommandHandler::class)
+            ->setTradeParty(TradePartyEnums::SELLER)
+            ->execute($command);
+    }
+
+    public function buyerRemarks(OrderRemarksCommand $command)
+    {
+        return app(OrderRemarksCommandHandler::class)
+            ->setTradeParty(TradePartyEnums::BUYER)
+            ->execute($command);
+    }
+
+
+    public function sellerHidden(OrderHiddenCommand $command)
+    {
+        return app(OrderHiddenCommandHandler::class)->setTradeParty(TradePartyEnums::SELLER)->execute($command);
+    }
+
+    public function buyerHidden(OrderHiddenCommand $command)
+    {
+        return app(OrderHiddenCommandHandler::class)->setTradeParty(TradePartyEnums::BUYER)->execute($command);
+    }
 
 }

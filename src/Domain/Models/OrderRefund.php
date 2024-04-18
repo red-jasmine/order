@@ -96,13 +96,15 @@ class OrderRefund extends Model
      */
     public function agree(?string $amount = null) : void
     {
+
+        if (!in_array($this->refund_type, [ RefundTypeEnum::REFUND_ONLY, RefundTypeEnum::RETURN_GOODS_REFUND ], true)) {
+            throw new RefundException();
+        }
         // 验证状态
         if (!in_array($this->refund_status, [ RefundStatusEnum::WAIT_SELLER_AGREE, RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS, ], true)) {
             throw new RefundException();
         }
-        if (!in_array($this->refund_type, [ RefundTypeEnum::REFUND_ONLY, RefundTypeEnum::RETURN_GOODS_REFUND ], true)) {
-            throw new RefundException();
-        }
+
         $amount = $amount ?: $this->refund_amount;
         // TODO 验证金额
         $this->end_time                    = now();

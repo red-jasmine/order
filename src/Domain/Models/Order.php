@@ -15,6 +15,7 @@ use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Enums\TradePartyEnums;
 use RedJasmine\Order\Domain\Events\OrderCanceledEvent;
 use RedJasmine\Order\Domain\Events\OrderCreatedEvent;
 use RedJasmine\Order\Domain\Events\OrderFinishedEvent;
@@ -337,7 +338,7 @@ class Order extends Model
 
     /**
      * @return void
-     * @throws \RedJasmine\Order\Domain\Exceptions\OrderException
+     * @throws OrderException
      */
     public function confirm() : void
     {
@@ -384,4 +385,33 @@ class Order extends Model
         app(OrderRefundService::class)->create($this, $orderRefund);
 
     }
+
+
+    public function remarks(TradePartyEnums $tradeParty, string $remarks = null, ?int $orderProductId = null) : void
+    {
+        $field = $tradeParty->value . '_remarks';
+        if ($orderProductId) {
+            $this->products->where('id', $orderProductId)->firstOrFail()->info->{$field} = $remarks;
+        } else {
+            $this->info->{$field} = $remarks;
+        }
+
+    }
+
+
+    public function hiddenOrder(TradePartyEnums $tradeParty) : void
+    {
+        switch ($tradeParty) {
+            case TradePartyEnums::SELLER:
+                $this->is_seller_delete = true;
+                break;
+            case TradePartyEnums::BUYER:
+                $this->is_buyer_delete = true;
+                break;
+            default:
+                break;
+        }
+
+    }
+
 }

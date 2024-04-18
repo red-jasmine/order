@@ -6,15 +6,15 @@ use RedJasmine\Order\Domain\Enums\RefundPhaseEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Models\OrderProduct;
-use RedJasmine\Order\Domain\Models\OrderRefund;
 use RedJasmine\Order\Domain\Models\Order;
+use RedJasmine\Order\Domain\Models\OrderRefund;
 use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
 
 class OrderRefundService
 {
 
 
-    public function create(Order $order, OrderRefund $orderRefund):void
+    public function create(Order $order, OrderRefund $orderRefund) : void
     {
         $orderProduct = $order->products->where('id', $orderRefund->order_product_id)->firstOrFail();
 
@@ -43,6 +43,7 @@ class OrderRefundService
 
         // 判断
         $orderRefund->phase         = $this->getRefundPhase($orderProduct);
+
         $orderRefund->refund_status = $orderRefund->refund_type === RefundTypeEnum::REFUND_ONLY ? RefundStatusEnum::WAIT_SELLER_AGREE : RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
         $orderRefund->created_time  = now();
 
