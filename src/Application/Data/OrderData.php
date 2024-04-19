@@ -4,6 +4,7 @@ namespace RedJasmine\Order\Application\Data;
 
 use Illuminate\Support\Collection;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domain\Enums\PayTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
@@ -23,6 +24,7 @@ class OrderData extends Data
     public UserData         $buyer;
     public ShippingTypeEnum $shippingType;
     public OrderTypeEnum    $orderType;
+    public PayTypeEnum      $payType            = PayTypeEnum::ONLINE;
     public ?string          $source             = null;
     public ?string          $outerOrderId       = null;
     public ?string          $sellerCustomStatus = null;

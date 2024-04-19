@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
@@ -37,7 +38,7 @@ class OrderProduct extends Model
         'order_status'    => OrderStatusEnum::class,
         'shipping_status' => ShippingStatusEnum::class,
         'payment_status'  => PaymentStatusEnum::class,
-        'refund_status'   => RefundStatusEnum::class,
+        'refund_status'   => OrderRefundStatusEnum::class,
     ];
 
     protected $fillable = [

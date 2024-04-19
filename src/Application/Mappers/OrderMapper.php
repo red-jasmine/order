@@ -16,6 +16,7 @@ class OrderMapper
         $order->buyer                = $orderData->buyer;
         $order->title                = $orderData->title;
         $order->order_type           = $orderData->orderType;
+        $order->pay_type             = $orderData->payType;
         $order->shipping_type        = $orderData->shippingType;
         $order->source               = $orderData->source;
         $order->seller_custom_status = $orderData->sellerCustomStatus;

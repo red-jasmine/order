@@ -12,6 +12,7 @@ use RedJasmine\Order\Application\Services\Handlers\OrderPayingCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderProgressCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Others\OrderHiddenCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Others\OrderRemarksCommandHandler;
+use RedJasmine\Order\Application\Services\Handlers\Others\OrderSellerCustomStatusCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingCardKeyCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingLogisticsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingVirtualCommandHandler;
@@ -23,6 +24,7 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Others\OrderSellerCustomStatusCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
@@ -81,16 +83,12 @@ class OrderService
 
     public function sellerRemarks(OrderRemarksCommand $command)
     {
-        return app(OrderRemarksCommandHandler::class)
-            ->setTradeParty(TradePartyEnums::SELLER)
-            ->execute($command);
+        return app(OrderRemarksCommandHandler::class)->setTradeParty(TradePartyEnums::SELLER)->execute($command);
     }
 
     public function buyerRemarks(OrderRemarksCommand $command)
     {
-        return app(OrderRemarksCommandHandler::class)
-            ->setTradeParty(TradePartyEnums::BUYER)
-            ->execute($command);
+        return app(OrderRemarksCommandHandler::class)->setTradeParty(TradePartyEnums::BUYER)->execute($command);
     }
 
 
@@ -102,6 +100,11 @@ class OrderService
     public function buyerHidden(OrderHiddenCommand $command)
     {
         return app(OrderHiddenCommandHandler::class)->setTradeParty(TradePartyEnums::BUYER)->execute($command);
+    }
+
+    public function sellerCustomStatus(OrderSellerCustomStatusCommand $command)
+    {
+        return app(OrderSellerCustomStatusCommandHandler::class)->execute($command);
     }
 
 

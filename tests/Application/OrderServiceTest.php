@@ -13,6 +13,7 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Others\OrderSellerCustomStatusCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
@@ -337,6 +338,42 @@ class OrderServiceTest extends OrderBase
         $order = $this->orderRepository()->find($order->id);
         $this->assertEquals(true,$order->is_buyer_delete);
         $this->assertEquals(true,$order->is_seller_delete);
+
+    }
+
+
+    public function test_order_seller_custom_status()
+    {
+        $order = $this->test_order_paid();
+        $orderProductId = $order->products[0]->id;
+        $command = OrderSellerCustomStatusCommand::from([
+            'id'   => $order->id,
+            'seller_custom_status' => fake('en')->word(),
+                                                        ]);
+
+        $this->orderService()->sellerCustomStatus($command);
+
+        $order = $this->orderRepository()->find($order->id);
+
+        $this->assertEquals($command->sellerCustomStatus,$order->seller_custom_status);
+
+
+
+
+        $command = OrderSellerCustomStatusCommand::from([
+                                                            'id'   => $order->id,
+                                                            'seller_custom_status' => fake('en')->word(),
+                                                            'order_product_id' => $orderProductId,
+                                                        ]);
+
+        $this->orderService()->sellerCustomStatus($command);
+
+        $order = $this->orderRepository()->find($order->id);
+
+        $orderProduct = $order->products[0];
+
+        $this->assertEquals($command->sellerCustomStatus,$orderProduct->seller_custom_status);
+
 
     }
 }

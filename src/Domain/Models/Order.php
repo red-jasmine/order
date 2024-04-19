@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use phpDocumentor\Reflection\Types\This;
+use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
@@ -67,7 +68,7 @@ class Order extends Model
         'order_status'     => OrderStatusEnum::class,
         'payment_status'   => PaymentStatusEnum::class,
         'shipping_status'  => ShippingStatusEnum::class,
-        'refund_status'    => RefundStatusEnum::class,
+        'refund_status'    => OrderRefundStatusEnum::class,
         'created_time'     => 'datetime',
         'payment_time'     => 'datetime',
         'close_time'       => 'datetime',
@@ -170,12 +171,13 @@ class Order extends Model
             $product->tax_amount = bcadd($product->tax_amount, 0, 2);
             // 单品优惠
             $product->discount_amount = bcadd($product->discount_amount, 0, 2);
-            // 应付金额  = 商品金额 + 税费 - 单品优惠
-
+            // 应付金额  = 商品金额 - 单品优惠 + 税费
             $product->payable_amount = bcsub(bcadd($product->product_amount, $product->tax_amount, 2), $product->discount_amount, 2);
-
             // 实付金额 完成支付时
-            $product->payment_amount = 0;
+            $product->payment_amount = $product->payment_amount ?? 0;
+
+            // 佣金
+            $product->commission_amount = $product->commission_amount ?? 0;
 
         }
     }
@@ -196,13 +198,17 @@ class Order extends Model
         $order->total_payable_amount = $order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->payable_amount, 2);
         }, 0);
+        // 总佣金
+        $order->total_commission_amount = $order->products->reduce(function ($sum, $product) {
+            return bcadd($sum, $product->commission_amount, 2);
+        }, 0);
 
         // 邮费
         $order->freight_amount = bcadd($order->freight_amount, 0, 2);
         // 订单优惠
         $order->discount_amount = bcadd($order->discount_amount, 0, 2);
 
-        // 订单应付金额 = 商品总应付金额 + 邮费 - 优惠
+        // 订单应付金额 = 商品总应付金额  - 优惠 + 邮费
         $order->payable_amount = bcsub(bcadd($order->total_payable_amount, $order->freight_amount, 2), $order->discount_amount, 2);
 
     }
@@ -305,7 +311,7 @@ class Order extends Model
      */
     public function paying(OrderPayment $orderPayment) : void
     {
-        if(!in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, null ], true)){
+        if (!in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, null ], true)) {
             throw new OrderException('payment status not allowed');
         }
 
@@ -326,7 +332,7 @@ class Order extends Model
 
     public function paid(OrderPayment $orderPayment) : void
     {
-        if(!in_array($this->payment_status, [ null,PaymentStatusEnum::WAIT_PAY,PaymentStatusEnum::PAYING,  PaymentStatusEnum::PART_PAY ], true)){
+        if (!in_array($this->payment_status, [ null, PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::PAYING, PaymentStatusEnum::PART_PAY ], true)) {
             throw new OrderException('payment status not allowed');
         }
 
@@ -361,6 +367,7 @@ class Order extends Model
         if (in_array($this->order_status, [ OrderStatusEnum::CANCEL, OrderStatusEnum::FINISHED, OrderStatusEnum::CLOSED ], true)) {
             throw new OrderException('订单完成');
         }
+        // TODO 收货
         $this->order_status = OrderStatusEnum::FINISHED;
         $this->end_time     = now();
         $this->products->each(function (OrderProduct $orderProduct) {
@@ -409,6 +416,15 @@ class Order extends Model
             $this->products->where('id', $orderProductId)->firstOrFail()->info->{$field} = $remarks;
         } else {
             $this->info->{$field} = $remarks;
+        }
+    }
+
+    public function setSellerCustomStatus(string $sellerCustomStatus, ?int $orderProductId = null) : void
+    {
+        if ($orderProductId) {
+            $this->products->where('id', $orderProductId)->firstOrFail()->seller_custom_status = $sellerCustomStatus;
+        } else {
+            $this->seller_custom_status = $sellerCustomStatus;
         }
     }
 
