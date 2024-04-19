@@ -20,8 +20,6 @@ enum PaymentStatusEnum: string
     case PART_PAY = 'part_pay';
     // 支付成功
     case PAID = 'paid';
-    // 支付失败
-    case PAY_FAIL = 'pay_fail';
     // 无需支付
     case NO_PAYMENT = 'no_payment';
 
@@ -32,7 +30,6 @@ enum PaymentStatusEnum: string
             self::PAYING->value     => '支付中',
             self::PART_PAY->value   => '部分支付',
             self::PAID->value       => '支付成功',
-            self::PAY_FAIL->value   => '支付失败',
             self::NO_PAYMENT->value => '无需支付',
         ];
 

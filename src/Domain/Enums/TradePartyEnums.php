@@ -9,7 +9,7 @@ enum TradePartyEnums: string
 
     use EnumsHelper;
 
-    case ADMIN = 'admin';
+    case PLATFORM = 'platform';
 
     case SELLER = 'seller';
 

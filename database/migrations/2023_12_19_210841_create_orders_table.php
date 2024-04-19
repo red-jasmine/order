@@ -16,14 +16,17 @@ return new class extends Migration {
             $table->unsignedBigInteger('buyer_id')->comment('买家类型');
             $table->string('buyer_nickname')->nullable()->comment('买家昵称');
             $table->string('title')->nullable()->comment('标题');
+
             $table->string('order_type', 32)->comment('订单类型');
             $table->string('shipping_type', 32)->comment('发货类型');
-            $table->string('source', 30)->nullable()->comment('来源');
+            $table->string('pay_type', 32)->comment('付款方式');
+
             $table->string('order_status')->comment('订单状态');
             $table->string('payment_status', 32)->nullable()->comment('付款状态');
             $table->string('shipping_status', 32)->nullable()->comment('发货状态');
             $table->string('refund_status', 32)->nullable()->comment('退款状态');
             $table->string('rate_status', 32)->nullable()->comment('评价状态');
+            $table->string('settlement_status', 32)->nullable()->comment('结算状态');
             $table->string('seller_custom_status', 32)->nullable()->comment('卖家自定义状态');
             $table->decimal('total_product_amount', 12)->default(0)->comment('总商品金额');
             $table->decimal('total_cost_amount', 12)->default(0)->comment('总成本金额');
@@ -35,7 +38,7 @@ return new class extends Migration {
             $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
             $table->decimal('commission_amount', 12)->default(0)->comment('佣金');
 
-
+            $table->string('source', 30)->nullable()->comment('来源');
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');
             $table->timestamp('close_time')->nullable()->comment('关闭时间');

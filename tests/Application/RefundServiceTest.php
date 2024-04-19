@@ -115,7 +115,7 @@ class RefundServiceTest extends OrderServiceTest
         $refund = $this->refundRepository()->find($command->rid);
 
 
-        $this->assertEquals(RefundStatusEnum::REFUND_CLOSED->value, $refund->refund_status->value);
+        $this->assertEquals(RefundStatusEnum::REFUND_CANCEL->value, $refund->refund_status->value);
 
     }
 
@@ -133,7 +133,7 @@ class RefundServiceTest extends OrderServiceTest
         $refund = $this->refundRepository()->find($command->rid);
 
 
-        $this->assertEquals(RefundStatusEnum::REFUND_CLOSED->value, $refund->refund_status->value);
+        $this->assertEquals(RefundStatusEnum::REFUND_CANCEL->value, $refund->refund_status->value);
 
 
     }
@@ -286,7 +286,7 @@ class RefundServiceTest extends OrderServiceTest
 
         $refund = $this->refundRepository()->find($command->rid);
 
-        $this->assertEquals(RefundStatusEnum::REFUND_CLOSED->value, $refund->refund_status->value);
+        $this->assertEquals(RefundStatusEnum::REFUND_CANCEL->value, $refund->refund_status->value);
 
 
     }

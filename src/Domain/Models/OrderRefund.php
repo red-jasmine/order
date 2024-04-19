@@ -146,7 +146,7 @@ class OrderRefund extends Model
      */
     public function cancel() : void
     {
-        $this->refund_status = RefundStatusEnum::REFUND_CLOSED;
+        $this->refund_status = RefundStatusEnum::REFUND_CANCEL;
         $this->end_time      = now();
 
         $this->fireModelEvent('canceled');

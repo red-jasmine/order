@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use phpDocumentor\Reflection\Types\This;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
@@ -138,19 +139,26 @@ class Order extends Model
         return $this;
     }
 
+    /**
+     * 计算金额
+     * @return $this
+     */
     public function calculateAmount() : static
     {
         // 统计商品金额
-        $this->calculateProducts();
+        $this->calculateProductsAmount();
         // 汇总订单金额
-        $this->calculateOrder();
+        $this->calculateOrderAmount();
         // 分摊订单数据
-        $this->calculateDivideDiscount();
+        $this->calculateDivideDiscountAmount();
         return $this;
     }
 
-
-    protected function calculateProducts() : void
+    /**
+     * 计算商品金额
+     * @return void
+     */
+    protected function calculateProductsAmount() : void
     {
         foreach ($this->products as $product) {
             // 商品总金额   < 0 TODO 验证金额
@@ -173,7 +181,7 @@ class Order extends Model
     }
 
 
-    protected function calculateOrder() : void
+    protected function calculateOrderAmount() : void
     {
         $order = $this;
         // 商品金额
@@ -203,7 +211,7 @@ class Order extends Model
      * 计算分摊优惠
      * @return void
      */
-    protected function calculateDivideDiscount() : void
+    protected function calculateDivideDiscountAmount() : void
     {
         $order = $this;
         $order->discount_amount;
@@ -212,9 +220,7 @@ class Order extends Model
         // TODO
     }
 
-    /**
-     * @return Order
-     */
+
     public function create() : static
     {
 
@@ -295,9 +301,14 @@ class Order extends Model
      * @param OrderPayment $orderPayment
      *
      * @return void
+     * @throws OrderException
      */
     public function paying(OrderPayment $orderPayment) : void
     {
+        if(!in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, null ], true)){
+            throw new OrderException('payment status not allowed');
+        }
+
         // 添加支付单
         $orderPayment->order_id = $this->id;
         $orderPayment->seller   = $this->seller;
@@ -315,6 +326,10 @@ class Order extends Model
 
     public function paid(OrderPayment $orderPayment) : void
     {
+        if(!in_array($this->payment_status, [ null,PaymentStatusEnum::WAIT_PAY,PaymentStatusEnum::PAYING,  PaymentStatusEnum::PART_PAY ], true)){
+            throw new OrderException('payment status not allowed');
+        }
+
         $orderPayment->status = PaymentStatusEnum::PAID;
 
         $this->payment_amount = bcadd($this->payment_amount, $orderPayment->payment_amount, 2);
@@ -395,10 +410,15 @@ class Order extends Model
         } else {
             $this->info->{$field} = $remarks;
         }
-
     }
 
 
+    /**
+     * @param TradePartyEnums $tradeParty
+     *
+     * @return void
+     * @throws OrderException
+     */
     public function hiddenOrder(TradePartyEnums $tradeParty) : void
     {
         switch ($tradeParty) {
@@ -409,6 +429,7 @@ class Order extends Model
                 $this->is_buyer_delete = true;
                 break;
             default:
+                throw new OrderException('交易方不支持');
                 break;
         }
 

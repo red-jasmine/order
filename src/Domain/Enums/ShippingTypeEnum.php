@@ -13,13 +13,14 @@ enum ShippingTypeEnum: string
 
     case EXPRESS = 'express'; // 物流快递
 
+    case  VIRTUAL = 'virtual';  // 虚拟发货
+
+
     case CDK = 'cdk'; // 卡密发货
 
-    case  VIRTUAL = 'virtual';  // 虚拟发货
 
     public static function labels() : array
     {
-
         return [
             self::EXPRESS->value => '物流快递',
             self::CDK->value     => '卡密',

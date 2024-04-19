@@ -11,6 +11,8 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
@@ -48,7 +50,7 @@ class OrderServiceTest extends OrderBase
 
 
     // 测试发货流程
-    public function test_order_shipping_logistics():Order
+    public function test_order_shipping_logistics() : Order
     {
         $order = $this->test_order_paid();
 
@@ -285,6 +287,56 @@ class OrderServiceTest extends OrderBase
         $this->assertEquals($command2->progress, $command2->progress);
         $this->assertEquals($command->progressTotal, $orderProduct->progress_total);
 
+
+    }
+
+
+    // 其他操作测试
+
+    public function test_remarks()
+    {
+        $order = $this->test_order_create();
+
+        $command = OrderRemarksCommand::from([
+                                                 'id'      => $order->id,
+                                                 'remarks' => fake()->text,
+                                             ]);
+
+        $this->orderService()->sellerRemarks($command);
+        $this->orderService()->buyerRemarks($command);
+
+        $order = $this->orderRepository()->find($order->id);
+
+        $this->assertEquals($command->remarks, $order->info->seller_remarks);
+        $this->assertEquals($command->remarks, $order->info->buyer_remarks);
+
+    }
+
+
+    public function test_hidden_order()
+    {
+        $order = $this->test_order_create();
+        $order = $this->orderRepository()->find($order->id);
+        $this->assertEquals(false,$order->is_buyer_delete);
+        $this->assertEquals(false,$order->is_seller_delete);
+
+        $command = OrderHiddenCommand::from([
+                                                'id' => $order->id,
+                                            ]);
+
+
+
+        $this->orderService()->buyerHidden($command);
+        $order = $this->orderRepository()->find($order->id);
+        $this->assertEquals(true,$order->is_buyer_delete);
+        $this->assertEquals(false,$order->is_seller_delete);
+
+
+        $this->orderService()->sellerHidden($command);
+
+        $order = $this->orderRepository()->find($order->id);
+        $this->assertEquals(true,$order->is_buyer_delete);
+        $this->assertEquals(true,$order->is_seller_delete);
 
     }
 }
