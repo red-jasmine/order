@@ -11,15 +11,14 @@ enum OrderTypeEnum: string
 {
     use EnumsHelper;
 
-
-    case  MALL = 'mall';
+    case  SOP = 'sop';
     case  PRESALE = 'presale';
 
 
     public static function labels() : array
     {
         return [
-            self::MALL->value    => '标准',
+            self::SOP->value     => '标准',
             self::PRESALE->value => '预售',
         ];
     }

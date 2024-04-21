@@ -68,7 +68,7 @@ class OrderBase extends TestCase
                 'nickname' => fake()->name()
             ],
             'title'          => fake()->name,
-            'order_type'     => OrderTypeEnum::MALL->value,
+            'order_type'     => OrderTypeEnum::SOP->value,
             'shipping_type'  => $this->shippingType->value,
             'source'         => fake()->randomElement([ 'product', 'activity' ]),
             'outer_order_id' => fake()->numerify('out-order-id-########'),
