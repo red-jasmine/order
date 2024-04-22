@@ -35,8 +35,8 @@ class OrderShippingService
 
 
     /**
-     * @param \RedJasmine\Order\Domain\Models\Order $order
-     * @param OrderProductCardKey                   $orderProductCardKey
+     * @param Order               $order
+     * @param OrderProductCardKey $orderProductCardKey
      *
      * @return void
      * @throws OrderException
@@ -65,7 +65,7 @@ class OrderShippingService
     }
 
     /**
-     * @throws \RedJasmine\Order\Domain\Exceptions\OrderException
+     * @throws OrderException
      */
     public function virtual(Order $order, int $orderProductId, bool $isPartShipped = false) : void
     {

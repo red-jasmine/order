@@ -33,7 +33,13 @@ use RedJasmine\Order\Domain\Enums\TradePartyEnums;
 
 class OrderService
 {
-    // TODO 可扩展
+
+    public function operator()
+    {
+
+    }
+    // TODO 可扩展替换操作
+    // TODO 可获取当前操作人
 
     public function create(OrderCreateCommand $command) : OrderData
     {
