@@ -23,6 +23,7 @@ use RedJasmine\Order\Domain\Events\OrderCreatedEvent;
 use RedJasmine\Order\Domain\Events\OrderFinishedEvent;
 use RedJasmine\Order\Domain\Events\OrderPaidEvent;
 use RedJasmine\Order\Domain\Events\OrderPayingEvent;
+use RedJasmine\Order\Domain\Events\OrderProgressEvent;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Models\ValueObjects\Progress;
 use RedJasmine\Order\Domain\Services\OrderRefundService;
@@ -58,7 +59,8 @@ class Order extends Model
         'canceled' => OrderCanceledEvent::class,
         'paying'   => OrderPayingEvent::class,
         'paid'     => OrderPaidEvent::class,
-        'finished' => OrderFinishedEvent::class
+        'finished' => OrderFinishedEvent::class,
+        'progress' => OrderProgressEvent::class,
     ];
 
 
@@ -393,6 +395,7 @@ class Order extends Model
         }
         $orderProduct->progress_total = $progress->progressTotal ?? $orderProduct->progress_total;
         // 触发事件
+
         $this->fireModelEvent('progress');
     }
 

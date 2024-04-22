@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Application\Services;
 
 
+use Illuminate\Support\Facades\Auth;
 use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Services\Handlers\OrderCancelCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderConfirmCommandHandler;
@@ -30,16 +31,9 @@ use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogist
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\Domain\Enums\TradePartyEnums;
 
-
 class OrderService
 {
 
-    public function operator()
-    {
-
-    }
-    // TODO 可扩展替换操作
-    // TODO 可获取当前操作人
 
     public function create(OrderCreateCommand $command) : OrderData
     {

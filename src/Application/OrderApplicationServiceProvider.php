@@ -3,6 +3,8 @@
 namespace RedJasmine\Order\Application;
 
 use Illuminate\Support\ServiceProvider;
+use RedJasmine\Order\Domain\Models\Order;
+use RedJasmine\Order\Domain\Observer\OrderObserver;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Domain\Repositories\RefundRepositoryInterface;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\OrderRepository;
@@ -20,9 +22,14 @@ class OrderApplicationServiceProvider extends ServiceProvider
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
 
         $this->app->bind(RefundRepositoryInterface::class, RefundRepository::class);
+
     }
 
     public function boot() : void
     {
+
+
+        Order::observe(OrderObserver::class);
+
     }
 }
