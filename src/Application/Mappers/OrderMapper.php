@@ -18,13 +18,15 @@ class OrderMapper
         $order->order_type           = $orderData->orderType;
         $order->pay_type             = $orderData->payType;
         $order->shipping_type        = $orderData->shippingType;
-        $order->source               = $orderData->source;
+        $order->source_type          = $orderData->sourceType;
+        $order->source_id            = $orderData->sourceId;
         $order->seller_custom_status = $orderData->sellerCustomStatus;
         $order->freight_amount       = $orderData->freightAmount;
         $order->discount_amount      = $orderData->discountAmount;
         $order->contact              = $orderData->contact;
         $order->password             = $orderData->password;
         $order->client_type          = $orderData->clientType;
+        $order->client_version       = $orderData->clientVersion;
         $order->client_ip            = $orderData->clientIp;
         $order->guide                = $orderData->guide;
         $order->store_type           = $orderData->store?->type;

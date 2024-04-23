@@ -70,7 +70,8 @@ class OrderBase extends TestCase
             'title'          => fake()->name,
             'order_type'     => OrderTypeEnum::SOP->value,
             'shipping_type'  => $this->shippingType->value,
-            'source'         => fake()->randomElement([ 'product', 'activity' ]),
+            'source_type'    => fake()->randomElement([ 'product', 'activity' ]),
+            'source_id'      => fake()->numerify('out-order-id-########'),
             'outer_order_id' => fake()->numerify('out-order-id-########'),
             //'channel_type'    => fake()->randomElement([ 'channel', 'promoter' ]),
             //'channel_id'      => fake()->randomNumber(5, true),
@@ -94,6 +95,7 @@ class OrderBase extends TestCase
             'contact'         => fake()->phoneNumber(),
             'password'        => fake()->password(6),
             'client_type'     => fake()->randomElement([ 'h5', 'ios-app', 'applets' ]),
+            'client_version'  => fake()->randomNumber(),
             'client_ip'       => fake()->ipv4(),
             'info'            => [
                 'seller_remarks' => fake()->sentence(10),

@@ -2,31 +2,62 @@
 
 namespace RedJasmine\Order\Domain\Observer;
 
+use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
+use RedJasmine\Order\Domain\Strategies\OrderFlowInterface;
+use RedJasmine\Order\Domain\Strategies\OrderSopFlow;
 
+/**
+ * 标准电商流程
+ */
 class OrderObserver
 {
-    public function created(Order $order) : void
+    // 根据不同的 订单类型 走不同的策略
+
+
+    protected function orderFlow(Order $order) : OrderFlowInterface
     {
+        switch ($order->order_type) {
+            case OrderTypeEnum::SOP:
+                return app(OrderSopFlow::class);
+                break;
+            case OrderTypeEnum::PRESALE:
+                return app(OrderSopFlow::class);
+            default:
+                return app(OrderSopFlow::class);
+                break;
+        }
 
     }
 
-    public function updated(Order $order) : void
-    {
-    }
-
-    public function deleted(Order $order) : void
-    {
-    }
-
-    public function restored(Order $order) : void
-    {
-    }
-
-    public function progress(Order $order):void
+    public function creating(Order $order) : void
     {
 
-        dd(1);
+        $this->orderFlow($order)->creating($order);
 
     }
+
+    public function paid(Order $order) : void
+    {
+        $this->orderFlow($order)->paid($order);
+
+    }
+
+    public function shipped(Order $order) : void
+    {
+        $this->orderFlow($order)->shipped($order);
+    }
+
+    /**
+     * 订单确认
+     *
+     * @param Order $order
+     *
+     * @return void
+     */
+    public function confirmed(Order $order) : void
+    {
+        $this->orderFlow($order)->confirmed($order);
+    }
+
 }

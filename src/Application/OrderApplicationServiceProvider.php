@@ -16,6 +16,8 @@ use RedJasmine\Order\Infrastructure\Repositories\Eloquent\RefundRepository;
  */
 class OrderApplicationServiceProvider extends ServiceProvider
 {
+
+
     public function register() : void
     {
 
@@ -28,8 +30,6 @@ class OrderApplicationServiceProvider extends ServiceProvider
     public function boot() : void
     {
 
-
         Order::observe(OrderObserver::class);
-
     }
 }

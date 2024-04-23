@@ -81,4 +81,18 @@ class OrderProduct extends Model
     }
 
 
+    /**
+     * 是否为有效单
+     * @return bool
+     */
+    public function isAvailable() : bool
+    {
+        // 没有全款退
+        if ($this->refund_status === OrderRefundStatusEnum::ALL_REFUND) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

@@ -13,13 +13,15 @@ enum OrderTypeEnum: string
 
     case  SOP = 'sop';
     case  PRESALE = 'presale';
+    case  GROUP_PURCHASE = 'group_purchase';
 
 
     public static function labels() : array
     {
         return [
-            self::SOP->value     => '标准',
-            self::PRESALE->value => '预售',
+            self::SOP->value            => '标准',
+            self::PRESALE->value        => '预售',
+            self::GROUP_PURCHASE->value => '团购',
         ];
     }
 

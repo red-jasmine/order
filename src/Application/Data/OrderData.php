@@ -25,7 +25,6 @@ class OrderData extends Data
     public ShippingTypeEnum $shippingType;
     public OrderTypeEnum    $orderType;
     public PayTypeEnum      $payType            = PayTypeEnum::ONLINE;
-    public ?string          $source             = null;
     public ?string          $outerOrderId       = null;
     public ?string          $sellerCustomStatus = null;
     public ?UserData        $channel            = null;
@@ -40,8 +39,11 @@ class OrderData extends Data
     public ?string $password = null;
 
     public ?string $clientType;
-
+    public ?string $clientVersion;
     public ?string $clientIp;
+
+    public ?string $sourceType = null;
+    public ?string $sourceId   = null;
 
     /** @var Collection<OrderProductData> */
     public Collection $products;

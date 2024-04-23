@@ -12,7 +12,7 @@ use RedJasmine\Order\Domain\Models\OrderProductCardKey;
 class OrderShippingService
 {
 
-    public function logistics(Order $order, bool $isSplit = false, OrderLogistics $logistics)
+    public function logistics(Order $order, bool $isSplit = false, OrderLogistics $logistics):void
     {
         // 添加物流记录
 

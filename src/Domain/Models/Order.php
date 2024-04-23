@@ -19,6 +19,7 @@ use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Enums\TradePartyEnums;
 use RedJasmine\Order\Domain\Events\OrderCanceledEvent;
+use RedJasmine\Order\Domain\Events\OrderConfirmedEvent;
 use RedJasmine\Order\Domain\Events\OrderCreatedEvent;
 use RedJasmine\Order\Domain\Events\OrderFinishedEvent;
 use RedJasmine\Order\Domain\Events\OrderPaidEvent;
@@ -55,12 +56,21 @@ class Order extends Model
 
 
     protected $dispatchesEvents = [
-        'created'  => OrderCreatedEvent::class,
-        'canceled' => OrderCanceledEvent::class,
-        'paying'   => OrderPayingEvent::class,
-        'paid'     => OrderPaidEvent::class,
-        'finished' => OrderFinishedEvent::class,
-        'progress' => OrderProgressEvent::class,
+        'created'   => OrderCreatedEvent::class,
+        'canceled'  => OrderCanceledEvent::class,
+        'paying'    => OrderPayingEvent::class,
+        'paid'      => OrderPaidEvent::class,
+        'progress'  => OrderProgressEvent::class,
+        'finished'  => OrderFinishedEvent::class,
+        'confirmed' => OrderConfirmedEvent::class,
+    ];
+
+    protected $observables = [
+        'paying',
+        'paid',
+        'progress',
+        'canceled',
+        'confirmed',
     ];
 
 
@@ -234,16 +244,16 @@ class Order extends Model
 
         // 初始化订单状态
         // TODO 策略模式
-        $this->order_status    = OrderStatusEnum::WAIT_BUYER_PAY;
+        $this->order_status    = null;
         $this->payment_status  = null;
         $this->shipping_status = null;
         $this->refund_status   = null;
         $this->rate_status     = null;
 
+
         $this->created_time = now();
         $this->products->each(function (OrderProduct $orderProduct) {
             $orderProduct->order_id     = $this->id;
-            $orderProduct->order_status = $this->order_status;
             $orderProduct->seller       = $this->seller;
             $orderProduct->buyer        = $this->buyer;
             $orderProduct->created_time = $this->created_time;
@@ -325,9 +335,13 @@ class Order extends Model
 
         $this->addPayment($orderPayment);
         // 设置为支付中
-        if (!$this->payment_status) {
+        if (in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, null ], true)) {
             $this->payment_status = PaymentStatusEnum::PAYING;
         }
+        $this->products->each(function (OrderProduct $orderProduct) {
+            $orderProduct->payment_status = PaymentStatusEnum::PAYING;
+        });
+
         $this->fireModelEvent('paying');
     }
 
@@ -360,26 +374,54 @@ class Order extends Model
 
 
     /**
+     * 订单确认
+     * @param int|null $orderProductId
+     *
      * @return void
      * @throws OrderException
      */
-    public function confirm() : void
+    public function confirm(?int $orderProductId = null) : void
     {
+
 
         if (in_array($this->order_status, [ OrderStatusEnum::CANCEL, OrderStatusEnum::FINISHED, OrderStatusEnum::CLOSED ], true)) {
             throw new OrderException('订单完成');
         }
-        // TODO 收货
-        $this->order_status = OrderStatusEnum::FINISHED;
-        $this->end_time     = now();
-        $this->products->each(function (OrderProduct $orderProduct) {
-            // TODO 过滤 已退款的订单
-            $orderProduct->order_status = $this->order_status;
-            $orderProduct->end_time     = $this->end_time;
-        });
+        // 只有在 部分发货情况下  才允许 传入子单号 单独确认搜获
+        if (filled($orderProductId)) {
+            // 子单 分开确认
+            // 如果是部分发货  子单号必须填写
+            if ($this->shipping_status === ShippingStatusEnum::PART_SHIPPED) {
+                throw new OrderException('发货状态不一致');
+            }
+
+            $orderProduct = $this->products->where('id', $orderProductId)->firstOrFail();
+
+            if ($orderProduct->shipping_status !== ShippingStatusEnum::SHIPPED) {
+                throw new OrderException('子单未发货完成');
+            }
+            $orderProduct->signed_time = now();
+            $orderProduct->confirm_time = now();
+
+        } else {
+            if ($this->shipping_status !== ShippingStatusEnum::SHIPPED) {
+                throw new OrderException('发货状态不一致');
+            }
+
+            $this->products->each(function (OrderProduct $orderProduct) {
+                if ($orderProduct->isAvailable()) {
+                    // 已经确认了的 无需再次确认
+                    $orderProduct->confirm_time = $orderProduct->confirm_time ?? now();
+                    $orderProduct->signed_time  = $orderProduct->confirm_time ?? now();
+                }
+            });
+
+            $this->confirm_time = $this->confirm_time ?? now();
+            $this->signed_time  = $this->confirm_time ?? now();
+        }
 
 
-        $this->fireModelEvent('finished');
+        $this->fireModelEvent('confirmed');
     }
 
 
@@ -394,7 +436,6 @@ class Order extends Model
             $orderProduct->progress = $progress->progress ?? $orderProduct->progress;
         }
         $orderProduct->progress_total = $progress->progressTotal ?? $orderProduct->progress_total;
-        // 触发事件
 
         $this->fireModelEvent('progress');
     }
