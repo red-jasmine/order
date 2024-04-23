@@ -65,7 +65,7 @@ return new class extends Migration {
             $table->timestamp('collect_time')->nullable()->comment('揽收时间');
             $table->timestamp('dispatch_time')->nullable()->comment('派送时间');
             $table->timestamp('signed_time')->nullable()->comment('签收时间');
-            $table->timestamp('end_time')->nullable()->comment('确认时间');
+            $table->timestamp('confirm_time')->nullable()->comment('确认时间');
             $table->timestamp('refund_time')->nullable()->comment('退款时间');
             $table->timestamp('rate_time')->nullable()->comment('评价时间');
             $table->timestamp('settlement_time')->nullable()->comment('结算时间');

@@ -56,7 +56,7 @@ return new class extends Migration {
             $table->timestamp('collect_time')->nullable()->comment('揽收时间');
             $table->timestamp('dispatch_time')->nullable()->comment('派送时间');
             $table->timestamp('signed_time')->nullable()->comment('签收时间');
-            $table->timestamp('end_time')->nullable()->comment('确认时间');
+            $table->timestamp('confirm_time')->nullable()->comment('确认时间');
             $table->timestamp('refund_time')->nullable()->comment('退款时间');
             $table->timestamp('rate_time')->nullable()->comment('评价时间');
             $table->timestamp('settlement_time')->nullable()->comment('结算时间');
@@ -70,8 +70,10 @@ return new class extends Migration {
 
 
             $table->string('client_type', 32)->nullable()->comment('客户端');
+            $table->string('client_version', 32)->nullable()->comment('客户端版本');
             $table->string('client_ip', 32)->nullable()->comment('IP');
-            $table->string('source', 30)->nullable()->comment('来源');
+            $table->string('source_type', 32)->nullable()->comment('来源类型');
+            $table->string('source_id', 32)->nullable()->comment('来源ID');
 
             $table->string('contact')->nullable()->comment('联系方式');
             $table->string('password')->nullable()->comment('查询密码');
