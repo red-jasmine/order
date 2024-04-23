@@ -5,6 +5,7 @@ namespace RedJasmine\Order\Domain\Strategies;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\RateStatusEnum;
+use RedJasmine\Order\Domain\Enums\SettlementStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderProduct;
@@ -76,12 +77,14 @@ class OrderSopFlow implements OrderFlowInterface
             }
         }
         if ($isAllConfirmed) {
-            $order->order_status = OrderStatusEnum::FINISHED;
-            $order->rate_status  = RateStatusEnum::WAIT_RATE;
+            $order->order_status      = OrderStatusEnum::FINISHED;
+            $order->rate_status       = RateStatusEnum::WAIT_RATE;
+            $order->settlement_status = SettlementStatusEnum::WAIT_SETTLEMENT;
             $order->products->each(function (OrderProduct $product) {
                 if ($product->isAvailable()) {
-                    $product->order_status = OrderStatusEnum::FINISHED;
-                    $product->rate_status  = RateStatusEnum::WAIT_RATE;
+                    $product->order_status      = OrderStatusEnum::FINISHED;
+                    $product->rate_status       = RateStatusEnum::WAIT_RATE;
+                    $product->settlement_status = SettlementStatusEnum::WAIT_SETTLEMENT;
                 }
             });
         }
