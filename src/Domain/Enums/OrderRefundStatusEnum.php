@@ -11,6 +11,7 @@ enum OrderRefundStatusEnum: string
 {
     use EnumsHelper;
 
+    case NIL = 'nil';
     case PART_REFUND = 'part_refund';
     case ALL_REFUND = 'all_refund';
 
@@ -18,6 +19,7 @@ enum OrderRefundStatusEnum: string
     public static function labels() : array
     {
         return [
+            self::NIL->value         => '',
             self::PART_REFUND->value => '部分退款',
             self::ALL_REFUND->value  => '全部退款',
         ];

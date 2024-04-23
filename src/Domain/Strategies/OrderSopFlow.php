@@ -44,21 +44,13 @@ class OrderSopFlow implements OrderFlowInterface
     public function shipped(Order $order) : void
     {
         $order->products->each(function (OrderProduct $product) {
-            if ($product->shipping_status === ShippingStatusEnum::SHIPPED && $product->isAvailable()) {
+            if ($product->shipping_status === ShippingStatusEnum::SHIPPED && $product->isEffective()) {
                 $product->order_status = OrderStatusEnum::WAIT_BUYER_CONFIRM_GOODS;
             }
         });
-        $isAllShipped = true;
-        foreach ($order->products as $product) {
-            if ($product->isAvailable() && $product->shipping_status === ShippingStatusEnum::SHIPPED) {
-                $isAllShipped = false;
-            }
-        }
-
-        if ($isAllShipped) {
+        if ($order->shipping_status === ShippingStatusEnum::SHIPPED) {
             $order->order_status = OrderStatusEnum::WAIT_BUYER_CONFIRM_GOODS;
         }
-
     }
 
     /**
@@ -72,7 +64,7 @@ class OrderSopFlow implements OrderFlowInterface
     {
         $isAllConfirmed = true;
         foreach ($order->products as $product) {
-            if ($product->shipping_status !== ShippingStatusEnum::SHIPPED && $product->isAvailable()) {
+            if ($product->shipping_status !== ShippingStatusEnum::SHIPPED && $product->isEffective()) {
                 $isAllConfirmed = false;
             }
         }
@@ -81,7 +73,7 @@ class OrderSopFlow implements OrderFlowInterface
             $order->rate_status       = RateStatusEnum::WAIT_RATE;
             $order->settlement_status = SettlementStatusEnum::WAIT_SETTLEMENT;
             $order->products->each(function (OrderProduct $product) {
-                if ($product->isAvailable()) {
+                if ($product->isEffective()) {
                     $product->order_status      = OrderStatusEnum::FINISHED;
                     $product->rate_status       = RateStatusEnum::WAIT_RATE;
                     $product->settlement_status = SettlementStatusEnum::WAIT_SETTLEMENT;

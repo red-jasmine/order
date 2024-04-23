@@ -15,7 +15,7 @@ enum AmountTypeEnum: string
     case REFUND = 'refund';
 
 
-    public static function lables() : array
+    public static function labels() : array
     {
 
         return [

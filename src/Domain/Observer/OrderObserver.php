@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Domain\Observer;
 
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Strategies\OrderFlowInterface;
 use RedJasmine\Order\Domain\Strategies\OrderSopFlow;
@@ -15,19 +16,20 @@ class OrderObserver
     // 根据不同的 订单类型 走不同的策略
 
 
+    /**
+     * @param Order $order
+     *
+     * @return OrderFlowInterface
+     * @throws OrderException
+     */
     protected function orderFlow(Order $order) : OrderFlowInterface
     {
-        switch ($order->order_type) {
-            case OrderTypeEnum::SOP:
-                return app(OrderSopFlow::class);
-                break;
-            case OrderTypeEnum::PRESALE:
-                return app(OrderSopFlow::class);
-            default:
-                return app(OrderSopFlow::class);
-                break;
+        $flows     = config('red-jasmine.order.flows', []);
+        $flowClass = $flows[$order->order_type->value] ?? null;
+        if (blank($flowClass)) {
+            throw new OrderException('流程不支持');
         }
-
+        return app($flowClass);
     }
 
     public function creating(Order $order) : void

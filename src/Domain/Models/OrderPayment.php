@@ -9,9 +9,6 @@ use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 
-/**
- * 订单支付
- */
 class OrderPayment extends Model
 {
 

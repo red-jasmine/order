@@ -17,7 +17,7 @@ class OrderRefundService
     public function create(Order $order, OrderRefund $orderRefund) : void
     {
         $orderProduct = $order->products->where('id', $orderRefund->order_product_id)->firstOrFail();
-
+        // TODO 验证子单 是否允许售后
         $orderRefund->seller                 = $order->seller;
         $orderRefund->buyer                  = $order->buyer;
         $orderRefund->shipping_type          = $orderProduct->shipping_type;
@@ -42,14 +42,24 @@ class OrderRefundService
 
 
         // 判断
-        $orderRefund->phase         = $this->getRefundPhase($orderProduct);
+        $orderRefund->phase = $this->getRefundPhase($orderProduct);
 
-        $orderRefund->refund_status = $orderRefund->refund_type === RefundTypeEnum::REFUND_ONLY ? RefundStatusEnum::WAIT_SELLER_AGREE : RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
-        $orderRefund->created_time  = now();
+        switch ($orderRefund->refund_type) {
+            case RefundTypeEnum::REFUND_ONLY:
+                $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE;
+                break;
+            case RefundTypeEnum::EXCHANGE:
+            case RefundTypeEnum::SERVICE:
+            case RefundTypeEnum::RETURN_GOODS_REFUND:
+            case RefundTypeEnum::OTHER:
+                $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
+                break;
+        }
+
+        $orderRefund->created_time = now();
 
         // 设置订单商品状态
-
-        $order->refunds->push($orderRefund);
+        $order->refunds->add($orderRefund);
     }
 
 

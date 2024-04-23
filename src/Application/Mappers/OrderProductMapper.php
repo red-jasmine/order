@@ -26,7 +26,7 @@ class OrderProductMapper
         $orderProduct->seller_category_id     = $orderProductData->sellerCategoryId;
         $orderProduct->outer_id               = $orderProductData->outerId;
         $orderProduct->outer_sku_id           = $orderProductData->outerSkuId;
-        $orderProduct->seller_custom_status   = $orderProductData->sellerCustomStatus;
+        $orderProduct->seller_custom_status   = $orderProductData->sellerCustomStatus ?? 'nil';
         $orderProduct->outer_order_product_id = $orderProductData->outerOrderProductId;
         $orderProduct->info->seller_remarks   = $orderProductData->info?->sellerRemarks;
         $orderProduct->info->seller_message   = $orderProductData->info?->sellerMessage;

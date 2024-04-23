@@ -12,6 +12,7 @@ enum ShippingStatusEnum: string
 
     use EnumsHelper;
 
+    case NIL = 'nil';
     case READY_SEND = 'ready_send'; // 预备发货
     case WAIT_SEND = 'wait_send'; // 等待发货
     case PART_SHIPPED = 'part_shipped'; // 部分发货
@@ -21,6 +22,7 @@ enum ShippingStatusEnum: string
     public static function labels() : array
     {
         return [
+            self::NIL->value          => '',
             self::WAIT_SEND->value    => '准备发货', // 发货管控中
             self::WAIT_SEND->value    => '待发货',
             self::PART_SHIPPED->value => '部分发货',

@@ -25,6 +25,7 @@ use RedJasmine\Order\Domain\Events\OrderFinishedEvent;
 use RedJasmine\Order\Domain\Events\OrderPaidEvent;
 use RedJasmine\Order\Domain\Events\OrderPayingEvent;
 use RedJasmine\Order\Domain\Events\OrderProgressEvent;
+use RedJasmine\Order\Domain\Events\OrderShippedEvent;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Models\ValueObjects\Progress;
 use RedJasmine\Order\Domain\Services\OrderRefundService;
@@ -60,6 +61,7 @@ class Order extends Model
         'canceled'  => OrderCanceledEvent::class,
         'paying'    => OrderPayingEvent::class,
         'paid'      => OrderPaidEvent::class,
+        'shipped'   => OrderShippedEvent::class,
         'progress'  => OrderProgressEvent::class,
         'finished'  => OrderFinishedEvent::class,
         'confirmed' => OrderConfirmedEvent::class,
@@ -68,6 +70,7 @@ class Order extends Model
     protected $observables = [
         'paying',
         'paid',
+        'shipped',
         'progress',
         'canceled',
         'confirmed',
@@ -242,15 +245,6 @@ class Order extends Model
     public function create() : static
     {
 
-        // 初始化订单状态
-        // TODO 策略模式
-        $this->order_status    = null;
-        $this->payment_status  = null;
-        $this->shipping_status = null;
-        $this->refund_status   = null;
-        $this->rate_status     = null;
-
-
         $this->created_time = now();
         $this->products->each(function (OrderProduct $orderProduct) {
             $orderProduct->order_id     = $this->id;
@@ -285,18 +279,39 @@ class Order extends Model
     }
 
 
-    public function shipping() : Order
+    /**
+     * 有效 子单数量
+     * @return int
+     */
+    public function productEffectiveCount() : int
+    {
+        $count = 0;
+
+        $this->products->each(function (OrderProduct $orderProduct) use (&$count) {
+            if ($orderProduct->isEffective()) {
+                $count++;
+            }
+        });
+
+        return $count;
+    }
+
+    public function shipping() : void
     {
         $order = $this;
         // 查询未发货的订单商品
-        // TODO  正常有效单订单商品 未退款
-        $count = $order->products->whereIn('shipping_status', [ null, ShippingStatusEnum::WAIT_SEND ])->count();
+        //  正常有效单订单商品 未发货
+        $effectiveAndNotShippingCount = 0;
+        $order->products->each(function (OrderProduct $orderProduct) use (&$effectiveAndNotShippingCount) {
+            if ($orderProduct->isEffective() && in_array($orderProduct->shipping_status, [ ShippingStatusEnum::NIL, ShippingStatusEnum::WAIT_SEND ], true)) {
+                $effectiveAndNotShippingCount++;
+            }
+        });
         // 如果还有未发货的订单商品 那么订单只能是部分发货
-        $order->shipping_status = $count > 0 ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
+        $order->shipping_status = $effectiveAndNotShippingCount > 0 ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
         $order->shipping_time   = $order->shipping_time ?? now();
-        // TODO 存在退款单 那么就直接关闭？
 
-        return $order;
+        $this->fireModelEvent('shipped');
     }
 
 
@@ -323,7 +338,7 @@ class Order extends Model
      */
     public function paying(OrderPayment $orderPayment) : void
     {
-        if (!in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, null ], true)) {
+        if (!in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::NIL ], true)) {
             throw new OrderException('payment status not allowed');
         }
 
@@ -335,7 +350,7 @@ class Order extends Model
 
         $this->addPayment($orderPayment);
         // 设置为支付中
-        if (in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, null ], true)) {
+        if (in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::NIL ], true)) {
             $this->payment_status = PaymentStatusEnum::PAYING;
         }
         $this->products->each(function (OrderProduct $orderProduct) {
@@ -348,7 +363,7 @@ class Order extends Model
 
     public function paid(OrderPayment $orderPayment) : void
     {
-        if (!in_array($this->payment_status, [ null, PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::PAYING, PaymentStatusEnum::PART_PAY ], true)) {
+        if (!in_array($this->payment_status, [ PaymentStatusEnum::NIL, PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::PAYING, PaymentStatusEnum::PART_PAY ], true)) {
             throw new OrderException('payment status not allowed');
         }
 
@@ -375,6 +390,7 @@ class Order extends Model
 
     /**
      * 订单确认
+     *
      * @param int|null $orderProductId
      *
      * @return void
@@ -400,7 +416,7 @@ class Order extends Model
             if ($orderProduct->shipping_status !== ShippingStatusEnum::SHIPPED) {
                 throw new OrderException('子单未发货完成');
             }
-            $orderProduct->signed_time = now();
+            $orderProduct->signed_time  = now();
             $orderProduct->confirm_time = now();
 
         } else {
@@ -409,7 +425,7 @@ class Order extends Model
             }
 
             $this->products->each(function (OrderProduct $orderProduct) {
-                if ($orderProduct->isAvailable()) {
+                if ($orderProduct->isEffective()) {
                     // 已经确认了的 无需再次确认
                     $orderProduct->confirm_time = $orderProduct->confirm_time ?? now();
                     $orderProduct->signed_time  = $orderProduct->confirm_time ?? now();

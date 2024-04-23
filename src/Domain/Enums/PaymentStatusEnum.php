@@ -12,7 +12,9 @@ enum PaymentStatusEnum: string
 
     use EnumsHelper;
 
-    // 未支付
+
+    case NIL = 'nil';
+
     case WAIT_PAY = 'wait_pay';
     // 支付中
     case PAYING = 'paying';
@@ -26,6 +28,7 @@ enum PaymentStatusEnum: string
     public static function labels() : array
     {
         return [
+            self::NIL->value         => '',
             self::WAIT_PAY->value   => '待支付',
             self::PAYING->value     => '支付中',
             self::PART_PAY->value   => '部分支付',

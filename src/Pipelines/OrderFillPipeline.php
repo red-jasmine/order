@@ -98,7 +98,7 @@ class OrderFillPipeline
         $orderProduct->payment_status         = $orderProductDTO->paymentStatus;
         $orderProduct->refund_status          = $orderProductDTO->refundStatus;
         $orderProduct->rate_status            = $orderProductDTO->rateStatus;
-        $orderProduct->seller_custom_status   = $orderProductDTO->sellerCustomStatus;
+        $orderProduct->seller_custom_status   = $orderProductDTO->sellerCustomStatus ?? 'nil';
         $orderProduct->outer_order_product_id = $orderProductDTO->outerOrderProductId;
         $orderProduct->info->seller_remarks   = $orderProductDTO->info?->sellerRemarks;
         $orderProduct->info->seller_message   = $orderProductDTO->info?->sellerMessage;

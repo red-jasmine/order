@@ -20,7 +20,7 @@ class OrderMapper
         $order->shipping_type        = $orderData->shippingType;
         $order->source_type          = $orderData->sourceType;
         $order->source_id            = $orderData->sourceId;
-        $order->seller_custom_status = $orderData->sellerCustomStatus;
+        $order->seller_custom_status = $orderData->sellerCustomStatus ?? 'nil';
         $order->freight_amount       = $orderData->freightAmount;
         $order->discount_amount      = $orderData->discountAmount;
         $order->contact              = $orderData->contact;

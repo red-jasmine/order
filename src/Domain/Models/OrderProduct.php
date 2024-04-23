@@ -77,15 +77,13 @@ class OrderProduct extends Model
     public function addCardKey(OrderProductCardKey $cardKey) : void
     {
         $this->cardKeys->add($cardKey);
-
     }
-
 
     /**
      * 是否为有效单
      * @return bool
      */
-    public function isAvailable() : bool
+    public function isEffective() : bool
     {
         // 没有全款退
         if ($this->refund_status === OrderRefundStatusEnum::ALL_REFUND) {
