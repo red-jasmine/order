@@ -5,7 +5,7 @@ namespace RedJasmine\Order\Application\Services;
 use BadMethodCallException;
 use Illuminate\Support\Traits\Macroable;
 
-trait ApplicationServiceMacroable
+trait ServiceMacro
 {
 
     use Macroable {
@@ -37,13 +37,13 @@ trait ApplicationServiceMacroable
             $macro = $macro->bindTo($this, static::class);
         }
 
-        if (method_exists($this, 'makeMarco')) {
-            $macro = $this->makeMarco($macro);
+        if (method_exists($this, 'makeMacro')) {
+            $macro = $this->makeMacro($macro);
         }
-        if (method_exists($macro, 'execute')) {
-            return $macro->execute(...$parameters);
+        if ($macro instanceof CommandHandler) {
+            // TODO 调用 可以做依赖注入
+            return $macro->setExecuteArgs($parameters)->execute(...$parameters);
         }
-
         return $macro(...$parameters);
     }
 

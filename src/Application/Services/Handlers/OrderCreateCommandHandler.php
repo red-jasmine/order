@@ -7,6 +7,7 @@ use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Mappers\OrderAddressMapper;
 use RedJasmine\Order\Application\Mappers\OrderMapper;
 use RedJasmine\Order\Application\Mappers\OrderProductMapper;
+use RedJasmine\Order\Application\Services\CommandHandlerPipeline;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domain\OrderFactory;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
@@ -16,11 +17,12 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
 
     public function execute(OrderCreateCommand $data) : OrderData
     {
-        // 1、业务验证 TODO
-        //$orderModel = $this->pipelines->send($data)->call('validate', fn() => $this->validate());
-        // 2、领域模型
+
+
         $order = app(OrderFactory::class)->createOrder();
         $order->setOperator($this->getOperator());
+        $this->setModel($order);
+
         app(OrderMapper::class)->fromData($data, $order);
 
         foreach ($data->products as $productData) {
@@ -34,12 +36,13 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
             app(OrderAddressMapper::class)->fromData($data->address, $address);
             $order->setAddress($address);
         }
-        $order->create();
 
-        // 3、持久化
-        $this->orderRepository->store($order);
 
-        // 5、转换成 DTO
+        $this->handle(
+            execute: fn() => $order->create(),
+            persistence: fn() => $this->orderRepository->store($order)
+        );
+
         return app(OrderMapper::class)->fromModel($order);
 
     }

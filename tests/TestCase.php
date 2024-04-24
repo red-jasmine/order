@@ -21,7 +21,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         return new UserData(
             type:     'console',
-            id:       0,
+            id:       fake()->numberBetween(1000000, 999999999),
             nickname: 'Console',
             avatar:   null
         );

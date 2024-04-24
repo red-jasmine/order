@@ -8,14 +8,21 @@ use RedJasmine\Order\Domain\Models\ValueObjects\Progress;
 class OrderProgressCommandHandler extends AbstractOrderCommandHandler
 {
 
+
+
+
     public function execute(OrderProgressCommand $command) : void
     {
-        $order = $this->orderRepository->find($command->id);
 
+        $order = $this->find($command->id);
         $progress = Progress::from([ 'progress' => $command->progress, 'progress_total' => $command->progressTotal, ]);
 
-        $order->setProductProgress($command->orderProductId, $progress);
 
-        $this->orderRepository->update($order);
+        $this->handle(
+            execute: fn() => $order->setProductProgress($command->orderProductId, $progress),
+            persistence: fn() => $this->orderRepository->store($order)
+        );
+
+
     }
 }

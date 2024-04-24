@@ -8,13 +8,16 @@ use RedJasmine\Order\Application\UserCases\Commands\Others\OrderSellerCustomStat
 class OrderSellerCustomStatusCommandHandler extends AbstractOrderCommandHandler
 {
 
+
+
+
     public function execute(OrderSellerCustomStatusCommand $command) : void
     {
-        $order = $this->orderRepository->find($command->id);
 
-        $order->setSellerCustomStatus($command->sellerCustomStatus, $command->orderProductId);
-
+        $order = $this->find($command->id);
+        $this->pipelineManager()->call('executing');
+        $this->pipelineManager()->call('execute', fn() => $order->setSellerCustomStatus($command->sellerCustomStatus, $command->orderProductId));
         $this->orderRepository->update($order);
-
+        $this->pipelineManager()->call('executed');
     }
 }

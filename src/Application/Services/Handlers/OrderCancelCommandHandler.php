@@ -9,13 +9,12 @@ class OrderCancelCommandHandler extends AbstractOrderCommandHandler
 
     public function execute(OrderCancelCommand $command) : void
     {
-        $order = $this->orderRepository->find($command->id);
 
-        $order->cancel($command->cancelReason);
-
-        $this->orderRepository->update($order);
-
-
+        $order = $this->find($command->id);
+        $this->handle(
+            execute: fn() => $order->cancel($command->cancelReason),
+            persistence: fn() => $this->orderRepository->update($order)
+        );
 
     }
 

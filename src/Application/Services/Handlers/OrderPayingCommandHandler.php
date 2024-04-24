@@ -6,28 +6,24 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Domain\OrderFactory;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 
-class OrderPayingCommandHandler
+class OrderPayingCommandHandler extends AbstractOrderCommandHandler
 {
 
-    public function __construct(private readonly OrderRepositoryInterface $orderRepository)
-    {
-    }
 
 
     public function execute(OrderPayingCommand $command) : int
     {
-        $order = $this->orderRepository->find($command->id);
-
+        $order = $this->find($command->id);
         $orderPayment = app(OrderFactory::class)->createOrderPayment();
 
         $orderPayment->payment_amount = $command->amount;
         $orderPayment->amount_type    = $command->amountType;
 
-        $order->paying($orderPayment);
 
-        $this->orderRepository->update($order);
-
-
+        $this->handle(
+            execute: fn() => $order->paying($orderPayment),
+            persistence: fn() => $this->orderRepository->store($order)
+        );
         return $orderPayment->id;
     }
 

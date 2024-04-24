@@ -9,20 +9,15 @@ class RefundAgreeCommandHandler extends AbstractRefundCommandHandler
 {
 
 
-    /**
-     * @param RefundAgreeCommand $command
-     *
-     * @return void
-     * @throws RefundException
-     */
     public function execute(RefundAgreeCommand $command) : void
     {
-        $refund = $this->refundRepository->find($command->rid);
 
-        $refund->agree($command->amount);
+        $refund = $this->find($command->rid);
 
+        $this->pipelineManager()->call('executing');
+        $this->pipelineManager()->call('execute', fn() => $refund->agree($command->amount));
         $this->refundRepository->update($refund);
-
+        $this->pipelineManager()->call('executed');
     }
 
 }

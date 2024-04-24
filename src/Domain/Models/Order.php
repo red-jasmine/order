@@ -302,19 +302,16 @@ class Order extends Model
 
     public function shipping() : void
     {
-        $order = $this;
-        // 查询未发货的订单商品
-        //  正常有效单订单商品 未发货
         $effectiveAndNotShippingCount = 0;
-        $order->products->each(function (OrderProduct $orderProduct) use (&$effectiveAndNotShippingCount) {
+        $this->products->each(function (OrderProduct $orderProduct) use (&$effectiveAndNotShippingCount) {
             if ($orderProduct->isEffective() && in_array($orderProduct->shipping_status, [ ShippingStatusEnum::NIL, ShippingStatusEnum::WAIT_SEND ], true)) {
                 $effectiveAndNotShippingCount++;
             }
         });
         // 如果还有未发货的订单商品 那么订单只能是部分发货
-        $order->shipping_status = $effectiveAndNotShippingCount > 0 ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
-        $order->shipping_time   = $order->shipping_time ?? now();
-
+        $this->shipping_status = $effectiveAndNotShippingCount > 0 ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
+        $this->shipping_time   = $order->shipping_time ?? now();
+        $this->updater         = $this->getOperator();
         $this->fireModelEvent('shipped');
     }
 
@@ -328,7 +325,7 @@ class Order extends Model
             $orderProduct->order_status = OrderStatusEnum::CANCEL;
             $orderProduct->close_time   = now();
         });
-
+        $this->updater = $this->getOperator();
         $this->fireModelEvent('canceled');
     }
 
@@ -351,7 +348,7 @@ class Order extends Model
         $orderPayment->seller   = $this->seller;
         $orderPayment->buyer    = $this->buyer;
         $orderPayment->status   = PaymentStatusEnum::PAYING;
-
+        $orderPayment->creator  = $this->getOperator();
         $this->addPayment($orderPayment);
         // 设置为支付中
         if (in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::NIL ], true)) {
@@ -360,11 +357,17 @@ class Order extends Model
         $this->products->each(function (OrderProduct $orderProduct) {
             $orderProduct->payment_status = PaymentStatusEnum::PAYING;
         });
-
+        $this->updater = $this->getOperator();
         $this->fireModelEvent('paying');
     }
 
 
+    /**
+     * @param OrderPayment $orderPayment
+     *
+     * @return void
+     * @throws OrderException
+     */
     public function paid(OrderPayment $orderPayment) : void
     {
         if (!in_array($this->payment_status, [ PaymentStatusEnum::NIL, PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::PAYING, PaymentStatusEnum::PART_PAY ], true)) {
@@ -387,7 +390,6 @@ class Order extends Model
                 $orderProduct->payment_amount = $orderProduct->payable_amount;
             }
         });
-
         $this->fireModelEvent('paid');
     }
 

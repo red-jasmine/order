@@ -4,18 +4,25 @@ namespace RedJasmine\Order\Application\Services\Handlers;
 
 use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
 
+
 class OrderConfirmCommandHandler extends AbstractOrderCommandHandler
 {
 
 
+    /**
+     * @param OrderConfirmCommand $command
+     *
+     * @return void
+     */
     public function execute(OrderConfirmCommand $command) : void
     {
-        $order = $this->orderRepository->find($command->id);
 
-        $order->confirm();
+        $order = $this->find($command->id);
 
-        $this->orderRepository->update($order);
-
+        $this->handle(
+            execute: fn() => $order->confirm(),
+            persistence: fn() => $this->orderRepository->update($order)
+        );
     }
 
 

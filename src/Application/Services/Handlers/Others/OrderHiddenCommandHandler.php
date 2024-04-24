@@ -27,12 +27,12 @@ class OrderHiddenCommandHandler extends AbstractOrderCommandHandler
 
     public function execute(OrderHiddenCommand $command) : void
     {
-        $order = $this->orderRepository->find($command->id);
 
-        $order->hiddenOrder($this->tradeParty);
-
+        $order = $this->find($command->id);
+        $this->pipelineManager()->call('executing');
+        $this->pipelineManager()->call('execute', fn() => $order->hiddenOrder($this->getTradeParty()));
         $this->orderRepository->update($order);
-
+        $this->pipelineManager()->call('executed');
     }
 
 }

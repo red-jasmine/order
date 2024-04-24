@@ -8,7 +8,7 @@ use RedJasmine\Support\Foundation\HasServiceContext;
 abstract class ApplicationService
 {
 
-    use ApplicationServiceMacroable;
+    use ServiceMacro;
 
     // 有服务上下文的
     use HasServiceContext;
@@ -16,20 +16,20 @@ abstract class ApplicationService
 
     /**
      * @template T
-     * @param T $className
+     * @param T $macro
      *
      * @return T
      */
-    public function makeMacro(mixed $className)
+    public function makeMacro(mixed $macro)
     {
-        if (is_string($className)) {
-            $macro = app($className);
+        if (is_string($macro)) {
+            $macro = app($macro);
             if (method_exists($macro, 'setOperator')) {
                 $macro->setOperator($this->getOperator());
             }
             return $macro;
         }
-        return $className;
+        return $macro;
 
     }
 

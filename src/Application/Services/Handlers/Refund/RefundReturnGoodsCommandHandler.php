@@ -10,11 +10,11 @@ class RefundReturnGoodsCommandHandler extends AbstractRefundCommandHandler
 {
 
 
+
+
     public function execute(RefundReturnGoodsCommand $command) : void
     {
-
-        $refund = $this->refundRepository->find($command->rid);
-
+        $refund  = $this->find($command->rid);
 
         $orderLogistics                       = app(OrderFactory::class)->createOrderLogistics();
         $orderLogistics->shippable_type       = 'refund';
@@ -27,10 +27,14 @@ class RefundReturnGoodsCommandHandler extends AbstractRefundCommandHandler
         $orderLogistics->express_no           = $command->expressNo;
         $orderLogistics->status               = $command->status;
         $orderLogistics->shipping_time        = now();
-        $refund->returnGoods($orderLogistics);
 
 
+        $this->setModel($refund);
+        $this->pipelineManager()->call('executing');
+        $this->pipelineManager()->call('execute', fn() => $refund->returnGoods($orderLogistics));
         $this->refundRepository->update($refund);
+        $this->pipelineManager()->call('executed');
+
 
     }
 

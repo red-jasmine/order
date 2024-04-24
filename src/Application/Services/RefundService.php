@@ -10,78 +10,19 @@ use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectCommandHan
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectReturnGoodsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReshipGoodsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReturnGoodsCommandHandler;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeReturnGoodsCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCancelCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoodsCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
-use RedJasmine\Order\Domain\Exceptions\RefundException;
 
 class RefundService extends ApplicationService
 {
+    protected static $macros = [
+        'create'            => RefundCreateCommandHandler::class,
+        'agree'             => RefundAgreeCommandHandler::class,
+        'reject'            => RefundRejectCommandHandler::class,
+        'cancel'            => RefundCancelCommandHandler::class,
+        'agreeReturnGoods'  => RefundAgreeReturnGoodsCommandHandler::class,
+        'returnGoods'       => RefundReturnGoodsCommandHandler::class,
+        'rejectReturnGoods' => RefundRejectReturnGoodsCommandHandler::class,
+        'reshipGoods'       => RefundReshipGoodsCommandHandler::class,
+    ];
 
-
-    /**
-     * 创建
-     *
-     * @param RefundCreateCommand $command
-     *
-     * @return int
-     */
-    public function create(RefundCreateCommand $command) : int
-    {
-        return app(RefundCreateCommandHandler::class)->execute($command);
-    }
-
-
-    /**
-     * @param RefundAgreeCommand $command
-     *
-     * @return void
-     * @throws RefundException
-     */
-    public function agree(RefundAgreeCommand $command) : void
-    {
-        app(RefundAgreeCommandHandler::class)->execute($command);
-    }
-
-
-    public function reject(RefundRejectCommand $command) : void
-    {
-        app(RefundRejectCommandHandler::class)->execute($command);
-    }
-
-
-    public function cancel(RefundCancelCommand $command) : void
-    {
-        app(RefundCancelCommandHandler::class)->execute($command);
-    }
-
-
-    public function agreeReturnGoods(RefundAgreeReturnGoodsCommand $command) : void
-    {
-        app(RefundAgreeReturnGoodsCommandHandler::class)->execute($command);
-    }
-
-
-    public function returnGoods(RefundReturnGoodsCommand $command) : void
-    {
-        app(RefundReturnGoodsCommandHandler::class)->execute($command);
-    }
-
-
-    public function rejectReturnGoods(RefundRejectReturnGoodsCommand $command) : void
-    {
-        app(RefundRejectReturnGoodsCommandHandler::class)->execute($command);
-    }
-
-
-    public function reshipGoods(RefundReshipGoodsCommand $command) : void
-    {
-        app(RefundReshipGoodsCommandHandler::class)->execute($command);
-    }
 
 }

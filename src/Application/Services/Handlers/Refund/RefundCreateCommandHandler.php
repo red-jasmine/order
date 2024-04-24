@@ -9,12 +9,9 @@ use RedJasmine\Order\Domain\OrderFactory;
 class RefundCreateCommandHandler extends AbstractOrderCommandHandler
 {
 
-
     public function execute(RefundCreateCommand $command) : int
     {
-
-        $order = $this->orderRepository->find($command->id);
-
+        $order                         = $this->find($command->id);
         $orderRefund                   = app(OrderFactory::class)->createRefund($order);
         $orderRefund->order_product_id = $command->orderProductId;
         $orderRefund->refund_type      = $command->refundType;
@@ -22,12 +19,10 @@ class RefundCreateCommandHandler extends AbstractOrderCommandHandler
         $orderRefund->description      = $command->description;
         $orderRefund->images           = $command->images;
         $orderRefund->reason           = $command->reason;
-        $order->createRefund($orderRefund);
-
+        $this->pipelineManager()->call('executing');
+        $this->pipelineManager()->call('execute', fn() => $order->createRefund($orderRefund));
         $this->orderRepository->update($order);
-
-
-        return $orderRefund->id;
+        return $this->pipelineManager()->call('executed', fn() => $orderRefund->id);
     }
 
 }

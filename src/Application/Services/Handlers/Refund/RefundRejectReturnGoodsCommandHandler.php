@@ -7,15 +7,16 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoo
 class RefundRejectReturnGoodsCommandHandler extends AbstractRefundCommandHandler
 {
 
-    public function execute(RefundRejectReturnGoodsCommand $command):void
+
+
+    public function execute(RefundRejectReturnGoodsCommand $command) : void
     {
 
-        $refund = $this->refundRepository->find($command->rid);
-
-        $refund->rejectReturnGoods($command->reason);
-
-
+        $refund  = $this->find($command->rid);
+        $this->pipelineManager()->call('executing');
+        $this->pipelineManager()->call('execute', fn() => $refund->rejectReturnGoods($command->reason));
         $this->refundRepository->update($refund);
+        $this->pipelineManager()->call('executed');
 
     }
 

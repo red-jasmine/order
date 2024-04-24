@@ -8,13 +8,15 @@ class RefundCancelCommandHandler extends AbstractRefundCommandHandler
 {
 
 
+
     public function execute(RefundCancelCommand $command) : void
     {
-        $refund = $this->refundRepository->find($command->rid);
 
-        $refund->cancel();
-
+        $refund  = $this->find($command->rid);
+        $this->pipelineManager()->call('executing');
+        $this->pipelineManager()->call('execute', fn() => $refund->cancel());
         $this->refundRepository->update($refund);
+        $this->pipelineManager()->call('executed');
     }
 
 }

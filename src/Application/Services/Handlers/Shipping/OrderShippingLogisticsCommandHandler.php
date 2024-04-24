@@ -2,13 +2,14 @@
 
 namespace RedJasmine\Order\Application\Services\Handlers\Shipping;
 
+use RedJasmine\Order\Application\Services\Handlers\AbstractOrderCommandHandler;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Domain\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Domain\OrderFactory;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Domain\Services\OrderShippingService;
 
-class OrderShippingLogisticsCommandHandler
+class OrderShippingLogisticsCommandHandler extends AbstractOrderCommandHandler
 {
 
     public function __construct(
@@ -16,13 +17,15 @@ class OrderShippingLogisticsCommandHandler
         protected OrderShippingService     $orderShippingService
     )
     {
+        parent::__construct($orderRepository);
     }
+
 
 
     public function execute(OrderShippingLogisticsCommand $command) : void
     {
 
-        $order                                = $this->orderRepository->find($command->id);
+        $order = $this->find($command->id);
         $orderLogistics                       = app(OrderFactory::class)->createOrderLogistics();
         $orderLogistics->shippable_id         = $order->id;
         $orderLogistics->seller               = $order->seller;
@@ -34,9 +37,11 @@ class OrderShippingLogisticsCommandHandler
         $orderLogistics->status               = $command->status;
         $orderLogistics->shipping_time        = now();
 
-        $this->orderShippingService->logistics($order, $command->isSplit, $orderLogistics);
 
+        $this->pipelineManager()->call('executing');
+        $this->pipelineManager()->call('execute', fn() => $this->orderShippingService->logistics($order, $command->isSplit, $orderLogistics));
         $this->orderRepository->update($order);
+        $this->pipelineManager()->call('executed');
     }
 
 
