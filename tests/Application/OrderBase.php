@@ -150,12 +150,12 @@ class OrderBase extends TestCase
 
     protected function orderService() : OrderService
     {
-        return app(OrderService::class);
+        return app(OrderService::class)->setOperator($this->getOperator());
     }
 
     protected function refundService() : RefundService
     {
-        return app(RefundService::class);
+        return app(RefundService::class)->setOperator($this->getOperator());
     }
 
     protected function orderRepository() : OrderRepositoryInterface

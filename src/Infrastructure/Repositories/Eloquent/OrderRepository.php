@@ -13,20 +13,12 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function find(int $id) : Order
     {
-        // with([ 'products',
-        //        'products.info',
-        //        'info',
-        //        'logistics',
-        //        'payments' ])
-
-
-       return  Order::findOrFail($id);
-
+        return Order::findOrFail($id);
 
     }
 
     /**
-     * @param \RedJasmine\Order\Domain\Models\Order $order
+     * @param Order $order
      *
      * @return Order
      * @throws Throwable
@@ -35,7 +27,6 @@ class OrderRepository implements OrderRepositoryInterface
     {
         try {
             DB::beginTransaction();
-
             $order->push();
             DB::commit();
         } catch (Throwable $throwable) {
@@ -47,7 +38,7 @@ class OrderRepository implements OrderRepositoryInterface
     }
 
     /**
-     * @param \RedJasmine\Order\Domain\Models\Order $order
+     * @param Order $order
      *
      * @return void
      * @throws Throwable

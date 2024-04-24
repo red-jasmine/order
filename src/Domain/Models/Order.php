@@ -33,6 +33,7 @@ use RedJasmine\Order\Services\OrderService;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
+use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use Spatie\LaravelData\WithData;
@@ -40,6 +41,7 @@ use Spatie\LaravelData\WithData;
 
 class Order extends Model
 {
+    use HasServiceContext;
 
     use WithData;
 
@@ -260,6 +262,7 @@ class Order extends Model
         // 计算金额
         $this->calculateAmount();
 
+        $this->creator = $this->getOperator();
 
         $this->fireModelEvent('created');
 
@@ -269,6 +272,7 @@ class Order extends Model
 
     public function addPayment(OrderPayment $orderPayment) : void
     {
+        $orderPayment->creator = $this->getOperator();
         $this->payments->add($orderPayment);
     }
 

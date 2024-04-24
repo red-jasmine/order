@@ -3,7 +3,6 @@
 namespace RedJasmine\Order\Application\Services;
 
 
-use Illuminate\Support\Facades\Auth;
 use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Services\Handlers\OrderCancelCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderConfirmCommandHandler;
@@ -31,28 +30,29 @@ use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogist
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\Domain\Enums\TradePartyEnums;
 
-class OrderService
+class OrderService extends ApplicationService
 {
 
 
     public function create(OrderCreateCommand $command) : OrderData
     {
-        return app(OrderCreateCommandHandler::class)->execute($command);
+        static::macro();
+        return $this->makeMacro(OrderCreateCommandHandler::class)->execute($command);
     }
 
     public function paying(OrderPayingCommand $command) : int
     {
-        return app(OrderPayingCommandHandler::class)->execute($command);
+        return $this->makeMacro(OrderPayingCommandHandler::class)->execute($command);
     }
 
     public function paid(OrderPaidCommand $command) : bool
     {
-        return app(OrderPaidCommandHandler::class)->execute($command);
+        return $this->makeMacro(OrderPaidCommandHandler::class)->execute($command);
     }
 
     public function cancel(OrderCancelCommand $command)
     {
-        return app(OrderCancelCommandHandler::class)->execute($command);
+        return $this->makeMacro(OrderCancelCommandHandler::class)->execute($command);
     }
 
     public function shippingLogistics(OrderShippingLogisticsCommand $command)

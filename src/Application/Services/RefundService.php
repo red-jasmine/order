@@ -20,7 +20,7 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsComm
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
 
-class RefundService
+class RefundService extends ApplicationService
 {
 
 

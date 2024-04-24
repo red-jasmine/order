@@ -24,12 +24,15 @@ use RedJasmine\Order\Domain\Events\RefundReshippedGoodsEvent;
 use RedJasmine\Order\Domain\Events\RefundReturnedGoodsEvent;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Order\Domain\OrderFactory;
+use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 
 
 class OrderRefund extends Model
 {
+    use HasServiceContext;
+
     use HasDateTimeFormatter;
 
     use SoftDeletes;

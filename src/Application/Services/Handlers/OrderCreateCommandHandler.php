@@ -11,12 +11,8 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domain\OrderFactory;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 
-class OrderCreateCommandHandler
+class OrderCreateCommandHandler extends AbstractOrderCommandHandler
 {
-    public function __construct(protected OrderRepositoryInterface $orderRepository)
-    {
-    }
-
 
     public function execute(OrderCreateCommand $data) : OrderData
     {
@@ -24,6 +20,7 @@ class OrderCreateCommandHandler
         //$orderModel = $this->pipelines->send($data)->call('validate', fn() => $this->validate());
         // 2、领域模型
         $order = app(OrderFactory::class)->createOrder();
+        $order->setOperator($this->getOperator());
         app(OrderMapper::class)->fromData($data, $order);
 
         foreach ($data->products as $productData) {
