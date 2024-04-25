@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderRefund;
-use RedJasmine\Order\Services\OrderService;
 
 /**
- *  TODO 这里的服务提供者着  仅仅是包的提供者
+ *
  */
-class OrderDomainServiceProvider extends ServiceProvider
+class OrderPackageServiceProvider extends ServiceProvider
 {
 
 
@@ -48,10 +47,7 @@ class OrderDomainServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/order.php', 'red-jasmine.order');
 
-        // Register the service the package provides.
-        $this->app->singleton('order', function ($app) {
-            return new OrderService();
-        });
+
     }
 
     /**

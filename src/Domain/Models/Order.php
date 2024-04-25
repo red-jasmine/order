@@ -146,6 +146,7 @@ class Order extends Model
 
     public function addProduct(OrderProduct $orderProduct) : static
     {
+        $orderProduct->creator = $this->getOperator();
         $this->products->add($orderProduct);
         return $this;
     }
@@ -153,6 +154,7 @@ class Order extends Model
 
     public function setAddress(OrderAddress $orderAddress) : static
     {
+        $orderAddress->creator = $this->getOperator();
         $this->setRelation('address', $orderAddress);
         return $this;
     }

@@ -56,6 +56,7 @@ class OrderObserver
      * @param Order $order
      *
      * @return void
+     * @throws OrderException
      */
     public function confirmed(Order $order) : void
     {

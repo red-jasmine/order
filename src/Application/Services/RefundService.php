@@ -10,6 +10,7 @@ use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectCommandHan
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectReturnGoodsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReshipGoodsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReturnGoodsCommandHandler;
+use RedJasmine\Support\Application\ApplicationService;
 
 class RefundService extends ApplicationService
 {
@@ -23,6 +24,5 @@ class RefundService extends ApplicationService
         'rejectReturnGoods' => RefundRejectReturnGoodsCommandHandler::class,
         'reshipGoods'       => RefundReshipGoodsCommandHandler::class,
     ];
-
 
 }

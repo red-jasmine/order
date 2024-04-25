@@ -2,26 +2,26 @@
 
 namespace RedJasmine\Order\Application\Services\Handlers\Refund;
 
-use RedJasmine\Order\Application\Services\CommandHandler;
 use RedJasmine\Order\Domain\Models\OrderRefund;
 use RedJasmine\Order\Domain\Repositories\RefundRepositoryInterface;
+use RedJasmine\Support\Application\CommandHandler;
 
 abstract class AbstractRefundCommandHandler extends CommandHandler
 {
 
 
-    protected ?OrderRefund $model = null;
+    protected ?OrderRefund $aggregate = null;
 
     public function __construct(protected RefundRepositoryInterface $refundRepository)
     {
-
+        parent::__construct();
     }
 
 
     protected function find(int $id) : OrderRefund
     {
         $refund = $this->refundRepository->find($id);
-        $this->setModel($refund);
+        $this->setAggregate($refund);
 
         return $refund;
     }

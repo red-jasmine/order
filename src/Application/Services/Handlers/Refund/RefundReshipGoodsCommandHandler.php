@@ -27,7 +27,7 @@ class RefundReshipGoodsCommandHandler extends AbstractRefundCommandHandler
         $orderLogistics->express_no           = $command->expressNo;
         $orderLogistics->status               = $command->status;
         $orderLogistics->shipping_time        = now();
-        $this->setModel($refund);
+
         $this->pipelineManager()->call('executing');
         $this->pipelineManager()->call('execute', fn() => $refund->reshipGoods($orderLogistics));
         $this->refundRepository->update($refund);

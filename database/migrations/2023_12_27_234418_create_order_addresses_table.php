@@ -28,6 +28,8 @@ return new class extends Migration {
             $table->json('extends')->nullable()->comment('扩展字段');
 
             $table->unsignedBigInteger('version')->default(0)->comment('版本');
+            $table->nullableMorphs('creator'); // 创建人
+            $table->nullableMorphs('updater'); // 更新人
             $table->timestamps();
             $table->softDeletes();
             $table->comment('订单-地址表');

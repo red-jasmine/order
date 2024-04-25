@@ -17,6 +17,7 @@ use RedJasmine\Order\Application\Services\Handlers\Others\OrderSellerRemarksComm
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingCardKeyCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingLogisticsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingVirtualCommandHandler;
+use RedJasmine\Support\Application\ApplicationService;
 
 
 class OrderService extends ApplicationService

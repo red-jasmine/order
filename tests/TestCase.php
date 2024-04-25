@@ -81,7 +81,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            'RedJasmine\Order\OrderDomainServiceProvider',
+            'RedJasmine\Order\OrderPackageServiceProvider',
             "RedJasmine\Order\Application\OrderApplicationServiceProvider",
         ];
     }
