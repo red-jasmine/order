@@ -1,15 +1,18 @@
 <?php
 
-namespace RedJasmine\Order\Presentation\Http\Buyer\Resources;
+namespace RedJasmine\Order\UI\Http\Buyer\Api\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use RedJasmine\Order\Domain\Models\OrderAddress;
 use RedJasmine\Support\Http\Resources\WithCollectionResource;
 
-/** @mixin \RedJasmine\Order\Models\OrderAddress */
+/**
+ * @mixin OrderAddress
+ */
 class OrderAddressResource extends JsonResource
 {
-    use WithCollectionResource;
+
 
     public function toArray(Request $request) : array
     {
@@ -28,10 +31,9 @@ class OrderAddressResource extends JsonResource
             'street_id'    => $this->street_id,
             'address'      => $this->address,
             'zip_code'     => $this->zip_code,
-            'lon'         => $this->lon,
+            'lon'          => $this->lon,
             'lat'          => $this->lat,
             'extends'      => $this->extends,
-            'full_address' => $this->full_address,
         ];
     }
 }

@@ -39,6 +39,16 @@ class OrderProduct extends Model
         'shipping_status' => ShippingStatusEnum::class,
         'payment_status'  => PaymentStatusEnum::class,
         'refund_status'   => OrderRefundStatusEnum::class,
+        'created_time'    => 'datetime',
+        'payment_time'    => 'datetime',
+        'close_time'      => 'datetime',
+        'shipping_time'   => 'datetime',
+        'collect_time'    => 'datetime',
+        'dispatch_time'   => 'datetime',
+        'signed_time'     => 'datetime',
+        'confirm_time'    => 'datetime',
+        'refund_time'     => 'datetime',
+        'rate_time'       => 'datetime',
     ];
 
     protected $fillable = [

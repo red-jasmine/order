@@ -8,7 +8,7 @@ use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderRefund;
-use RedJasmine\Order\Services\Order\Enums\OrderStatusEnum;
+use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 
 class OrderRefundService
 {

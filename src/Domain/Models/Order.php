@@ -93,7 +93,7 @@ class Order extends Model
         'collect_time'     => 'datetime',
         'dispatch_time'    => 'datetime',
         'signed_time'      => 'datetime',
-        'end_time'         => 'datetime',
+        'confirm_time'     => 'datetime',
         'refund_time'      => 'datetime',
         'rate_time'        => 'datetime',
         'contact'          => AesEncrypted::class,
@@ -206,19 +206,19 @@ class Order extends Model
     {
         $order = $this;
         // 商品金额
-        $order->total_product_amount = $order->products->reduce(function ($sum, $product) {
+        $order->product_amount = $order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->product_amount, 2);
         }, 0);
         // 商品成本
-        $order->total_cost_amount = $order->products->reduce(function ($sum, $product) {
+        $order->cost_amount = $order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->cost_amount, 2);
         }, 0);
-        // 商品应付
-        $order->total_payable_amount = $order->products->reduce(function ($sum, $product) {
-            return bcadd($sum, $product->payable_amount, 2);
+        // 总费用
+        $order->tax_amount = $order->products->reduce(function ($sum, $product) {
+            return bcadd($sum, $product->tax_amount, 2);
         }, 0);
         // 总佣金
-        $order->total_commission_amount = $order->products->reduce(function ($sum, $product) {
+        $order->commission_amount = $order->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->commission_amount, 2);
         }, 0);
 
@@ -227,8 +227,13 @@ class Order extends Model
         // 订单优惠
         $order->discount_amount = bcadd($order->discount_amount, 0, 2);
 
+        // 商品应付汇总
+        $order->product_payable_amount = $order->products->reduce(function ($sum, $product) {
+            return bcadd($sum, $product->payable_amount, 2);
+        }, 0);
+
         // 订单应付金额 = 商品总应付金额  - 优惠 + 邮费
-        $order->payable_amount = bcsub(bcadd($order->total_payable_amount, $order->freight_amount, 2), $order->discount_amount, 2);
+        $order->payable_amount = bcsub(bcadd($order->product_payable_amount, $order->freight_amount, 2), $order->discount_amount, 2);
 
     }
 

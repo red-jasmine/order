@@ -15,11 +15,14 @@ use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\RefundRepository;
 use RedJasmine\Order\Tests\TestCase;
+use RedJasmine\Order\Tests\Users\User;
 
 class OrderBase extends TestCase
 {
 
     //ShippingTypeEnum::EXPRESS->value, ShippingTypeEnum::VIRTUAL->value, ShippingTypeEnum::CDK->value
+
+    protected OrderTypeEnum $orderType = OrderTypeEnum::SOP;
 
     /**
      * 发货类型
@@ -56,19 +59,22 @@ class OrderBase extends TestCase
 
     protected function fakeOrderArray(array $order = []) : array
     {
+        $user = fake()->randomElement([ User::make(1), User::make(2), User::make(3) ]);
+
+
         $fake = [
             'buyer'          => [
-                'type'     => 'buyer',
-                'id'       => fake()->numberBetween(1000000, 999999999),
-                'nickname' => fake()->name()
+                'type'     => $user->getType(),
+                'id'       => $user->getId(),
+                'nickname' => fake()->name(),
             ],
             'seller'         => [
                 'type'     => 'seller',
                 'id'       => fake()->numberBetween(1000000, 999999999),
                 'nickname' => fake()->name()
             ],
-            'title'          => fake()->name,
-            'order_type'     => OrderTypeEnum::SOP->value,
+            'title'          => fake()->text(),
+            'order_type'     => $this->orderType->value,
             'shipping_type'  => $this->shippingType->value,
             'source_type'    => fake()->randomElement([ 'product', 'activity' ]),
             'source_id'      => fake()->numerify('out-order-id-########'),

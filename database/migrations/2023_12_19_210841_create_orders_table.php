@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->enum('shipping_type', ShippingTypeEnum::values())->comment(ShippingTypeEnum::comments('发货类型'));
             $table->enum('pay_type', PayTypeEnum::values())->comment(PayTypeEnum::comments('支付方式'));
 
-            $table->enum('order_status',OrderStatusEnum::values())->comment(OrderStatusEnum::comments('订单状态'));
+            $table->enum('order_status', OrderStatusEnum::values())->comment(OrderStatusEnum::comments('订单状态'));
             $table->enum('payment_status', PaymentStatusEnum::values())->default(PaymentStatusEnum::NIL->value)->comment(PaymentStatusEnum::comments('付款状态'));
             $table->enum('shipping_status', ShippingStatusEnum::values())->default(ShippingStatusEnum::NIL->value)->comment(ShippingStatusEnum::comments('发货状态'));
             $table->enum('refund_status', OrderRefundStatusEnum::values())->default(OrderRefundStatusEnum::NIL->value)->comment(OrderRefundStatusEnum::comments('退款状态'));
@@ -38,15 +38,17 @@ return new class extends Migration {
             $table->enum('settlement_status', SettlementStatusEnum::values())->default(SettlementStatusEnum::NIL->value)->comment(SettlementStatusEnum::comments('结算状态'));
             $table->string('seller_custom_status', 32)->default('nil')->comment('卖家自定义状态');
 
-            $table->decimal('total_product_amount', 12)->default(0)->comment('商品总金额');
-            $table->decimal('total_cost_amount', 12)->default(0)->comment('成本总金额');
-            $table->decimal('total_payable_amount', 12)->default(0)->comment('商品应付总金额');
+            $table->decimal('product_amount', 12)->default(0)->comment('商品金额');
+            $table->decimal('cost_amount', 12)->default(0)->comment('成本金额');
+            $table->decimal('tax_amount', 12)->default(0)->comment('税费金额');
+            $table->decimal('commission_amount', 12)->default(0)->comment('佣金');
+
+            $table->decimal('product_payable_amount', 12)->default(0)->comment('商品应付金额');
             $table->decimal('freight_amount', 12)->default(0)->comment('运费');
             $table->decimal('discount_amount', 12)->default(0)->comment('订单优惠');
             $table->decimal('payable_amount', 12)->default(0)->comment('应付金额');
             $table->decimal('payment_amount', 12)->default(0)->comment('实付金额');
             $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
-            $table->decimal('total_commission_amount', 12)->default(0)->comment('总佣金');
 
 
             $table->timestamp('created_time')->nullable()->comment('创建时间');

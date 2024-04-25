@@ -3,7 +3,8 @@
 namespace RedJasmine\Order\Application\Data;
 
 
-use RedJasmine\Order\Services\Order\Enums\ShippingTypeEnum;
+
+use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Optional;
 

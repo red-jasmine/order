@@ -9,54 +9,86 @@ use RedJasmine\Order\Domain\Models\Order;
 use Spatie\QueryBuilder\QueryBuilder;
 
 
-class OrderReadRepository extends QueryBuilder
+class OrderReadRepository
 {
+
+
+    // 每个查询
+    protected ?array $allowedFilters  = null;
+    protected ?array $allowedIncludes = null;
+    protected ?array $allowedFields   = null;
+    protected ?array $allowedSorts    = null;
+
+    public function setAllowedFilters(?array $allowedFilters) : static
+    {
+        $this->allowedFilters = $allowedFilters;
+        return $this;
+    }
+
+    public function setAllowedIncludes(?array $allowedIncludes) : static
+    {
+        $this->allowedIncludes = $allowedIncludes;
+        return $this;
+    }
+
+    public function setAllowedFields(?array $allowedFields) : static
+    {
+        $this->allowedFields = $allowedFields;
+        return $this;
+    }
+
+    public function setAllowedSorts(?array $allowedSorts) : static
+    {
+        $this->allowedSorts = $allowedSorts;
+        return $this;
+    }
+
+
+    /**
+     * @var array
+     */
+    protected array $queryCallbacks = [];
+
+    public function setQueryCallbacks(array $queryCallbacks) : static
+    {
+        $this->queryCallbacks = $queryCallbacks;
+        return $this;
+    }
+
+    protected function query(array $query = [])
+    {
+        $request = (new Request());
+        $request->initialize($query);
+        $query = QueryBuilder::for(Order::query(), $request);
+
+        $this->allowedFilters ? $query->allowedFilters($this->allowedFilters) : null;
+        $this->allowedFields ? $query->allowedFields($this->allowedFields) : null;
+        $this->allowedIncludes ? $query->allowedIncludes($this->allowedIncludes) : null;
+        $this->allowedSorts ? $query->allowedSorts($this->allowedSorts) : null;
+        $this->queryCallbacks($query);
+        return $query;
+    }
+
 
     public function findAll(array $query = []) : LengthAwarePaginator
     {
-        $request = new Request();
-        $request->initialize($query);
-        $this->resetRequest($request);
-        return $this->paginate();
+        return $this->query($query)->paginate();
     }
 
 
-    public function findById($id)
+    public function findById($id, array $query = []) : Order
     {
-        return $this->findOrFail($id);
+        return $this->query($query)->findOrFail($id);
     }
 
 
-    public function queryCallbacks($queryCallbacks = []) : static
+    protected function queryCallbacks($query) : static
     {
-        foreach ($queryCallbacks as $callback) {
-            $callback($this);
+        foreach ($this->queryCallbacks as $callback) {
+            $callback($query);
         }
         return $this;
     }
 
-    /**
-     * @return EloquentBuilder
-     */
-    public function query() : static
-    {
-        return $this;
-    }
-
-
-    public function __construct($subject = null, ?Request $request = null)
-    {
-        parent::__construct(Order::query(), new Request());
-    }
-
-    /**
-     * @param Request|null $request
-     *
-     * @return $this
-     */
-    public function resetRequest(?Request $request = null) : static
-    {
-        return $this->initializeRequest($request);
-    }
 
 }

@@ -3,13 +3,20 @@
 namespace RedJasmine\Order\UI\Http\Buyer\Api\Controller;
 
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Order\Application\Services\OrderQueryService;
+use RedJasmine\Order\Application\Services\OrderService;
+use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
 use RedJasmine\Order\Application\UserCases\Queries\OrderAllQuery;
+use RedJasmine\Order\UI\Http\Buyer\Api\Resources\OrderResource;
 
 class OrderController extends Controller
 {
-    public function __construct(protected readonly OrderQueryService $queryService)
+    public function __construct(protected readonly OrderQueryService $queryService,
+                                protected OrderService               $orderService,
+    )
     {
         $this->queryService->withQuery(function ($query) {
             $query->onlyBuyer($this->getOwner());
@@ -17,27 +24,30 @@ class OrderController extends Controller
     }
 
 
-    public function index(Request $request)
+    public function index(Request $request) : AnonymousResourceCollection
     {
-        // TODO request 转换
         $result = $this->queryService->paginate(OrderAllQuery::from([ 'query' => $request->query() ]));
-        // TODO 转换 resources
-        return $result;
+        return OrderResource::collection($result->appends($request->query()));
     }
 
     public function store(Request $request)
     {
+        //TODO
     }
 
-    public function show(int $id)
+    public function show(Request $request, int $id)
     {
+        $result = $this->queryService->find($id, $request->query());
+        return OrderResource::make($result);
     }
 
-    public function update(Request $request, $id)
+    public function destroy($id) : JsonResponse
     {
-    }
+        $this->queryService->find($id);
 
-    public function destroy($id)
-    {
+        $command = OrderHiddenCommand::from([ 'id' => $id ]);
+        $this->orderService->buyerHidden($command);
+
+        return static::success();
     }
 }

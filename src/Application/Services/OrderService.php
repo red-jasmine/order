@@ -17,12 +17,16 @@ use RedJasmine\Order\Application\Services\Handlers\Others\OrderSellerRemarksComm
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingCardKeyCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingLogisticsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingVirtualCommandHandler;
+use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
 use RedJasmine\Support\Application\ApplicationService;
 
 
+/**
+ * @method void buyerHidden(OrderHiddenCommand $command)
+ */
 class OrderService extends ApplicationService
 {
-    // 提供门面支持 TODO
+
     protected static $macros = [
         'create'             => OrderCreateCommandHandler::class,
         'paying'             => OrderPayingCommandHandler::class,
