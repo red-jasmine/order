@@ -9,45 +9,8 @@ use RedJasmine\Order\Tests\TestCase;
 use RedJasmine\Order\UI\Http\Buyer\Api\OrderBuyerApiRoute;
 use RedJasmine\Support\Contracts\BelongsToOwnerInterface;
 
-class BuyerTest extends TestCase
+class OrderTest extends Base
 {
-
-
-    /**
-     * Define routes setup.
-     *
-     * @param \Illuminate\Routing\Router $router
-     *
-     * @return void
-     */
-    protected function defineRoutes($router)
-    {
-        // Define routes.
-        $router->group([
-                           'prefix' => 'api/buyer'
-                       ], function () {
-            OrderBuyerApiRoute::route();
-        });
-
-
-    }
-
-    protected function user() : User
-    {
-        $user = User::make(1);
-        $this->actingAs($user);
-        return $user;
-    }
-
-    protected function owner()
-    {
-        $user = $this->user();
-        if ($user instanceof BelongsToOwnerInterface) {
-            return $user->owner();
-        }
-        return $user;
-
-    }
 
 
     public function test_can_create_order()

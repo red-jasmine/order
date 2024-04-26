@@ -40,6 +40,8 @@ class OrderRefundService
         $orderRefund->payment_amount         = $orderProduct->payment_amount;
         $orderRefund->divided_payment_amount = $orderProduct->divided_payment_amount;
 
+        $orderRefund->creator       = $order->getOperator();
+        $orderRefund->refund_amount = $orderProduct->divided_discount_amount;
 
         // 判断
         $orderRefund->phase = $this->getRefundPhase($orderProduct);

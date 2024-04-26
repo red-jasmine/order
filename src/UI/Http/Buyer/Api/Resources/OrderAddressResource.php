@@ -3,12 +3,11 @@
 namespace RedJasmine\Order\UI\Http\Buyer\Api\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-use RedJasmine\Order\Domain\Models\OrderAddress;
-use RedJasmine\Support\Http\Resources\WithCollectionResource;
+use RedJasmine\Support\UI\Http\Resources\Json\JsonResource;
+
 
 /**
- * @mixin OrderAddress
+ * @mixin \RedJasmine\Order\Domain\Models\OrderAddress
  */
 class OrderAddressResource extends JsonResource
 {
@@ -17,23 +16,23 @@ class OrderAddressResource extends JsonResource
     public function toArray(Request $request) : array
     {
         return [
-            'contacts'     => $this->contacts,
-            'mobile'       => $this->mobile,
-            'country'      => $this->country,
-            'province'     => $this->province,
-            'city'         => $this->city,
-            'district'     => $this->district,
-            'street'       => $this->street,
-            'country_id'   => $this->country_id,
-            'province_id'  => $this->province_id,
-            'city_id'      => $this->city_id,
-            'district_id'  => $this->district_id,
-            'street_id'    => $this->street_id,
-            'address'      => $this->address,
-            'zip_code'     => $this->zip_code,
-            'lon'          => $this->lon,
-            'lat'          => $this->lat,
-            'extends'      => $this->extends,
+            'contacts'    => $this->contacts,
+            'mobile'      => $this->mobile,
+            'country'     => $this->country,
+            'province'    => $this->province,
+            'city'        => $this->city,
+            'district'    => $this->district,
+            'street'      => $this->street,
+            'country_id'  => $this->country_id,
+            'province_id' => $this->province_id,
+            'city_id'     => $this->city_id,
+            'district_id' => $this->district_id,
+            'street_id'   => $this->street_id,
+            'address'     => $this->address,
+            'zip_code'    => $this->zip_code,
+            'lon'         => $this->lon,
+            'lat'         => $this->lat,
+            'extends'     => $this->extends,
         ];
     }
 }

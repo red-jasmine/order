@@ -2,10 +2,14 @@
 
 namespace RedJasmine\Order\UI\Http\Buyer\Api\Controller;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Order\Application\Services\OrderCommandService;
 use RedJasmine\Order\Application\Services\RefundCommandService;
 use RedJasmine\Order\Application\Services\RefundQueryService;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
+use RedJasmine\Order\UI\Http\Buyer\Api\Resources\OrderResource;
 
 class RefundController extends Controller
 {
@@ -28,13 +32,19 @@ class RefundController extends Controller
 
     }
 
-    public function index(Request $request)
+    public function index(Request $request) : AnonymousResourceCollection
     {
-
+        $result = $this->queryService->paginate($request->query());
+        return OrderResource::collection($result);
     }
 
-    public function store(Request $request)
+    public function store(Request $request) : JsonResponse
     {
+        $command = RefundCreateCommand::from($request);
+
+        $rid = $this->commandService->create($command);
+
+        return static::success([ 'rid' => $rid ]);
     }
 
     public function show($id)

@@ -3,29 +3,14 @@
 namespace RedJasmine\Order\UI\Http\Buyer\Api\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Resources\Json\JsonResource;
-use RedJasmine\Order\Domain\Models\Order;
+
+use RedJasmine\Support\UI\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin Order
+ * @mixin \RedJasmine\Order\Domain\Models\Order
  */
 class OrderResource extends JsonResource
 {
-    public static function collection($resource) : AnonymousResourceCollection
-    {
-        $collection       = parent::collection($resource);
-        $collection->with = [
-            'code'    => 0,
-            'message' => 'ok'
-        ];
-        return $collection;
-    }
-
-    public $with = [
-        'code'    => 0,
-        'message' => 'ok'
-    ];
 
     public function toArray(Request $request) : array
     {

@@ -3,11 +3,10 @@
 namespace RedJasmine\Order\UI\Http\Buyer\Api\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-use RedJasmine\Order\Domain\Models\OrderProductInfo;
+use RedJasmine\Support\UI\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin OrderProductInfo
+ * @mixin \RedJasmine\Order\Domain\Models\OrderProductInfo
  */
 class OrderProductInfoResource extends JsonResource
 {

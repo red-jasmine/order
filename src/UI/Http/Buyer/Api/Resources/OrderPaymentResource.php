@@ -3,7 +3,7 @@
 namespace RedJasmine\Order\UI\Http\Buyer\Api\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use RedJasmine\Support\UI\Http\Resources\Json\JsonResource;
 
 
 /** @mixin \RedJasmine\Order\Domain\Models\OrderPayment */

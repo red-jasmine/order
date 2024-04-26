@@ -20,6 +20,7 @@ use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingLogisti
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingVirtualCommandHandler;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
 use RedJasmine\Order\Domain\Models\Order;
@@ -30,6 +31,7 @@ use RedJasmine\Support\Application\ApplicationService;
  * @method Order create(OrderCreateCommand $command)
  * @method void cancel(OrderCancelCommand $command)
  * @method int paying(OrderPayingCommand $command)
+ * @method bool paid(OrderPaidCommand $command)
  * @method void buyerHidden(OrderHiddenCommand $command)
  */
 class OrderCommandService extends ApplicationService
