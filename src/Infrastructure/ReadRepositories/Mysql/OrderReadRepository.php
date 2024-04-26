@@ -3,7 +3,6 @@
 namespace RedJasmine\Order\Infrastructure\ReadRepositories\Mysql;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Http\Request;
 use RedJasmine\Order\Domain\Models\Order;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -12,8 +11,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 class OrderReadRepository
 {
 
-
-    // 每个查询
     protected ?array $allowedFilters  = null;
     protected ?array $allowedIncludes = null;
     protected ?array $allowedFields   = null;
@@ -55,12 +52,20 @@ class OrderReadRepository
         return $this;
     }
 
-    protected function query(array $query = [])
+    protected function queryCallbacks($query) : static
+    {
+        foreach ($this->queryCallbacks as $callback) {
+            $callback($query);
+        }
+        return $this;
+    }
+
+    protected function query(array $query = []) : QueryBuilder
     {
         $request = (new Request());
         $request->initialize($query);
         $query = QueryBuilder::for(Order::query(), $request);
-
+        $query->defaultSort('-id');
         $this->allowedFilters ? $query->allowedFilters($this->allowedFilters) : null;
         $this->allowedFields ? $query->allowedFields($this->allowedFields) : null;
         $this->allowedIncludes ? $query->allowedIncludes($this->allowedIncludes) : null;
@@ -79,15 +84,6 @@ class OrderReadRepository
     public function findById($id, array $query = []) : Order
     {
         return $this->query($query)->findOrFail($id);
-    }
-
-
-    protected function queryCallbacks($query) : static
-    {
-        foreach ($this->queryCallbacks as $callback) {
-            $callback($query);
-        }
-        return $this;
     }
 
 

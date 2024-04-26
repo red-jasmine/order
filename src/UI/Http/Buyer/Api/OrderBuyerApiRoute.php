@@ -14,7 +14,12 @@ class OrderBuyerApiRoute
         Route::group([
                          'prefix' => 'order'
                      ], function () {
+
+            // 订单
             Route::apiResource('orders', OrderController::class)->names('order.buyer.orders');
+            Route::post('orders/cancel', [ OrderController::class, 'cancel' ])->name('order.buyer.orders.cancel');
+            Route::post('orders/paying', [ OrderController::class, 'paying' ])->name('order.buyer.orders.paying');
+
         });
     }
 }

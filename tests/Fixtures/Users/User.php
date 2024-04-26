@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\Tests\Users;
+namespace RedJasmine\Order\Tests\Fixtures\Users;
 
 use RedJasmine\Support\Contracts\UserInterface;
 
@@ -9,17 +9,19 @@ class User extends \Illuminate\Foundation\Auth\User implements UserInterface
 
 
     protected $fillable = [
-        'id'
+        'id','type',
     ];
 
-    public static function make(int $id) : static
+
+
+    public static function make(int $id,string $type = 'buyer') : static
     {
-        return new static([ 'id' => $id ]);
+        return new static([ 'id' => $id,'type'=>$type]);
     }
 
     public function getType() : string
     {
-        return 'buyer';
+        return $this->type;
     }
 
     public function getID() : int

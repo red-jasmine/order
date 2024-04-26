@@ -1,27 +1,14 @@
 <?php
 
-namespace RedJasmine\Order\Tests\Application;
+namespace RedJasmine\Order\Tests\Fixtures\Orders;
 
-use RedJasmine\Order\Application\Data\OrderData;
-use RedJasmine\Order\Application\Mappers\OrderMapper;
-use RedJasmine\Order\Application\Services\OrderService;
-use RedJasmine\Order\Application\Services\RefundService;
-use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
-use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
-use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
-use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
-use RedJasmine\Order\Domain\Models\Order;
-use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
-use RedJasmine\Order\Infrastructure\Repositories\Eloquent\RefundRepository;
 use RedJasmine\Order\Tests\Fixtures\Users\User;
-use RedJasmine\Order\Tests\TestCase;
 
-class OrderBase extends TestCase
+class OrderFake
 {
 
-    //ShippingTypeEnum::EXPRESS->value, ShippingTypeEnum::VIRTUAL->value, ShippingTypeEnum::CDK->value
 
     protected OrderTypeEnum $orderType = OrderTypeEnum::SOP;
 
@@ -33,7 +20,8 @@ class OrderBase extends TestCase
     // 商品数量
     protected int $productCount = 3;
 
-    protected function fakeAddressArray() : array
+
+    public function fakeAddressArray() : array
     {
         return [
             'contacts'   => fake()->name,
@@ -58,7 +46,7 @@ class OrderBase extends TestCase
 
     }
 
-    protected function fakeOrderArray(array $order = []) : array
+    public function fakeOrderArray(array $order = []) : array
     {
         $user = fake()->randomElement([ User::make(1), User::make(2), User::make(3) ]);
 
@@ -119,7 +107,7 @@ class OrderBase extends TestCase
         return array_merge($fake, $order);
     }
 
-    protected function fakeProductArray(array $product = []) : array
+    public function fakeProductArray(array $product = []) : array
     {
         $fake = [
             'shipping_type'          => $this->shippingType->value,
@@ -155,110 +143,14 @@ class OrderBase extends TestCase
         return array_merge($fake, $product);
     }
 
-    protected function orderService() : OrderService
-    {
-        return app(OrderService::class)->setOperator($this->getOperator());
-    }
 
-    protected function refundService() : RefundService
+    public function fake(array $order = []) : array
     {
-        return app(RefundService::class)->setOperator($this->getOperator());
-    }
-
-    protected function orderRepository() : OrderRepositoryInterface
-    {
-        return app(OrderRepositoryInterface::class);
-    }
-
-    protected function refundRepository() : RefundRepository
-    {
-        return app(RefundRepository::class);
-    }
-
-
-    public function test_order_create()
-    {
-        $orderDataArray = $this->fakeOrderArray();
+        $orderDataArray = $this->fakeOrderArray($order);
         for ($i = 1; $i <= $this->productCount; $i++) {
             $orderDataArray['products'][] = $this->fakeProductArray();
         }
-        $orderCreateCommand = OrderCreateCommand::from($orderDataArray);
-
-        $order = $this->orderService()->create($orderCreateCommand);
-
-        $this->assertInstanceOf(Order::class, $order);
-        // TODO
-        return app(OrderMapper::class)->fromModel($order);
+        return $orderDataArray;
     }
-
-
-    public function test_order_paying() : array
-    {
-
-        $orderData = $this->test_order_create();
-
-
-        $command = OrderPayingCommand::from([
-                                                'id'          => $orderData->id,
-                                                'amount'      => $orderData->payableAmount,
-                                                'amount_type' => 'full'
-                                            ]);
-
-
-        $orderPaymentID = $this->orderService()->paying($command);
-
-        $order = $this->orderRepository()->find($command->id);
-        $this->assertIsNumeric($orderPaymentID);
-        $orderPayment = $order->payments->where('id', $orderPaymentID)->first();
-
-        $this->assertEquals($order->payable_amount, $orderPayment?->payment_amount);
-        $this->assertEquals(PaymentStatusEnum::PAYING->value, $order->payment_status->value);
-        $this->assertEquals(PaymentStatusEnum::PAYING->value, $orderPayment?->status->value);
-        return [
-            'id'               => $command->id,
-            'order_payment_id' => $orderPaymentID,
-            'amount'           => $orderPayment?->payment_amount,
-        ];
-    }
-
-
-    public function test_order_paid() : Order
-    {
-        $data           = $this->test_order_paying();
-        $id             = $data['id'];
-        $orderPaymentId = $data['order_payment_id'];
-
-        $command = OrderPaidCommand::from([
-                                              'id'                 => $id,
-                                              'order_payment_id'   => $orderPaymentId,
-                                              'amount'             => $data['amount'],
-                                              'payment_type'       => fake()->randomElement([ 'offline', 'payment_center' ]),
-                                              'payment_id'         => fake()->numberBetween(1000000, 999999999),
-                                              'payment_channel'    => fake()->randomElement([ 'alipay', 'wechat', 'yi', 'union_pay' ]),
-                                              'payment_channel_no' => fake()->numberBetween(1000000, 999999999),
-                                              'payment_method'     => fake()->randomElement([ 'alipay', 'wechat', 'cash', 'bank' ]),
-                                              'payment_time'       => now()
-                                          ]);
-
-
-        $this->orderService()->paid($command);
-
-        $order        = $this->orderRepository()->find($id);
-        $orderPayment = $order->payments->where('id', $orderPaymentId)->first();
-
-        $this->assertEquals(PaymentStatusEnum::PAID->value, $orderPayment->status->value, '支付单状态错误');
-        $this->assertEquals($command->paymentType, $orderPayment->payment_type);
-        $this->assertEquals($command->paymentId, $orderPayment->payment_id);
-        $this->assertEquals($command->paymentChannel, $orderPayment->payment_channel);
-        $this->assertEquals($command->paymentChannelNo, $orderPayment->payment_channel_no);
-        $this->assertEquals($command->paymentMethod, $orderPayment->payment_method);
-
-        $this->assertEquals(PaymentStatusEnum::PAID->value, $order->payment_status->value, '支付状态错误');
-
-        $this->assertEquals($order->payable_amount, $order->payment_amount, '实付金额不一致');
-
-        return $order;
-    }
-
 
 }

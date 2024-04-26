@@ -10,6 +10,11 @@ use Throwable;
 
 class RefundRepository implements RefundRepositoryInterface
 {
+    /**
+     * @param int $rid
+     *
+     * @return OrderRefund
+     */
     public function find(int $rid) : OrderRefund
     {
         return OrderRefund::findOrFail($rid);
@@ -28,9 +33,6 @@ class RefundRepository implements RefundRepositoryInterface
             DB::beginTransaction();
             $orderRefund->push();
             DB::commit();
-        } catch (AbstractException $exception) {
-            DB::rollBack();
-            throw  $exception;
         } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;
@@ -51,9 +53,6 @@ class RefundRepository implements RefundRepositoryInterface
             DB::beginTransaction();
             $orderRefund->push();
             DB::commit();
-        } catch (AbstractException $exception) {
-            DB::rollBack();
-            throw  $exception;
         } catch (Throwable $throwable) {
             DB::rollBack();
             throw  $throwable;

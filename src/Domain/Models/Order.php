@@ -27,6 +27,7 @@ use RedJasmine\Order\Domain\Events\OrderPayingEvent;
 use RedJasmine\Order\Domain\Events\OrderProgressEvent;
 use RedJasmine\Order\Domain\Events\OrderShippedEvent;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
+use RedJasmine\Order\Domain\Exceptions\OrderExceptionCodeEnum;
 use RedJasmine\Order\Domain\Models\ValueObjects\Progress;
 use RedJasmine\Order\Domain\Services\OrderRefundService;
 use RedJasmine\Order\Services\OrderService;
@@ -37,6 +38,7 @@ use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use Spatie\LaravelData\WithData;
+use Throwable;
 
 
 class Order extends Model
@@ -323,8 +325,22 @@ class Order extends Model
     }
 
 
+    /**
+     * @param string|null $reason
+     *
+     * @return void
+     * @throws OrderException
+     */
     public function cancel(?string $reason = null) : void
     {
+        // 什么情况下可以取消
+        if ($this->order_status === OrderStatusEnum::CANCEL) {
+            throw OrderException::newFromCodes(OrderException::ORDER_STATUS_NOT_ALLOW);
+        }
+        // 未发货、未支付、情况下可以取消
+        if (in_array($this->payment_status, [ PaymentStatusEnum::PAID, PaymentStatusEnum::PART_PAY, PaymentStatusEnum::NO_PAYMENT, ], true)) {
+            throw OrderException::newFromCodes(OrderException::PAYMENT_STATUS_NOT_ALLOW);
+        }
         $this->order_status  = OrderStatusEnum::CANCEL;
         $this->cancel_reason = $reason;
         $this->close_time    = now();
@@ -347,9 +363,8 @@ class Order extends Model
     public function paying(OrderPayment $orderPayment) : void
     {
         if (!in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::NIL ], true)) {
-            throw new OrderException('payment status not allowed');
+            throw  OrderException::newFromCodes(OrderException::PAYMENT_STATUS_NOT_ALLOW);
         }
-
         // 添加支付单
         $orderPayment->order_id = $this->id;
         $orderPayment->seller   = $this->seller;
@@ -378,8 +393,7 @@ class Order extends Model
     public function paid(OrderPayment $orderPayment) : void
     {
         if (!in_array($this->payment_status, [ PaymentStatusEnum::NIL, PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::PAYING, PaymentStatusEnum::PART_PAY ], true)) {
-            throw new OrderException('payment status not allowed');
-        }
+            throw  OrderException::newFromCodes(OrderException::PAYMENT_STATUS_NOT_ALLOW);        }
 
         $orderPayment->status = PaymentStatusEnum::PAID;
 
@@ -411,7 +425,6 @@ class Order extends Model
      */
     public function confirm(?int $orderProductId = null) : void
     {
-
 
         if (in_array($this->order_status, [ OrderStatusEnum::CANCEL, OrderStatusEnum::FINISHED, OrderStatusEnum::CLOSED ], true)) {
             throw new OrderException('订单完成');

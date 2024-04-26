@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Application\Services;
 
 
+use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Services\Handlers\OrderCancelCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderConfirmCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderCreateCommandHandler;
@@ -17,11 +18,18 @@ use RedJasmine\Order\Application\Services\Handlers\Others\OrderSellerRemarksComm
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingCardKeyCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingLogisticsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingVirtualCommandHandler;
+use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
+use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Support\Application\ApplicationService;
 
 
 /**
+ * @method Order create(OrderCreateCommand $command)
+ * @method void cancel(OrderCancelCommand $command)
+ * @method int paying(OrderPayingCommand $command)
  * @method void buyerHidden(OrderHiddenCommand $command)
  */
 class OrderService extends ApplicationService

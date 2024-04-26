@@ -8,12 +8,13 @@ use RedJasmine\Order\Application\Mappers\OrderAddressMapper;
 use RedJasmine\Order\Application\Mappers\OrderMapper;
 use RedJasmine\Order\Application\Mappers\OrderProductMapper;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
+use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\OrderFactory;
 
 class OrderCreateCommandHandler extends AbstractOrderCommandHandler
 {
 
-    public function execute(OrderCreateCommand $data) : OrderData
+    public function execute(OrderCreateCommand $data) : Order
     {
         $order = app(OrderFactory::class)->createOrder();
         $order->setOperator($this->getOperator());
@@ -39,7 +40,7 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
             persistence: fn() => $this->orderRepository->store($order)
         );
 
-        return app(OrderMapper::class)->fromModel($order);
+        return $order;
 
     }
 
