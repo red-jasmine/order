@@ -32,7 +32,7 @@ use RedJasmine\Support\Application\ApplicationService;
  * @method int paying(OrderPayingCommand $command)
  * @method void buyerHidden(OrderHiddenCommand $command)
  */
-class OrderService extends ApplicationService
+class OrderCommandService extends ApplicationService
 {
 
     protected static $macros = [

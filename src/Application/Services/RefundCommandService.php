@@ -12,7 +12,7 @@ use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReshipGoodsComma
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReturnGoodsCommandHandler;
 use RedJasmine\Support\Application\ApplicationService;
 
-class RefundService extends ApplicationService
+class RefundCommandService extends ApplicationService
 {
     protected static $macros = [
         'create'            => RefundCreateCommandHandler::class,

@@ -2,27 +2,26 @@
 
 namespace RedJasmine\Order\Application\Services;
 
-use RedJasmine\Order\Infrastructure\ReadRepositories\OrderReadRepositoryInterface;
+use RedJasmine\Order\Infrastructure\ReadRepositories\RefundReadRepositoryInterface;
 use RedJasmine\Support\Application\ApplicationQueryService;
 
-class OrderQueryService extends ApplicationQueryService
+class RefundQueryService extends ApplicationQueryService
 {
-    public function __construct(protected OrderReadRepositoryInterface $readRepository)
+    public function __construct(protected RefundReadRepositoryInterface $readRepository)
     {
         parent::__construct();
     }
 
-
+    // 每个查询
     protected array $allowedFilters = [];
 
 
     protected array $allowedIncludes = [
-        'products',
-        'payments',
-        'info',
-        'products.info',
         'logistics',
-        'address'
+        'order',
+        'orderProduct',
+        'payments'
+
     ];
     protected array $allowedFields   = [];
 

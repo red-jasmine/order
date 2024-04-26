@@ -4,8 +4,8 @@ namespace RedJasmine\Order\Tests\Application;
 
 use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Mappers\OrderMapper;
-use RedJasmine\Order\Application\Services\OrderService;
-use RedJasmine\Order\Application\Services\RefundService;
+use RedJasmine\Order\Application\Services\OrderCommandService;
+use RedJasmine\Order\Application\Services\RefundCommandService;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
@@ -155,14 +155,14 @@ class OrderBase extends TestCase
         return array_merge($fake, $product);
     }
 
-    protected function orderService() : OrderService
+    protected function orderService() : OrderCommandService
     {
-        return app(OrderService::class)->setOperator($this->getOperator());
+        return app(OrderCommandService::class)->setOperator($this->getOperator());
     }
 
-    protected function refundService() : RefundService
+    protected function refundService() : RefundCommandService
     {
-        return app(RefundService::class)->setOperator($this->getOperator());
+        return app(RefundCommandService::class)->setOperator($this->getOperator());
     }
 
     protected function orderRepository() : OrderRepositoryInterface

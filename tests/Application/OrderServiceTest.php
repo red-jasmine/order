@@ -4,7 +4,7 @@ namespace RedJasmine\Order\Tests\Application;
 
 
 use RedJasmine\Order\Application\Data\OrderData;
-use RedJasmine\Order\Application\Services\OrderService;
+use RedJasmine\Order\Application\Services\OrderCommandService;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
