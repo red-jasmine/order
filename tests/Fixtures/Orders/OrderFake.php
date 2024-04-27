@@ -10,13 +10,13 @@ class OrderFake
 {
 
 
-    protected OrderTypeEnum $orderType = OrderTypeEnum::SOP;
+    public OrderTypeEnum $orderType = OrderTypeEnum::SOP;
 
     /**
      * 发货类型
      * @var ShippingTypeEnum
      */
-    protected ShippingTypeEnum $shippingType = ShippingTypeEnum::VIRTUAL;
+    public ShippingTypeEnum $shippingType = ShippingTypeEnum::VIRTUAL;
     // 商品数量
     protected int $productCount = 3;
 

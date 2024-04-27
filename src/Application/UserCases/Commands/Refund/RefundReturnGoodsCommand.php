@@ -19,9 +19,9 @@ class RefundReturnGoodsCommand extends Data
 
     /**
      * 快递单号
-     * @var string
+     * @var string|int
      */
-    public string $expressNo;
+    public string|int $expressNo;
 
 
     public LogisticsStatusEnum $status = LogisticsStatusEnum::CREATED;

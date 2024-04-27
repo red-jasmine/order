@@ -24,6 +24,8 @@ class OrderBuyerApiRoute
 
             // 退款售后
             Route::apiResource('refunds', RefundController::class)->names('order.buyer.refunds');
+            Route::post('refunds/cancel', [ RefundController::class, 'cancel' ])->name('order.buyer.refunds.cancel');
+            Route::post('refunds/return-goods', [ RefundController::class, 'refundGoods' ])->name('order.buyer.refunds.return-goods');
 
         });
     }

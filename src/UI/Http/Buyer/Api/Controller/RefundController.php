@@ -8,15 +8,18 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Order\Application\Services\OrderCommandService;
 use RedJasmine\Order\Application\Services\RefundCommandService;
 use RedJasmine\Order\Application\Services\RefundQueryService;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Order\UI\Http\Buyer\Api\Resources\OrderRefundResource;
 
 class RefundController extends Controller
 {
 
-    public function __construct(protected readonly RefundQueryService $queryService,
-                                protected RefundCommandService        $commandService,
-                                protected OrderCommandService         $orderCommandService,
+    public function __construct(
+        protected readonly RefundQueryService $queryService,
+        protected RefundCommandService        $commandService,
+        protected OrderCommandService         $orderCommandService,
     )
     {
         $this->commandService->setOperator(function () {
@@ -49,12 +52,34 @@ class RefundController extends Controller
 
     public function show(Request $request, int $id) : OrderRefundResource
     {
-        $refund = $this->queryService->find($id);
+        $refund = $this->queryService->find($id, $request->query());
 
         return OrderRefundResource::make($refund);
     }
 
+    public function cancel(Request $request) : JsonResponse
+    {
+        $command = RefundCancelCommand::from($request);
+        $this->queryService->find($request->rid);
+        $this->commandService->cancel($command);
+
+        return static::success();
+
+
+    }
+
+
+    public function refundGoods(Request $request) : JsonResponse
+    {
+        $command = RefundReturnGoodsCommand::from($request);
+        $this->queryService->find($command->rid);
+        $this->commandService->returnGoods($command);
+        return static::success();
+    }
+
+
     public function destroy($id)
     {
+        // TODO ?
     }
 }

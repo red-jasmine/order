@@ -11,12 +11,22 @@ use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectReturnGood
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReshipGoodsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReturnGoodsCommandHandler;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeReturnGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Support\Application\ApplicationService;
 
 /**
  * @method int create(RefundCreateCommand $command)
  * @method void agree(RefundAgreeCommand $command)
+ * @method void reject(RefundRejectCommand $command)
+ * @method void cancel(RefundCancelCommand $command)
+ * @method void agreeReturnGoods(RefundAgreeReturnGoodsCommand $command)
+ * @method void returnGoods(RefundReturnGoodsCommand $command)
+ * @method void rejectReturnGoods(RefundRejectReturnGoodsCommand $command)
  */
 class RefundCommandService extends ApplicationService
 {
