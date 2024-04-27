@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
+use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\Payments\AmountTypeEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundGoodsStatusEnum;
@@ -110,11 +111,22 @@ class OrderRefund extends Model
 
         $amount = $amount ?: $this->refund_amount;
         // TODO 验证金额
-        $this->end_time                    = now();
-        $this->refund_amount               = $amount;
-        $this->refund_status               = RefundStatusEnum::REFUND_SUCCESS;
-        $this->orderProduct->refund_amount = bcadd($this->orderProduct->refund_amount, $amount, 2);
+        $this->end_time      = now();
+        $this->refund_amount = $amount;
+        $this->refund_status = RefundStatusEnum::REFUND_SUCCESS;
 
+        // TODO 退邮费
+        // 设置退款单状态
+        $this->orderProduct->refund_amount = bcadd($this->orderProduct->refund_amount, $amount, 2);
+        $this->orderProduct->refund_status = OrderRefundStatusEnum::PART_REFUND;
+        if (bccomp($this->orderProduct->refund_amount, $this->orderProduct->divided_payment_amount, 2) >= 0) {
+            $this->orderProduct->refund_status = OrderRefundStatusEnum::ALL_REFUND;
+        }
+        $this->orderProduct->order->refund_amount = bcadd($this->orderProduct->order->refund_amount, $amount, 2);
+        $this->orderProduct->order->refund_status = OrderRefundStatusEnum::PART_REFUND;
+        if (bccomp($this->orderProduct->order->refund_amount, $this->orderProduct->order->payment_amount, 2) >= 0) {
+            $this->orderProduct->order->refund_status = OrderRefundStatusEnum::ALL_REFUND;
+        }
 
         $payment                 = app(OrderFactory::class)->createOrderPayment();
         $payment->order_id       = $this->order_id;
@@ -124,11 +136,7 @@ class OrderRefund extends Model
         $payment->amount_type    = AmountTypeEnum::REFUND;
         $payment->payment_amount = $this->refund_amount;
         $payment->status         = PaymentStatusEnum::WAIT_PAY;
-
-
         $this->payments->add($payment);
-
-
         $this->fireModelEvent('agreed');
     }
 

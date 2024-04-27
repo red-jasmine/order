@@ -3,6 +3,8 @@
 namespace RedJasmine\Order\Tests\UI\Http\Buyer;
 
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeCommand;
+use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 
@@ -16,6 +18,7 @@ class RefundTest extends Base
         // 2、发起支付
         // 3、设置支付成功
         // 4、申请退款
+        // 5、同意退款
 
         $this->user();
         // 创建订单
@@ -79,6 +82,34 @@ class RefundTest extends Base
         $refundCreateResponse = $this->postJson(route('order.buyer.refunds.store', [], false), $refundCreateRequestData);
 
         $this->assertEquals(200, $refundCreateResponse->status());
+
+        $refundCreateResponseData = $refundCreateResponse->json('data');
+
+        $rid = $refundCreateResponseData['rid'];
+
+
+        // 5、同意退款
+
+        $agreeRefundCommand = RefundAgreeCommand::from([ 'rid' => $rid ]);
+        $this->refundCommandService()->agree($agreeRefundCommand);
+
+
+        // 6、查询退款详情
+
+        $showRequestData = [ 'refund' => $rid ];
+        $showResponse    = $this->getJson(route('order.buyer.refunds.show', $showRequestData, false) );
+
+        $this->assertEquals(200, $showResponse->status());
+
+        $showResponseData = $showResponse->json('data');
+
+
+        $this->assertEquals(RefundStatusEnum::REFUND_SUCCESS->value,$showResponseData['refund_status']);
+
+        dd($showResponseData);
+
+        dd($refundCreateResponseData);
+
     }
 
 }

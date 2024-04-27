@@ -39,20 +39,22 @@ class OrderRefundService
         $orderRefund->payable_amount         = $orderProduct->payable_amount;
         $orderRefund->payment_amount         = $orderProduct->payment_amount;
         $orderRefund->divided_payment_amount = $orderProduct->divided_payment_amount;
-
-        $orderRefund->creator       = $order->getOperator();
-        $orderRefund->refund_amount = $orderProduct->divided_discount_amount;
+        $orderRefund->creator                = $order->getOperator();
 
         // 判断
         $orderRefund->phase = $this->getRefundPhase($orderProduct);
 
         switch ($orderRefund->refund_type) {
             case RefundTypeEnum::REFUND_ONLY:
+                $orderRefund->refund_amount = $orderProduct->maxRefundAmount();
                 $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE;
+                break;
+            case RefundTypeEnum::RETURN_GOODS_REFUND:
+                $orderRefund->refund_amount = $orderProduct->maxRefundAmount();
+                $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
                 break;
             case RefundTypeEnum::EXCHANGE:
             case RefundTypeEnum::SERVICE:
-            case RefundTypeEnum::RETURN_GOODS_REFUND:
             case RefundTypeEnum::OTHER:
                 $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
                 break;

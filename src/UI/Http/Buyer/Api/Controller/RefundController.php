@@ -9,7 +9,7 @@ use RedJasmine\Order\Application\Services\OrderCommandService;
 use RedJasmine\Order\Application\Services\RefundCommandService;
 use RedJasmine\Order\Application\Services\RefundQueryService;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
-use RedJasmine\Order\UI\Http\Buyer\Api\Resources\OrderResource;
+use RedJasmine\Order\UI\Http\Buyer\Api\Resources\OrderRefundResource;
 
 class RefundController extends Controller
 {
@@ -35,7 +35,7 @@ class RefundController extends Controller
     public function index(Request $request) : AnonymousResourceCollection
     {
         $result = $this->queryService->paginate($request->query());
-        return OrderResource::collection($result);
+        return OrderRefundResource::collection($result);
     }
 
     public function store(Request $request) : JsonResponse
@@ -47,8 +47,11 @@ class RefundController extends Controller
         return static::success([ 'rid' => $rid ]);
     }
 
-    public function show($id)
+    public function show(Request $request, int $id) : OrderRefundResource
     {
+        $refund = $this->queryService->find($id);
+
+        return OrderRefundResource::make($refund);
     }
 
     public function destroy($id)

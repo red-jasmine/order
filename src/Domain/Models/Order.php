@@ -247,9 +247,33 @@ class Order extends Model
     {
         $order = $this;
         $order->discount_amount;
+
         // 对商品进行排序 从小到大
-        $products = $order->products->sortBy('product_amount')->values();
-        // TODO
+        $products     = $order->products->sortBy('product_amount')->values();
+        $productCount = count($products);
+        // 剩余优惠金额
+        $discountAmountSurplus = $this->discount_amount;
+        /**
+         * @var $product OrderProduct
+         */
+        foreach ($products as $key => $product) {
+            // 最后一个
+            $product->divided_discount_amount = 0;
+            if ($key === $productCount - 1) {
+                $product->divided_discount_amount = $discountAmountSurplus;
+            } else {
+                if (bccomp($product->payable_amount, 0, 2) !== 0) {
+                    $product->divided_discount_amount = bcmul($this->discount_amount, bcdiv($product->payable_amount, $this->product_payable_amount, 4), 2);
+                } else {
+                    $product->divided_discount_amount = 0;
+                }
+            }
+            $discountAmountSurplus           = bcsub($discountAmountSurplus, $product->divided_discount_amount, 2);
+            $product->divided_payment_amount = bcsub($product->payable_amount, $product->divided_discount_amount, 2);
+
+        }
+
+
     }
 
 
@@ -393,7 +417,8 @@ class Order extends Model
     public function paid(OrderPayment $orderPayment) : void
     {
         if (!in_array($this->payment_status, [ PaymentStatusEnum::NIL, PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::PAYING, PaymentStatusEnum::PART_PAY ], true)) {
-            throw  OrderException::newFromCodes(OrderException::PAYMENT_STATUS_NOT_ALLOW);        }
+            throw  OrderException::newFromCodes(OrderException::PAYMENT_STATUS_NOT_ALLOW);
+        }
 
         $orderPayment->status = PaymentStatusEnum::PAID;
 
@@ -459,7 +484,7 @@ class Order extends Model
             });
 
             $this->confirm_time = $this->confirm_time ?? now();
-            $this->signed_time  = $this->confirm_time ?? now();
+            $this->signed_time  = $this->signed_time ?? now();
         }
 
 

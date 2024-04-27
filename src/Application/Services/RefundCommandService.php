@@ -10,11 +10,13 @@ use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectCommandHan
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundRejectReturnGoodsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReshipGoodsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Refund\RefundReturnGoodsCommandHandler;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Support\Application\ApplicationService;
 
 /**
  * @method int create(RefundCreateCommand $command)
+ * @method void agree(RefundAgreeCommand $command)
  */
 class RefundCommandService extends ApplicationService
 {

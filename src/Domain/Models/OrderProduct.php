@@ -103,4 +103,14 @@ class OrderProduct extends Model
     }
 
 
+    /**
+     * 最大退款金额
+     * @return string
+     */
+    public function maxRefundAmount() : string
+    {
+        return bcsub($this->divided_payment_amount, $this->refund_amount, 2);
+    }
+
+
 }
