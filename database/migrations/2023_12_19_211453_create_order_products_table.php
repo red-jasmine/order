@@ -30,8 +30,8 @@ return new class extends Migration {
             $table->string('product_type', 32)->comment('商品多态类型');
             $table->unsignedBigInteger('product_id')->comment('商品ID');
             $table->unsignedBigInteger('sku_id')->default(0)->comment('规格ID');
-            $table->unsignedBigInteger('category_id')->nullable()->comment('类目ID');
-            $table->unsignedBigInteger('seller_category_id')->nullable()->comment('店内分类编号');
+            $table->unsignedBigInteger('category_id')->default(0)->comment('类目ID');
+            $table->unsignedBigInteger('seller_category_id')->default(0)->comment('店内分类编号');
             $table->string('outer_id', 64)->nullable()->comment('商品外部编码');
             $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
             $table->string('barcode', 64)->nullable()->comment('条形码');

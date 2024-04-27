@@ -3,7 +3,6 @@
 namespace RedJasmine\Order\Application\Data;
 
 
-
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use Spatie\LaravelData\Optional;
@@ -32,8 +31,8 @@ class OrderProductData extends Data
     public string|int|float|Optional $discountAmount      = 0;
     public int                       $skuId               = 0;
     public string|Optional           $image;
-    public ?int                      $categoryId;
-    public ?int                      $sellerCategoryId;
+    public int                       $categoryId          = 0;
+    public int                       $sellerCategoryId    = 0;
     public ?string                   $outerId;
     public ?string                   $outerSkuId;
     public ?string                   $barcode;
