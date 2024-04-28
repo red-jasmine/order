@@ -27,11 +27,11 @@ return new class extends Migration {
             $table->string('title')->comment('商品标题');
             $table->string('sku_name')->nullable()->comment('SKU名称');
             $table->string('image')->nullable()->comment('图片');
-            $table->string('product_type', 32)->comment('商品多态类型');
+            $table->string('product_type', 32)->comment('商品源类型');
             $table->unsignedBigInteger('product_id')->comment('商品ID');
             $table->unsignedBigInteger('sku_id')->default(0)->comment('规格ID');
             $table->unsignedBigInteger('category_id')->default(0)->comment('类目ID');
-            $table->unsignedBigInteger('seller_category_id')->default(0)->comment('店内分类编号');
+            $table->unsignedBigInteger('seller_category_id')->default(0)->comment('店内分类ID');
             $table->string('outer_id', 64)->nullable()->comment('商品外部编码');
             $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
             $table->string('barcode', 64)->nullable()->comment('条形码');
@@ -41,7 +41,7 @@ return new class extends Migration {
             $table->decimal('cost_amount', 12)->default(0)->comment('成本金额');
             // 金额类
             $table->decimal('product_amount', 12)->default(0)->comment('商品金额');
-            $table->decimal('tax_amount', 12)->default(0)->comment('税费');
+            $table->decimal('tax_amount', 12)->default(0)->comment('税费金额');
             $table->decimal('discount_amount', 12)->default(0)->comment('优惠金额');
             $table->decimal('payable_amount', 12)->default(0)->comment('应付金额');
             $table->decimal('payment_amount', 12)->default(0)->comment('实付金额');
@@ -58,8 +58,8 @@ return new class extends Migration {
             $table->enum('settlement_status', SettlementStatusEnum::values())->default(SettlementStatusEnum::NIL->value)->comment(SettlementStatusEnum::comments('结算状态'));
             $table->string('seller_custom_status', 32)->default('nil')->comment('卖家自定义状态');
 
-            $table->unsignedBigInteger('progress')->default(0)->comment('进度');
-            $table->unsignedBigInteger('progress_total')->default(0)->comment('进度总数');
+            $table->unsignedBigInteger('progress')->nullable()->comment('进度');
+            $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
 
             $table->string('warehouse_code', 32)->nullable()->comment('仓库编码');
             $table->timestamp('created_time')->nullable()->comment('创建时间');

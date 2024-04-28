@@ -16,6 +16,7 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Support\Application\ApplicationService;
 
@@ -27,6 +28,7 @@ use RedJasmine\Support\Application\ApplicationService;
  * @method void agreeReturnGoods(RefundAgreeReturnGoodsCommand $command)
  * @method void returnGoods(RefundReturnGoodsCommand $command)
  * @method void rejectReturnGoods(RefundRejectReturnGoodsCommand $command)
+ * @method void reshipGoods(RefundReshipGoodsCommand $command)
  */
 class RefundCommandService extends ApplicationService
 {

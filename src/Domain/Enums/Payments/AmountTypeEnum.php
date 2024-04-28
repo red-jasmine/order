@@ -10,8 +10,8 @@ enum AmountTypeEnum: string
     use EnumsHelper;
 
     case FULL = 'full';
-    case PREPAY = 'prepay';
-    case BALANCE = 'balance';
+    case DEPOSIT = 'deposit';
+    case TAIL = 'tail';
     case REFUND = 'refund';
 
 
@@ -20,8 +20,8 @@ enum AmountTypeEnum: string
 
         return [
             self::FULL->value    => '全款',
-            self::PREPAY->value  => '预付款',
-            self::BALANCE->value => '尾款',
+            self::DEPOSIT->value => '预付',
+            self::TAIL->value    => '尾款',
             self::REFUND->value  => '退款',
         ];
     }

@@ -12,12 +12,12 @@ enum RefundTypeEnum: string
 {
     use EnumsHelper;
 
+    // 退款
     case REFUND_ONLY = 'refund';
-
     case  RETURN_GOODS_REFUND = 'return_goods_refund';
-
+    // 换货
     case  EXCHANGE = 'exchange';
-
+    // 维修
     case  SERVICE = 'service';
 
     case  OTHER = 'other';

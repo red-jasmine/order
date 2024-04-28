@@ -4,12 +4,13 @@ namespace RedJasmine\Order\Application\Mappers;
 
 
 use RedJasmine\Order\Application\Data\OrderData;
+use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domain\Models\Order;
 
 class OrderMapper
 {
 
-    public function fromData(OrderData $orderData, Order $order) : Order
+    public function fromData(OrderCreateCommand $orderData, Order $order) : Order
     {
 
         $order->seller               = $orderData->seller;

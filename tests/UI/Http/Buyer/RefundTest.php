@@ -5,8 +5,10 @@ namespace RedJasmine\Order\Tests\UI\Http\Buyer;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeReturnGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
@@ -25,6 +27,7 @@ class RefundTest extends Base
     }
 
     /**
+     *
      * @param OrderFake $orderFake
      *
      * @return array
@@ -80,6 +83,11 @@ class RefundTest extends Base
     }
 
 
+    /**
+     * @param OrderFake $orderFake
+     *
+     * @return array
+     */
     protected function premise_create_order_paid_shipping(OrderFake $orderFake = new OrderFake()) : array
     {
 
@@ -102,7 +110,7 @@ class RefundTest extends Base
     }
 
     /**
-     * 创建退款买家同意
+     * @test 创建退款买家同意
      * 前提条件: 创建订单、发起支付、设置付款成功
      * 步骤:
      *  1、申请仅退款
@@ -113,7 +121,7 @@ class RefundTest extends Base
      *
      * @return void
      */
-    public function test_can_refund_create_and_seller_agree() : void
+    public function can_refund_create_and_seller_agree() : void
     {
 
 
@@ -224,12 +232,12 @@ class RefundTest extends Base
 
 
     /**
-     * 取消退款
+     * @test 取消退款
      * 前提条件:
      * 步骤：1、申请退款 2、取消退款 3、查看退款单状态
      * @return void
      */
-    public function test_can_cancel_refund() : void
+    public function can_cancel_refund() : void
     {
         // 前置条件
         $orderData      = $this->premise_create_order_and_paid();
@@ -272,7 +280,7 @@ class RefundTest extends Base
 
 
     /**
-     * 退货退款 卖家同意
+     * @test 退货退款 卖家同意
      * 前提条件: 订单支付成功、卖家发货
      * 步骤：
      *  1、申请退款退款
@@ -284,7 +292,7 @@ class RefundTest extends Base
      *  1、退款成功
      * @return void
      */
-    public function test_can_return_goods_and_refund() : void
+    public function can_return_goods_and_refund() : void
     {
 
         $orderData      = $this->premise_create_order_paid_shipping();
@@ -345,7 +353,7 @@ class RefundTest extends Base
     }
 
     /**
-     * 退货退款 卖家拒绝退货
+     * @test 退货退款 卖家拒绝退货
      * 前提条件: 订单支付成功、卖家发货
      * 步骤：
      *  1、申请退款退款
@@ -357,7 +365,7 @@ class RefundTest extends Base
      *  2、取消成功
      * @return void
      */
-    public function test_can_return_goods_seller_reject() : void
+    public function can_return_goods_seller_reject() : void
     {
 
         $orderData      = $this->premise_create_order_paid_shipping();
@@ -404,4 +412,78 @@ class RefundTest extends Base
     }
 
 
+    /**
+     * @test 能进行换货操作
+     *       前提条件： 订单支付、并发货
+     *       步骤：
+     *       1、申请换货
+     *       2、卖家同意退回货物
+     *       3、买家寄回货物
+     *       4、卖家重新发货
+     *       5、查询验证
+     *       期望结果：
+     *       1、能正常换货
+     * @return void
+     */
+    public function can_change_goods() : void
+    {
+        // 前提条件
+        $orderData      = $this->premise_create_order_paid_shipping();
+        $orderId        = $orderData['id'];
+        $products       = $orderData['products'];
+        $orderProductId = $products[0]['id'];
+
+        //步骤：
+        //1、申请换货
+        $refundCreateRequestData = RefundCreateCommand::from(
+            [
+                'id'               => $orderId,
+                'order_product_id' => $orderProductId,
+                'images'           => [ fake()->imageUrl, fake()->imageUrl, fake()->imageUrl, ],
+                'refund_type'      => RefundTypeEnum::EXCHANGE->value,
+                'refund_amount'    => null,
+                'reason'           => '大了换小一码的',
+                'description'      => '',
+                'order_refund_id'  => fake()->numerify('out-refund-id-########'),
+
+            ]
+        )->toArray();
+        $refundCreateResponse    = $this->postJson(route('order.buyer.refunds.store', [], false), $refundCreateRequestData);
+
+        $this->assertEquals(200, $refundCreateResponse->status());
+
+        $refundCreateResponseData = $refundCreateResponse->json('data');
+
+        $rid = $refundCreateResponseData['rid'];
+        //2、卖家同意退回货物
+        $agreeReturnGoodsCommand = RefundAgreeReturnGoodsCommand::from([ 'rid' => $rid ]);
+        $this->refundCommandService()->agreeReturnGoods($agreeReturnGoodsCommand);
+
+        //3、买家寄回货物
+
+        $returnGoodsRequestData = [
+            'rid'                  => $rid,
+            'express_company_code' => fake()->randomElement([ 'yunda' ]),
+            'express_no'           => (string)fake()->numberBetween(111111111, 999999999)
+        ];
+        $returnGoodsResponse    = $this->postJson(route('order.buyer.refunds.return-goods', [], false), $returnGoodsRequestData);
+
+        $this->assertEquals(200, $returnGoodsResponse->status());
+        //4、卖家重新发货
+        $reshippingCommand = RefundReshipGoodsCommand::from([
+                                                                'rid'                  => $rid,
+                                                                'express_company_code' => fake()->randomElement([ 'yunda' ]),
+                                                                'express_no'           => (string)fake()->numberBetween(111111111, 999999999)
+                                                            ]);
+
+        $this->refundCommandService()->reshipGoods($reshippingCommand);
+        //5、查询验证
+        $showRequestData = [ 'refund' => $rid ];
+        $showResponse    = $this->getJson(route('order.buyer.refunds.show', $showRequestData, false));
+        $this->assertEquals(200, $showResponse->status());
+        $showResponseData = $showResponse->json('data');
+        $this->assertEquals(RefundStatusEnum::REFUND_SUCCESS->value, $showResponseData['refund_status']);
+
+
+    }
 }

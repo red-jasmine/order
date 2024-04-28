@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Domain;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderAddress;
@@ -16,10 +17,9 @@ use RedJasmine\Support\Helpers\ID\Snowflake;
 
 class OrderFactory
 {
-    // TODO  这里可用 抽象工厂
     /**
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildID() : int
     {
@@ -27,6 +27,10 @@ class OrderFactory
     }
 
 
+    /**
+     * @return Order
+     * @throws Exception
+     */
     public function createOrder() : Order
     {
         $order         = new Order();
@@ -41,6 +45,10 @@ class OrderFactory
     }
 
 
+    /**
+     * @return OrderProduct
+     * @throws Exception
+     */
     public function createOrderProduct() : OrderProduct
     {
         $orderProduct     = new OrderProduct();
@@ -52,14 +60,19 @@ class OrderFactory
     }
 
 
+    /**
+     * @return OrderAddress
+     */
     public function createOrderAddress() : OrderAddress
     {
-        $address = new OrderAddress();
-
-        return $address;
+        return new OrderAddress();
     }
 
 
+    /**
+     * @return OrderPayment
+     * @throws Exception
+     */
     public function createOrderPayment() : OrderPayment
     {
         $payment     = new OrderPayment();
@@ -67,6 +80,10 @@ class OrderFactory
         return $payment;
     }
 
+    /**
+     * @return OrderLogistics
+     * @throws Exception
+     */
     public function createOrderLogistics() : OrderLogistics
     {
         $orderLogistics                 = new OrderLogistics();
@@ -75,6 +92,10 @@ class OrderFactory
         return $orderLogistics;
     }
 
+    /**
+     * @return OrderProductCardKey
+     * @throws Exception
+     */
     public function createOrderProductCardKey() : OrderProductCardKey
     {
         $orderProductCardKey     = new OrderProductCardKey();
@@ -83,6 +104,12 @@ class OrderFactory
     }
 
 
+    /**
+     * @param Order $order
+     *
+     * @return OrderRefund
+     * @throws Exception
+     */
     public function createRefund(Order $order) : OrderRefund
     {
         $orderRefund           = new OrderRefund();

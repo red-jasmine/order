@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Application\Services\Handlers;
 
 
+use Exception;
 use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Mappers\OrderAddressMapper;
 use RedJasmine\Order\Application\Mappers\OrderMapper;
@@ -14,6 +15,12 @@ use RedJasmine\Order\Domain\OrderFactory;
 class OrderCreateCommandHandler extends AbstractOrderCommandHandler
 {
 
+    /**
+     * @param OrderCreateCommand $data
+     *
+     * @return Order
+     * @throws Exception
+     */
     public function execute(OrderCreateCommand $data) : Order
     {
         $order = app(OrderFactory::class)->createOrder();

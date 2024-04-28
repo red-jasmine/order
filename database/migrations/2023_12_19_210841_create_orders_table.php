@@ -70,8 +70,8 @@ return new class extends Migration {
             $table->string('guide_type', 32)->nullable()->comment('导购类型');
             $table->unsignedBigInteger('guide_id')->nullable()->comment('导购ID');
 
-
-            $table->string('client_type', 32)->nullable()->comment('客户端');
+          
+            $table->string('client_type', 32)->nullable()->comment('客户端类型');
             $table->string('client_version', 32)->nullable()->comment('客户端版本');
             $table->string('client_ip', 32)->nullable()->comment('IP');
             $table->string('source_type', 32)->nullable()->comment('来源类型');

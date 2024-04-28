@@ -5,6 +5,9 @@ namespace RedJasmine\Order\Domain\Services;
 use RedJasmine\Order\Domain\Enums\RefundPhaseEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
+use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domain\Exceptions\OrderException;
+use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderRefund;
@@ -14,10 +17,26 @@ class OrderRefundService
 {
 
 
+    /**
+     * @param Order       $order
+     * @param OrderRefund $orderRefund
+     *
+     * @return void
+     * @throws RefundException
+     */
     public function create(Order $order, OrderRefund $orderRefund) : void
     {
+        /**
+         * @var $orderProduct OrderProduct
+         */
         $orderProduct = $order->products->where('id', $orderRefund->order_product_id)->firstOrFail();
-        // TODO 验证子单 是否允许售后
+        // TODO 验证子商品单 是否允许售后
+        // 获取允许的类型
+        if (!in_array($orderRefund->refund_type, $orderProduct->allowRefundTypes(), true)) {
+            throw RefundException::newFromCodes(RefundException::REFUND_TYPE_NOT_ALLOW);
+        }
+
+        // 填充 子商品单
         $orderRefund->seller                 = $order->seller;
         $orderRefund->buyer                  = $order->buyer;
         $orderRefund->shipping_type          = $orderProduct->shipping_type;
@@ -41,7 +60,7 @@ class OrderRefundService
         $orderRefund->divided_payment_amount = $orderProduct->divided_payment_amount;
         $orderRefund->creator                = $order->getOperator();
 
-        // 判断
+        // 获取当售后阶段
         $orderRefund->phase = $this->getRefundPhase($orderProduct);
 
         switch ($orderRefund->refund_type) {
@@ -56,6 +75,7 @@ class OrderRefundService
             case RefundTypeEnum::EXCHANGE:
             case RefundTypeEnum::SERVICE:
             case RefundTypeEnum::OTHER:
+                $orderRefund->refund_amount = 0;
                 $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
                 break;
         }

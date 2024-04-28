@@ -11,8 +11,10 @@ use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
+use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use Spatie\LaravelData\WithData;
@@ -110,6 +112,32 @@ class OrderProduct extends Model
     public function maxRefundAmount() : string
     {
         return bcsub($this->divided_payment_amount, $this->refund_amount, 2);
+    }
+
+    /**
+     * 允许的售后退款类型
+     * 允许的售后类型 和 订单状态、发货状态、支付状态、支付方式 相关
+     * @return array
+     */
+    public function allowRefundTypes() : array
+    {
+        // TODO 根据 子商品单  的 售后服务
+        $allowApplyRefundTypes = [];
+
+        // 如果支付那么久可以申请退款
+        if (in_array($this->payment_status, [ PaymentStatusEnum::PART_PAY, PaymentStatusEnum::PAID ], true)) {
+            $allowApplyRefundTypes[] = RefundTypeEnum::REFUND_ONLY;
+            $allowApplyRefundTypes[] = RefundTypeEnum::RETURN_GOODS_REFUND;
+        }
+        // 如果已发货
+        if (in_array($this->shipping_status, [
+            ShippingStatusEnum::PART_SHIPPED,
+            ShippingStatusEnum::SHIPPED,
+        ],           true)) {
+            $allowApplyRefundTypes[] = RefundTypeEnum::EXCHANGE;
+        }
+
+        return $allowApplyRefundTypes;
     }
 
 
