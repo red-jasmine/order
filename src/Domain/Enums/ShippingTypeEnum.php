@@ -11,6 +11,9 @@ enum ShippingTypeEnum: string
 {
     use EnumsHelper;
 
+    // 自提
+    // 同城配送
+
     case EXPRESS = 'express'; // 物流快递
 
     case  VIRTUAL = 'virtual';  // 虚拟发货

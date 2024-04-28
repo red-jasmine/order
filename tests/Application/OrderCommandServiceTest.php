@@ -3,13 +3,8 @@
 namespace RedJasmine\Order\Tests\Application;
 
 
-use RedJasmine\Order\Application\Data\OrderData;
-use RedJasmine\Order\Application\Services\OrderCommandService;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
-use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
-use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
-use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
@@ -19,16 +14,11 @@ use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogist
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\Domain\Enums\OrderCardKeyStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
-use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
-use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderProduct;
-use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
-use RedJasmine\Order\Tests\TestCase;
 
-class OrderServiceTest extends OrderBase
+class OrderCommandServiceTest extends OrderBase
 {
 
     public function test_order_cancel() : void
@@ -318,52 +308,49 @@ class OrderServiceTest extends OrderBase
     {
         $order = $this->test_order_create();
         $order = $this->orderRepository()->find($order->id);
-        $this->assertEquals(false,$order->is_buyer_delete);
-        $this->assertEquals(false,$order->is_seller_delete);
+        $this->assertEquals(false, $order->is_buyer_delete);
+        $this->assertEquals(false, $order->is_seller_delete);
 
         $command = OrderHiddenCommand::from([
                                                 'id' => $order->id,
                                             ]);
 
 
-
         $this->orderService()->buyerHidden($command);
         $order = $this->orderRepository()->find($order->id);
-        $this->assertEquals(true,$order->is_buyer_delete);
-        $this->assertEquals(false,$order->is_seller_delete);
+        $this->assertEquals(true, $order->is_buyer_delete);
+        $this->assertEquals(false, $order->is_seller_delete);
 
 
         $this->orderService()->sellerHidden($command);
 
         $order = $this->orderRepository()->find($order->id);
-        $this->assertEquals(true,$order->is_buyer_delete);
-        $this->assertEquals(true,$order->is_seller_delete);
+        $this->assertEquals(true, $order->is_buyer_delete);
+        $this->assertEquals(true, $order->is_seller_delete);
 
     }
 
 
     public function test_order_seller_custom_status()
     {
-        $order = $this->test_order_paid();
+        $order          = $this->test_order_paid();
         $orderProductId = $order->products[0]->id;
-        $command = OrderSellerCustomStatusCommand::from([
-            'id'   => $order->id,
-            'seller_custom_status' => fake('en')->word(),
-                                                        ]);
+        $command        = OrderSellerCustomStatusCommand::from([
+                                                                   'id'                   => $order->id,
+                                                                   'seller_custom_status' => fake('en')->word(),
+                                                               ]);
 
         $this->orderService()->sellerCustomStatus($command);
 
         $order = $this->orderRepository()->find($order->id);
 
-        $this->assertEquals($command->sellerCustomStatus,$order->seller_custom_status);
-
-
+        $this->assertEquals($command->sellerCustomStatus, $order->seller_custom_status);
 
 
         $command = OrderSellerCustomStatusCommand::from([
-                                                            'id'   => $order->id,
+                                                            'id'                   => $order->id,
                                                             'seller_custom_status' => fake('en')->word(),
-                                                            'order_product_id' => $orderProductId,
+                                                            'order_product_id'     => $orderProductId,
                                                         ]);
 
         $this->orderService()->sellerCustomStatus($command);
@@ -372,7 +359,7 @@ class OrderServiceTest extends OrderBase
 
         $orderProduct = $order->products[0];
 
-        $this->assertEquals($command->sellerCustomStatus,$orderProduct->seller_custom_status);
+        $this->assertEquals($command->sellerCustomStatus, $orderProduct->seller_custom_status);
 
 
     }

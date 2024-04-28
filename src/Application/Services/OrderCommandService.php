@@ -59,6 +59,8 @@ class OrderCommandService extends ApplicationService
         'sellerHidden'       => OrderSellerHiddenCommandHandler::class,
         'buyerHidden'        => OrderBuyerHiddenCommandHandler::class,
     ];
+    // TODO
+    // 1、补发
 
 
 }

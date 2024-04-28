@@ -38,6 +38,14 @@ return new class extends Migration {
             $table->enum('settlement_status', SettlementStatusEnum::values())->default(SettlementStatusEnum::NIL->value)->comment(SettlementStatusEnum::comments('结算状态'));
             $table->string('seller_custom_status', 32)->default('nil')->comment('卖家自定义状态');
 
+
+            // 订单锁
+            // 周期订单
+
+            // 发票信息
+            // 补差类 订单
+
+
             $table->decimal('product_amount', 12)->default(0)->comment('商品金额');
             $table->decimal('cost_amount', 12)->default(0)->comment('成本金额');
             $table->decimal('tax_amount', 12)->default(0)->comment('税费金额');
@@ -49,6 +57,7 @@ return new class extends Migration {
             $table->decimal('payable_amount', 12)->default(0)->comment('应付金额');
             $table->decimal('payment_amount', 12)->default(0)->comment('实付金额');
             $table->decimal('refund_amount', 12)->default(0)->comment('退款金额');
+            $table->decimal('service_amount', 12)->default(0)->comment('服务费');
 
 
             $table->timestamp('created_time')->nullable()->comment('创建时间');
@@ -70,7 +79,7 @@ return new class extends Migration {
             $table->string('guide_type', 32)->nullable()->comment('导购类型');
             $table->unsignedBigInteger('guide_id')->nullable()->comment('导购ID');
 
-          
+
             $table->string('client_type', 32)->nullable()->comment('客户端类型');
             $table->string('client_version', 32)->nullable()->comment('客户端版本');
             $table->string('client_ip', 32)->nullable()->comment('IP');

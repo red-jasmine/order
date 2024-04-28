@@ -61,6 +61,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
             $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
 
+
+            $table->unsignedBigInteger('gift_point')->default(0)->comment('赠送积分');
+            // 电子票据商品有效期
+            // 是否为赠品
+            // 是否为代销
+
             $table->string('warehouse_code', 32)->nullable()->comment('仓库编码');
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');

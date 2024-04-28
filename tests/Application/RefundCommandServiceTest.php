@@ -17,7 +17,7 @@ use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\OrderRefund;
 
-class RefundServiceTest extends OrderServiceTest
+class RefundCommandServiceTest extends OrderCommandServiceTest
 {
 
     // 售中阶段
