@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Tests\Fixtures\Orders;
 
+use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Tests\Fixtures\Users\User;
@@ -111,7 +112,7 @@ class OrderFake
     {
         $fake = [
             'shipping_type'          => $this->shippingType->value,
-            'order_product_type'     => fake()->randomElement([ 'goods' ]),
+            'order_product_type'     => fake()->randomElement([OrderProductTypeEnum::GOODS->value]),
             'title'                  => fake()->sentence(),
             'sku_name'               => fake()->words(1, true),
             'image'                  => fake()->imageUrl,

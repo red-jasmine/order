@@ -18,8 +18,7 @@ enum ShippingTypeEnum: string
 
     case  VIRTUAL = 'virtual';  // 虚拟发货
 
-    case CDK = 'cdk'; // 卡密发货
-
+    case CDK = 'cdk'; // 卡密
 
     public static function labels() : array
     {

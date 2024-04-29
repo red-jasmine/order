@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
@@ -36,21 +37,22 @@ class OrderProduct extends Model
 
 
     protected $casts = [
-        'shipping_type'   => ShippingTypeEnum::class,
-        'order_status'    => OrderStatusEnum::class,
-        'shipping_status' => ShippingStatusEnum::class,
-        'payment_status'  => PaymentStatusEnum::class,
-        'refund_status'   => OrderRefundStatusEnum::class,
-        'created_time'    => 'datetime',
-        'payment_time'    => 'datetime',
-        'close_time'      => 'datetime',
-        'shipping_time'   => 'datetime',
-        'collect_time'    => 'datetime',
-        'dispatch_time'   => 'datetime',
-        'signed_time'     => 'datetime',
-        'confirm_time'    => 'datetime',
-        'refund_time'     => 'datetime',
-        'rate_time'       => 'datetime',
+        'order_product_type' => OrderProductTypeEnum::class,
+        'shipping_type'      => ShippingTypeEnum::class,
+        'order_status'       => OrderStatusEnum::class,
+        'shipping_status'    => ShippingStatusEnum::class,
+        'payment_status'     => PaymentStatusEnum::class,
+        'refund_status'      => OrderRefundStatusEnum::class,
+        'created_time'       => 'datetime',
+        'payment_time'       => 'datetime',
+        'close_time'         => 'datetime',
+        'shipping_time'      => 'datetime',
+        'collect_time'       => 'datetime',
+        'dispatch_time'      => 'datetime',
+        'signed_time'        => 'datetime',
+        'confirm_time'       => 'datetime',
+        'refund_time'        => 'datetime',
+        'rate_time'          => 'datetime',
     ];
 
     protected $fillable = [

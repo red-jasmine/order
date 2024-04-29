@@ -6,6 +6,7 @@ use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Mappers\OrderMapper;
 use RedJasmine\Order\Application\Services\OrderCommandService;
 use RedJasmine\Order\Application\Services\RefundCommandService;
+use RedJasmine\Order\Application\UserCases\Commands\Data\PromiseServices;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
@@ -141,6 +142,7 @@ class OrderBase extends TestCase
             'tax_amount'             => fake()->randomFloat(2, 10, 20),
             'discount_amount'        => fake()->randomFloat(2, 5, 20),
             'outer_order_product_id' => fake()->numerify('CODE-########'),
+            'promise_services'=> PromiseServices::from([])->toArray(),
             'info'                   => [
                 'seller_remarks' => fake()->sentence(10),
                 'seller_message' => fake()->sentence(10),
@@ -178,7 +180,9 @@ class OrderBase extends TestCase
 
     public function test_order_create()
     {
+
         $orderDataArray = $this->fakeOrderArray();
+
         for ($i = 1; $i <= $this->productCount; $i++) {
             $orderDataArray['products'][] = $this->fakeProductArray();
         }

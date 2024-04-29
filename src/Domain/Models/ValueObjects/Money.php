@@ -10,30 +10,21 @@ use Spatie\LaravelData\Support\DataProperty;
 use Spatie\LaravelData\Support\Transformation\TransformationContext;
 use Spatie\LaravelData\Transformers\Transformer;
 
-class Money implements Cast, Transformer, CastsAttributes
+class Money implements CastsAttributes
 {
+    public function __construct(public readonly mixed $money = 0)
+    {
+    }
 
 
     public function get(Model $model, string $key, mixed $value, array $attributes)
     {
-        return $value;
+        // TODO: Implement get() method.
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes)
     {
-        return $value;
-    }
-
-
-    public function cast(DataProperty $property, mixed $value, array $properties, CreationContext $context) : mixed
-    {
-
-        return $value;
-    }
-
-    public function transform(DataProperty $property, mixed $value, TransformationContext $context) : mixed
-    {
-        return $value;
+        // TODO: Implement set() method.
     }
 
 

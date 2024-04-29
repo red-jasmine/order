@@ -14,6 +14,7 @@ enum OrderTypeEnum: string
     case  SOP = 'sop';
     case  PRESALE = 'presale';
     case  GROUP_PURCHASE = 'group_purchase';
+    // 拍卖
 
 
     public static function labels() : array
