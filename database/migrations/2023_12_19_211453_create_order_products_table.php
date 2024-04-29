@@ -50,7 +50,7 @@ return new class extends Migration {
             $table->decimal('divided_payment_amount', 12)->default(0)->comment('分摊后付款金额');
             $table->decimal('commission_amount', 12)->default(0)->comment('佣金');
 
-            $table->enum('order_status',OrderStatusEnum::values())->comment(OrderStatusEnum::comments('订单状态'));
+            $table->enum('order_status', OrderStatusEnum::values())->comment(OrderStatusEnum::comments('订单状态'));
             $table->enum('payment_status', PaymentStatusEnum::values())->default(PaymentStatusEnum::NIL->value)->comment(PaymentStatusEnum::comments('付款状态'));
             $table->enum('shipping_status', ShippingStatusEnum::values())->default(ShippingStatusEnum::NIL->value)->comment(ShippingStatusEnum::comments('发货状态'));
             $table->enum('refund_status', OrderRefundStatusEnum::values())->default(OrderRefundStatusEnum::NIL->value)->comment(OrderRefundStatusEnum::comments('退款状态'));
@@ -60,13 +60,11 @@ return new class extends Migration {
 
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
             $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
-
-
             $table->unsignedBigInteger('gift_point')->default(0)->comment('赠送积分');
             // 电子票据商品有效期
             // 是否为赠品
             // 是否为代销
-
+            $table->string('promise_services')->nullable()->comment('承诺服务');
             $table->string('warehouse_code', 32)->nullable()->comment('仓库编码');
             $table->timestamp('created_time')->nullable()->comment('创建时间');
             $table->timestamp('payment_time')->nullable()->comment('付款时间');

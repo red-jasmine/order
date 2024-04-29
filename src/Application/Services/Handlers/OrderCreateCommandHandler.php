@@ -4,7 +4,6 @@ namespace RedJasmine\Order\Application\Services\Handlers;
 
 
 use Exception;
-use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Mappers\OrderAddressMapper;
 use RedJasmine\Order\Application\Mappers\OrderMapper;
 use RedJasmine\Order\Application\Mappers\OrderProductMapper;
@@ -27,10 +26,12 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
         $order->setOperator($this->getOperator());
         $this->setAggregate($order);
 
+        // TODO 这里割裂了应该在当前类设置
         app(OrderMapper::class)->fromData($data, $order);
 
         foreach ($data->products as $productData) {
             $product = app(OrderFactory::class)->createOrderProduct();
+            // 这里也是
             app(OrderProductMapper::class)->fromData($productData, $product);
             $order->addProduct($product);
         }

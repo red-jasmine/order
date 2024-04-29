@@ -34,6 +34,8 @@ use RedJasmine\Order\Services\OrderService;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
+use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
@@ -82,25 +84,36 @@ class Order extends Model
 
 
     protected $casts = [
-        'order_type'       => OrderTypeEnum::class,
-        'shipping_type'    => ShippingTypeEnum::class,
-        'order_status'     => OrderStatusEnum::class,
-        'payment_status'   => PaymentStatusEnum::class,
-        'shipping_status'  => ShippingStatusEnum::class,
-        'refund_status'    => OrderRefundStatusEnum::class,
-        'created_time'     => 'datetime',
-        'payment_time'     => 'datetime',
-        'close_time'       => 'datetime',
-        'shipping_time'    => 'datetime',
-        'collect_time'     => 'datetime',
-        'dispatch_time'    => 'datetime',
-        'signed_time'      => 'datetime',
-        'confirm_time'     => 'datetime',
-        'refund_time'      => 'datetime',
-        'rate_time'        => 'datetime',
-        'contact'          => AesEncrypted::class,
-        'is_seller_delete' => 'boolean',
-        'is_buyer_delete'  => 'boolean',
+        'order_type'             => OrderTypeEnum::class,
+        'shipping_type'          => ShippingTypeEnum::class,
+        'order_status'           => OrderStatusEnum::class,
+        'payment_status'         => PaymentStatusEnum::class,
+        'shipping_status'        => ShippingStatusEnum::class,
+        'refund_status'          => OrderRefundStatusEnum::class,
+        'created_time'           => 'datetime',
+        'payment_time'           => 'datetime',
+        'close_time'             => 'datetime',
+        'shipping_time'          => 'datetime',
+        'collect_time'           => 'datetime',
+        'dispatch_time'          => 'datetime',
+        'signed_time'            => 'datetime',
+        'confirm_time'           => 'datetime',
+        'refund_time'            => 'datetime',
+        'rate_time'              => 'datetime',
+        'contact'                => AesEncrypted::class,
+        'is_seller_delete'       => 'boolean',
+        'is_buyer_delete'        => 'boolean',
+        'freight_amount'         => AmountCastTransformer::class,
+        'discount_amount'        => AmountCastTransformer::class,
+        'product_payable_amount' => AmountCastTransformer::class,
+        'payable_amount'         => AmountCastTransformer::class,
+        'payment_amount'         => AmountCastTransformer::class,
+        'refund_amount'          => AmountCastTransformer::class,
+        'commission_amount'      => AmountCastTransformer::class,
+        'cost_amount'            => AmountCastTransformer::class,
+        'tax_amount'             => AmountCastTransformer::class,
+        'product_amount'         => AmountCastTransformer::class,
+        'service_amount'         => AmountCastTransformer::class,
     ];
 
 
@@ -185,18 +198,18 @@ class Order extends Model
         foreach ($this->products as $product) {
             // 商品总金额   < 0 TODO 验证金额
 
-            $product->product_amount = bcmul($product->num, $product->price, 2);
+            $product->product_amount = bcmul($product->num, $product->price->value(), 2);
             // 成本金额
-            $product->cost_amount = bcmul($product->num, $product->cost_price, 2);
+            $product->cost_amount = bcmul($product->num, $product->cost_price->value(), 2);
             // 计算税费
-            $product->tax_amount = bcadd($product->tax_amount, 0, 2);
+            $product->tax_amount;
             // 单品优惠
-            $product->discount_amount = bcadd($product->discount_amount, 0, 2);
+            $product->discount_amount;
             // 应付金额  = 商品金额 - 单品优惠 + 税费
             $product->payable_amount = bcsub(bcadd($product->product_amount, $product->tax_amount, 2), $product->discount_amount, 2);
+
             // 实付金额 完成支付时
             $product->payment_amount = $product->payment_amount ?? 0;
-
             // 佣金
             $product->commission_amount = $product->commission_amount ?? 0;
 
@@ -206,36 +219,41 @@ class Order extends Model
 
     protected function calculateOrderAmount() : void
     {
-        $order = $this;
+
+        // 商品统计
         // 商品金额
-        $order->product_amount = $order->products->reduce(function ($sum, $product) {
+        $this->product_amount = $this->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->product_amount, 2);
         }, 0);
+
         // 商品成本
-        $order->cost_amount = $order->products->reduce(function ($sum, $product) {
+        $this->cost_amount = $this->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->cost_amount, 2);
         }, 0);
-        // 总费用
-        $order->tax_amount = $order->products->reduce(function ($sum, $product) {
+        // 税费
+        $this->tax_amount = $this->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->tax_amount, 2);
         }, 0);
         // 总佣金
-        $order->commission_amount = $order->products->reduce(function ($sum, $product) {
+        $this->commission_amount = $this->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->commission_amount, 2);
         }, 0);
 
+
+        // | ------------------------------------------------
+
         // 邮费
-        $order->freight_amount = bcadd($order->freight_amount, 0, 2);
+        $this->freight_amount;
         // 订单优惠
-        $order->discount_amount = bcadd($order->discount_amount, 0, 2);
+        $this->discount_amount;
 
         // 商品应付汇总
-        $order->product_payable_amount = $order->products->reduce(function ($sum, $product) {
+        $this->product_payable_amount = $this->products->reduce(function ($sum, $product) {
             return bcadd($sum, $product->payable_amount, 2);
         }, 0);
 
-        // 订单应付金额 = 商品总应付金额  - 优惠 + 邮费
-        $order->payable_amount = bcsub(bcadd($order->product_payable_amount, $order->freight_amount, 2), $order->discount_amount, 2);
+        // 订单应付金额 = 商品总应付金额 - 优惠 + 邮费
+        $this->payable_amount = bcsub(bcadd($this->product_payable_amount, $this->freight_amount, 2), $this->discount_amount, 2);
 
     }
 
@@ -257,16 +275,15 @@ class Order extends Model
          * @var $product OrderProduct
          */
         foreach ($products as $key => $product) {
-            // 最后一个
+
             $product->divided_discount_amount = 0;
             if ($key === $productCount - 1) {
+                // 最后一个子商品单  分摊优惠  = 剩余优惠
                 $product->divided_discount_amount = $discountAmountSurplus;
+            } else if (bccomp($product->payable_amount, 0, 2) !== 0) {
+                $product->divided_discount_amount = bcmul($this->discount_amount, bcdiv($product->payable_amount, $this->product_payable_amount, 4), 2);
             } else {
-                if (bccomp($product->payable_amount, 0, 2) !== 0) {
-                    $product->divided_discount_amount = bcmul($this->discount_amount, bcdiv($product->payable_amount, $this->product_payable_amount, 4), 2);
-                } else {
-                    $product->divided_discount_amount = 0;
-                }
+                $product->divided_discount_amount = 0;
             }
             $discountAmountSurplus           = bcsub($discountAmountSurplus, $product->divided_discount_amount, 2);
             $product->divided_payment_amount = bcsub($product->payable_amount, $product->divided_discount_amount, 2);

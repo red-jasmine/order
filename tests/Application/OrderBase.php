@@ -2,11 +2,9 @@
 
 namespace RedJasmine\Order\Tests\Application;
 
-use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Mappers\OrderMapper;
 use RedJasmine\Order\Application\Services\OrderCommandService;
 use RedJasmine\Order\Application\Services\RefundCommandService;
-use RedJasmine\Order\Application\UserCases\Commands\Data\PromiseServices;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
@@ -14,6 +12,7 @@ use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
+use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServices;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\RefundRepository;
 use RedJasmine\Order\Tests\Fixtures\Users\User;
@@ -142,7 +141,12 @@ class OrderBase extends TestCase
             'tax_amount'             => fake()->randomFloat(2, 10, 20),
             'discount_amount'        => fake()->randomFloat(2, 5, 20),
             'outer_order_product_id' => fake()->numerify('CODE-########'),
-            'promise_services'=> PromiseServices::from([])->toArray(),
+            'promise_services'       => PromiseServices::from([
+                                                                  'refund'          => '7day',
+                                                                  'exchange'        => '15day',
+                                                                  'service'         => '3month',
+                                                                  'price_guarantee' => '10day'
+                                                              ])->toArray(),
             'info'                   => [
                 'seller_remarks' => fake()->sentence(10),
                 'seller_message' => fake()->sentence(10),
@@ -192,7 +196,7 @@ class OrderBase extends TestCase
 
         $this->assertInstanceOf(Order::class, $order);
         // TODO
-        return app(OrderMapper::class)->fromModel($order);
+        //return app(OrderMapper::class)->fromModel($order);
     }
 
 

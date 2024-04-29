@@ -4,7 +4,7 @@ namespace RedJasmine\Order\Tests\Fixtures\Users;
 
 use RedJasmine\Support\Contracts\UserInterface;
 
-class User extends \Illuminate\Foundation\Auth\User implements UserInterface
+class Seller extends \Illuminate\Foundation\Auth\User implements UserInterface
 {
 
 
@@ -13,7 +13,7 @@ class User extends \Illuminate\Foundation\Auth\User implements UserInterface
     ];
 
 
-    public static function make(int $id, string $type = 'buyer') : static
+    public static function make(int $id, string $type = 'seller') : static
     {
         return new static([ 'id' => $id, 'type' => $type ]);
     }

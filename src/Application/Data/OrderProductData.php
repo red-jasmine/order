@@ -5,6 +5,7 @@ namespace RedJasmine\Order\Application\Data;
 
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
+use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 use Spatie\LaravelData\Optional;
 
 class OrderProductData extends Data
@@ -24,7 +25,7 @@ class OrderProductData extends Data
     public string                    $title;
     public ?string                   $skuName;
     public int                       $num;
-    public string|int|float          $price;
+    public Amount                    $price;
     public string|int|float|Optional $costPrice;
     public string|int|float|Optional $taxAmount           = 0;
     public string|int|float|Optional $paymentAmount       = 0;

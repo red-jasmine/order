@@ -2,8 +2,6 @@
 
 namespace RedJasmine\Order\Application\Services;
 
-
-use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\Services\Handlers\OrderCancelCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderConfirmCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\OrderCreateCommandHandler;
@@ -27,13 +25,14 @@ use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKe
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\Domain\Models\Order;
+use RedJasmine\Order\Domain\Models\OrderPayment;
 use RedJasmine\Support\Application\ApplicationService;
 
 
 /**
  * @method Order create(OrderCreateCommand $command)
  * @method void cancel(OrderCancelCommand $command)
- * @method int paying(OrderPayingCommand $command)
+ * @method OrderPayment paying(OrderPayingCommand $command)
  * @method bool paid(OrderPaidCommand $command)
  * @method void buyerHidden(OrderHiddenCommand $command)
  * @method void shippingLogistics(OrderShippingLogisticsCommand $command)

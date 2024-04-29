@@ -8,9 +8,18 @@ use RedJasmine\Order\Domain\Enums\PayTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
+use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
+use Spatie\LaravelData\Attributes\WithCastAndTransformer;
 
 class OrderData extends Data
 {
+    public function __construct()
+    {
+        $this->discountAmount = new Amount(0);
+        $this->freightAmount  = new Amount(0);
+    }
+
 
     public static function morphs() : array
     {
@@ -48,11 +57,13 @@ class OrderData extends Data
     public PayTypeEnum $payType = PayTypeEnum::ONLINE;
 
 
-    public string           $title;
-    public ?string          $outerOrderId       = null;
-    public ?string          $sellerCustomStatus = null;
-    public string|float|int $freightAmount      = 0;
-    public string|float|int $discountAmount     = 0;
+    public string  $title;
+    public ?string $outerOrderId       = null;
+    public ?string $sellerCustomStatus = null;
+
+    public Amount  $freightAmount;
+
+    public Amount  $discountAmount;
 
 
     public ?UserData $channel    = null;

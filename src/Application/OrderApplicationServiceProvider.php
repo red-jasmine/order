@@ -2,8 +2,11 @@
 
 namespace RedJasmine\Order\Application;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use RedJasmine\Order\Domain\Models\Casts\PromiseServiceValueCastTransformer;
 use RedJasmine\Order\Domain\Models\Order;
+use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
 use RedJasmine\Order\Domain\Observer\OrderObserver;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Domain\Repositories\RefundRepositoryInterface;
@@ -13,6 +16,8 @@ use RedJasmine\Order\Infrastructure\ReadRepositories\OrderReadRepositoryInterfac
 use RedJasmine\Order\Infrastructure\ReadRepositories\RefundReadRepositoryInterface;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\OrderRepository;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\RefundRepository;
+use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 
 
 /**
@@ -31,6 +36,17 @@ class OrderApplicationServiceProvider extends ServiceProvider
         $this->app->bind(RefundRepositoryInterface::class, RefundRepository::class);
         $this->app->bind(RefundReadRepositoryInterface::class, RefundReadRepository::class);
 
+
+        $config = $this->app->make('config');
+
+        $config->set('data.casts.' . Amount::class, AmountCastTransformer::class);
+        $config->set('data.transformers.' . Amount::class, AmountCastTransformer::class);
+
+
+        $config->set('data.casts.' . PromiseServiceValue::class, PromiseServiceValueCastTransformer::class);
+        $config->set('data.transformers.' . PromiseServiceValue::class, PromiseServiceValueCastTransformer::class);
+
+        //dd( $config->get('data.transformers'));
     }
 
     public function boot() : void

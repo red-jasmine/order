@@ -4,8 +4,12 @@ namespace RedJasmine\Order;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use RedJasmine\Order\Domain\Models\Casts\PromiseServiceValueCastTransformer;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderRefund;
+use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
+use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 
 /**
  *
@@ -46,6 +50,10 @@ class OrderPackageServiceProvider extends ServiceProvider
     public function register() : void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/order.php', 'red-jasmine.order');
+
+
+
+
 
 
     }

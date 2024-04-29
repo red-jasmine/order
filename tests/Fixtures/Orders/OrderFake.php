@@ -5,6 +5,7 @@ namespace RedJasmine\Order\Tests\Fixtures\Orders;
 use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServices;
 use RedJasmine\Order\Tests\Fixtures\Users\User;
 
 class OrderFake
@@ -49,8 +50,7 @@ class OrderFake
 
     public function fakeOrderArray(array $order = []) : array
     {
-        $user = fake()->randomElement([ User::make(1), User::make(2), User::make(3) ]);
-
+        $user = User::make(1);
 
         $fake = [
             'buyer'          => [
@@ -69,19 +69,17 @@ class OrderFake
             'source_type'    => fake()->randomElement([ 'product', 'activity' ]),
             'source_id'      => fake()->numerify('out-order-id-########'),
             'outer_order_id' => fake()->numerify('out-order-id-########'),
-            //'channel_type'    => fake()->randomElement([ 'channel', 'promoter' ]),
-            //'channel_id'      => fake()->randomNumber(5, true),
-            'channel'        => [
+
+            'channel' => [
                 'type' => fake()->randomElement([ 'channel', 'promoter' ]),
                 'id'   => fake()->randomNumber(5, true),
             ],
-            //'store_type'      => fake()->randomElement([ 'self', 'franchise' ]),
-            //'store_id'        => fake()->randomNumber(5, true),
-            'store'          => [
+
+            'store' => [
                 'type' => fake()->randomElement([ 'self', 'franchise' ]),
                 'id'   => fake()->randomNumber(5, true),
             ],
-            'guide'          => [
+            'guide' => [
                 'type' => fake()->randomElement([ 'user', 'promoter', 'seller' ]),
                 'id'   => fake()->randomNumber(5, true),
             ],
@@ -112,7 +110,7 @@ class OrderFake
     {
         $fake = [
             'shipping_type'          => $this->shippingType->value,
-            'order_product_type'     => fake()->randomElement([OrderProductTypeEnum::GOODS->value]),
+            'order_product_type'     => OrderProductTypeEnum::GOODS->value,
             'title'                  => fake()->sentence(),
             'sku_name'               => fake()->words(1, true),
             'image'                  => fake()->imageUrl,
@@ -124,12 +122,18 @@ class OrderFake
             'outer_id'               => fake()->numerify('out-id-########'),
             'outer_sku_id'           => fake()->numerify('out-sku-id-########'),
             'barcode'                => fake()->ean13(),
-            'num'                    => fake()->numberBetween(2, 5),
+            'num'                    => fake()->numberBetween(1, 5),
             'price'                  => fake()->randomFloat(2, 90, 100),
             'cost_price'             => fake()->randomFloat(2, 70, 80),
             'tax_amount'             => fake()->randomFloat(2, 10, 20),
             'discount_amount'        => fake()->randomFloat(2, 5, 20),
             'outer_order_product_id' => fake()->numerify('CODE-########'),
+            'promise_services'       => PromiseServices::from([
+                                                                  'refund'          => '7day',
+                                                                  'exchange'        => '15day',
+                                                                  'service'         => '3month',
+                                                                  'price_guarantee' => '10day'
+                                                              ])->toArray(),
             'info'                   => [
                 'seller_remarks' => fake()->sentence(10),
                 'seller_message' => fake()->sentence(10),

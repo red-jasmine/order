@@ -3,7 +3,6 @@
 namespace RedJasmine\Order\Application\Mappers;
 
 
-use RedJasmine\Order\Application\Data\OrderData;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domain\Models\Order;
 
@@ -48,8 +47,8 @@ class OrderMapper
         return $order;
     }
 
-    public function fromModel(Order $order) : OrderData
-    {
-        return OrderData::from($order->toArray());
-    }
+    // public function fromModel(Order $order) : OrderData
+    // {
+    //     return OrderData::from($order->toArray());
+    // }
 }

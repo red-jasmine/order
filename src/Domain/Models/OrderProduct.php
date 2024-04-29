@@ -11,11 +11,12 @@ use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
-use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
-use RedJasmine\Order\Domain\Exceptions\OrderException;
+use RedJasmine\Order\Domain\Models\Casts\PromiseServicesCastTransformer;
+use RedJasmine\Order\Domain\Models\Casts\PromiseServiceValueCastTransformer;
+use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use Spatie\LaravelData\WithData;
@@ -53,6 +54,16 @@ class OrderProduct extends Model
         'confirm_time'       => 'datetime',
         'refund_time'        => 'datetime',
         'rate_time'          => 'datetime',
+        'price'              => AmountCastTransformer::class,
+        'cost_price'         => AmountCastTransformer::class,
+        'tax_amount'         => AmountCastTransformer::class,
+        'product_amount'     => AmountCastTransformer::class,
+        'payable_amount'     => AmountCastTransformer::class,
+        'payment_amount'     => AmountCastTransformer::class,
+        'refund_amount'      => AmountCastTransformer::class,
+        'discount_amount'    => AmountCastTransformer::class,
+        'commission_amount'  => AmountCastTransformer::class,
+        'promise_services'   => PromiseServicesCastTransformer::class,
     ];
 
     protected $fillable = [

@@ -13,7 +13,7 @@ use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogist
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
-use RedJasmine\Order\Tests\Fixtures\Orders\OrderFactory;
+use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 
 class RefundTest extends Base

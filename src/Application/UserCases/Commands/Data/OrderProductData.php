@@ -5,13 +5,22 @@ namespace RedJasmine\Order\Application\UserCases\Commands\Data;
 
 use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
-use RedJasmine\Order\Domain\Models\ValueObjects\Money;
-use RedJasmine\Order\Domain\Models\ValueObjects\MoneyCastAndTransformer;
+use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServices;
 use RedJasmine\Support\Data\Data;
+use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 use Spatie\LaravelData\Attributes\WithCastAndTransformer;
 
 class OrderProductData extends Data
 {
+    public function __construct()
+    {
+        $this->taxAmount      = new Amount(0);
+        $this->discountAmount = new Amount(0);
+        $this->costPrice      = new Amount(0);
+
+    }
+
 
     /**
      * 商品类型
@@ -31,19 +40,15 @@ class OrderProductData extends Data
      * 商品多态类型
      * @var string
      */
-    public string           $productType;
-    public int              $productId;
-    public int              $skuId          = 0;
-    public int              $num;
-    /**
-     * @var Money
-     */
-    #[WithCastAndTransformer(MoneyCastAndTransformer::class)]
-    public Money $price;
-    public string|int|float $costPrice      = 0;
-    public string|int|float $taxAmount      = 0;
-    public string|int|float $paymentAmount  = 0;
-    public string|int|float $discountAmount = 0;
+    public string $productType;
+    public int    $productId;
+    public int    $skuId = 0;
+    public int    $num;
+
+    public Amount $price;
+    public Amount $costPrice;
+    public Amount $taxAmount;
+    public Amount $discountAmount;
 
     public int     $categoryId          = 0;
     public int     $sellerCategoryId    = 0;
@@ -60,20 +65,10 @@ class OrderProductData extends Data
      */
     public int $giftPoint = 0;
 
-
     /**
-     * 承诺服务
      * @var PromiseServices|null
      */
     public ?PromiseServices $promiseServices;
-
-
-
-    // 支持的售后服务时效 TODO
-    // - 退款；不支持、发货前可退 、7hour,7day  基于签收时间
-    // - 换货: 0,15day 基于签收时间
-    // - 保修: 0, 7hour, 7day,3month,1yeas 基于签收时间
-    // - 保价: 0,15day,1month   基于下单时间
 
     public ?OrderProductInfoData $info;
 }
