@@ -25,7 +25,7 @@ class OrderTest extends Base
 
         // 创建订单
         $orderFake   = new OrderFake();
-        $requestData = $orderFake->fake();
+        $requestData = $orderFake->order();
         unset($requestData['buyer']);
         $response = $this->postJson(route('order.buyer.orders.store', [], false), $requestData);
 
@@ -49,7 +49,7 @@ class OrderTest extends Base
 
         // 创建订单
         $orderFake   = new OrderFake();
-        $requestData = $orderFake->fake();
+        $requestData = $orderFake->order();
         unset($requestData['buyer']);
         $response = $this->postJson(route('order.buyer.orders.store', [], false), $requestData);
 
@@ -86,7 +86,7 @@ class OrderTest extends Base
 
         // 创建订单
         $orderFake   = new OrderFake();
-        $requestData = $orderFake->fake();
+        $requestData = $orderFake->order();
         unset($requestData['buyer']);
         $response = $this->postJson(route('order.buyer.orders.store', [], false), $requestData);
         $this->assertEquals(201, $response->status());
@@ -109,7 +109,7 @@ class OrderTest extends Base
 
         // 创建订单
         $orderFake   = new OrderFake();
-        $requestData = $orderFake->fake();
+        $requestData = $orderFake->order();
         unset($requestData['buyer']);
         $response = $this->postJson(route('order.buyer.orders.store', [], false), $requestData);
         $this->assertEquals(201, $response->status());
@@ -129,7 +129,7 @@ class OrderTest extends Base
 
         // 创建订单
         $orderFake   = new OrderFake();
-        $requestData = $orderFake->fake();
+        $requestData = $orderFake->order();
         unset($requestData['buyer']);
         $response = $this->postJson(route('order.buyer.orders.store', [], false), $requestData);
         $this->assertEquals(201, $response->status());

@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
@@ -21,9 +22,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('seller_id')->comment('卖家ID');
             $table->string('buyer_type', 32)->comment('买家类型');
             $table->unsignedBigInteger('buyer_id')->comment('买家类型');
-
+            $table->enum('order_product_type', OrderProductTypeEnum::values())->comment(OrderProductTypeEnum::comments('订单商品类型'));
             $table->enum('shipping_type', ShippingTypeEnum::values())->comment(ShippingTypeEnum::comments('发货类型'));
-            $table->string('order_product_type', 32)->comment('订单商品类型');
             $table->string('title')->comment('商品标题');
             $table->string('sku_name')->nullable()->comment('SKU名称');
             $table->string('image')->nullable()->comment('图片');
@@ -36,6 +36,7 @@ return new class extends Migration {
             $table->string('outer_sku_id', 64)->nullable()->comment('SKU外部编码');
             $table->string('barcode', 64)->nullable()->comment('条形码');
             $table->unsignedBigInteger('num')->default(0)->comment('数量');
+            $table->unsignedBigInteger('unit')->default(1)->comment('单位数');
             $table->decimal('price', 12)->default(0)->comment('价格');
             $table->decimal('cost_price', 12)->default(0)->comment('成本价格');
             $table->decimal('cost_amount', 12)->default(0)->comment('成本金额');
@@ -60,6 +61,7 @@ return new class extends Migration {
 
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
             $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
+
             $table->unsignedBigInteger('gift_point')->default(0)->comment('赠送积分');
             // 电子票据商品有效期
             // 是否为赠品

@@ -23,6 +23,7 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
     public function execute(OrderCreateCommand $data) : Order
     {
         $order = app(OrderFactory::class)->createOrder();
+
         $order->setOperator($this->getOperator());
         $this->setAggregate($order);
 
@@ -33,6 +34,7 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
             $product = app(OrderFactory::class)->createOrderProduct();
             // 这里也是
             app(OrderProductMapper::class)->fromData($productData, $product);
+            // TODO creator 没有存储进来
             $order->addProduct($product);
         }
 
@@ -41,7 +43,6 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
             app(OrderAddressMapper::class)->fromData($data->address, $address);
             $order->setAddress($address);
         }
-
 
         $this->handle(
             execute: fn() => $order->create(),

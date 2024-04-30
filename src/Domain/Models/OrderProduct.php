@@ -15,7 +15,6 @@ use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\Casts\PromiseServicesCastTransformer;
-use RedJasmine\Order\Domain\Models\Casts\PromiseServiceValueCastTransformer;
 use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
@@ -101,6 +100,10 @@ class OrderProduct extends Model
 
     public function addCardKey(OrderProductCardKey $cardKey) : void
     {
+        $cardKey->seller   = $this->seller;
+        $cardKey->buyer    = $this->buyer;
+        $cardKey->order_id = $this->order_id;
+        $this->progress    += $cardKey->num;
         $this->cardKeys->add($cardKey);
     }
 

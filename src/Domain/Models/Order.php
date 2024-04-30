@@ -161,7 +161,12 @@ class Order extends Model
 
     public function addProduct(OrderProduct $orderProduct) : static
     {
-        $orderProduct->creator = $this->getOperator();
+        $orderProduct->creator        = $this->getOperator();
+        $orderProduct->order_id       = $this->id;
+        $orderProduct->seller         = $this->seller;
+        $orderProduct->buyer          = $this->buyer;
+        $orderProduct->progress_total = (int)bcmul($orderProduct->num, $orderProduct->unit, 0);
+        $orderProduct->created_time   = now();
         $this->products->add($orderProduct);
         return $this;
     }
@@ -169,6 +174,7 @@ class Order extends Model
 
     public function setAddress(OrderAddress $orderAddress) : static
     {
+        $orderAddress->id      = $this->id;
         $orderAddress->creator = $this->getOperator();
         $this->setRelation('address', $orderAddress);
         return $this;
@@ -297,23 +303,11 @@ class Order extends Model
     public function create() : static
     {
 
-        $this->created_time = now();
-        $this->products->each(function (OrderProduct $orderProduct) {
-            $orderProduct->order_id     = $this->id;
-            $orderProduct->seller       = $this->seller;
-            $orderProduct->buyer        = $this->buyer;
-            $orderProduct->created_time = $this->created_time;
-            $orderProduct->creator      = $this->creator;
-        });
-        if ($this->address) {
-            $this->address->id = $this->id;
-        }
-
         // 计算金额
         $this->calculateAmount();
 
-        $this->creator = $this->getOperator();
-
+        $this->creator      = $this->getOperator();
+        $this->created_time = now();
         $this->fireModelEvent('created');
 
         return $this;
@@ -353,12 +347,13 @@ class Order extends Model
     public function shipping() : void
     {
         $effectiveAndNotShippingCount = 0;
+        // 统计有效单 但是还没有完成发货的订单
         $this->products->each(function (OrderProduct $orderProduct) use (&$effectiveAndNotShippingCount) {
-            if ($orderProduct->isEffective() && in_array($orderProduct->shipping_status, [ ShippingStatusEnum::NIL, ShippingStatusEnum::WAIT_SEND ], true)) {
+            if ($orderProduct->isEffective() && in_array($orderProduct->shipping_status, [ ShippingStatusEnum::NIL, ShippingStatusEnum::WAIT_SEND, ShippingStatusEnum::PART_SHIPPED ], true)) {
                 $effectiveAndNotShippingCount++;
             }
         });
-        // 如果还有未发货的订单商品 那么订单只能是部分发货
+        // 如果还有未完成发货的订单商品 那么订单只能是部分发货
         $this->shipping_status = $effectiveAndNotShippingCount > 0 ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
         $this->shipping_time   = $order->shipping_time ?? now();
         $this->updater         = $this->getOperator();
@@ -509,19 +504,32 @@ class Order extends Model
     }
 
 
-    public function setProductProgress(int $orderProductId, Progress $progress) : void
+    /**
+     * @param int  $orderProductId
+     * @param int  $progress
+     * @param bool $isAbsolute
+     * @param bool $isAllowLess
+     *
+     * @return int 最新的进度
+     * @throws OrderException
+     */
+    public function setProductProgress(int $orderProductId, int $progress, bool $isAbsolute = true, bool $isAllowLess = false) : int
     {
-        // TODO 是否允许 小于之前的值
         $orderProduct = $this->products->where('id', $orderProductId)->firstOrFail();
-
-        if ($progress->progress > ($orderProduct->progress ?? 0)) {
-            $orderProduct->progress = $progress->progress ?? $orderProduct->progress;
-        } elseif ($progress->isAllowLess) {
-            $orderProduct->progress = $progress->progress ?? $orderProduct->progress;
+        $oldProgress  = (int)$orderProduct->progress;
+        $newProgress  = $isAbsolute ? $progress : ((int)bcadd($oldProgress, $progress, 0));
+        if ($oldProgress === $newProgress) {
+            return $newProgress;
         }
-        $orderProduct->progress_total = $progress->progressTotal ?? $orderProduct->progress_total;
+        //判断是否允许更小
+        if ($isAllowLess === false && bccomp($newProgress, $oldProgress, 0) < 0) {
+            throw OrderException::newFromCodes(OrderException::PROGRESS_NOT_ALLOW_LESS, '进度不允许小于之前的值');
+        }
 
+        $orderProduct->progress = $newProgress;
+        $orderProduct->updater  = $this->getOperator();
         $this->fireModelEvent('progress');
+        return (int)$orderProduct->progress;
     }
 
 
@@ -541,36 +549,44 @@ class Order extends Model
     {
         $field = $tradeParty->value . '_remarks';
         if ($orderProductId) {
-            $this->products->where('id', $orderProductId)->firstOrFail()->info->{$field} = $remarks;
+            $model = $this->products->where('id', $orderProductId)->firstOrFail();
         } else {
-            $this->info->{$field} = $remarks;
+            $model = $this;
         }
+        $model->info->{$field} = $remarks;
+
+        $model->updater = $this->getOperator();
     }
 
     public function setSellerCustomStatus(string $sellerCustomStatus, ?int $orderProductId = null) : void
     {
         if ($orderProductId) {
-            $this->products->where('id', $orderProductId)->firstOrFail()->seller_custom_status = $sellerCustomStatus;
+            $model = $this->products->where('id', $orderProductId)->firstOrFail();
         } else {
-            $this->seller_custom_status = $sellerCustomStatus;
+            $model = $this;
         }
+        $model->seller_custom_status = $sellerCustomStatus;
+
+        $model->updater = $this->getOperator();
     }
 
 
     /**
      * @param TradePartyEnums $tradeParty
+     * @param bool            $isHidden
      *
      * @return void
      * @throws OrderException
      */
-    public function hiddenOrder(TradePartyEnums $tradeParty) : void
+    public function hiddenOrder(TradePartyEnums $tradeParty, bool $isHidden = true) : void
     {
+        $this->updater = $this->getOperator();
         switch ($tradeParty) {
             case TradePartyEnums::SELLER:
-                $this->is_seller_delete = true;
+                $this->is_seller_delete = $isHidden;
                 break;
             case TradePartyEnums::BUYER:
-                $this->is_buyer_delete = true;
+                $this->is_buyer_delete = $isHidden;
                 break;
             default:
                 throw new OrderException('交易方不支持');

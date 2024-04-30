@@ -43,7 +43,16 @@ class OrderProductData extends Data
     public string $productType;
     public int    $productId;
     public int    $skuId = 0;
-    public int    $num;
+    /**
+     * 商品件数
+     * @var int
+     */
+    public int $num;
+    /**
+     * 一个单位量
+     * @var int
+     */
+    public int $unit = 1;
 
     public Amount $price;
     public Amount $costPrice;

@@ -9,10 +9,9 @@ class OrderShippingVirtualCommand extends Data
     public int $id;
 
     public int $orderProductId;
-
     /**
-     * 是否部分发货
+     * 是否完成发货
      * @var bool
      */
-    public bool $isPartShipped = false;
+    public bool $isFinished = true;
 }

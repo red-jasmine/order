@@ -21,23 +21,24 @@ class OrderShippingCardKeyCommandHandler extends AbstractOrderCommandHandler
     }
 
 
-
     public function execute(OrderShippingCardKeyCommand $command) : void
     {
 
         $order = $this->find($command->id);
+
         $orderProductCardKey = app(OrderFactory::class)->createOrderProductCardKey();
 
         $orderProductCardKey->order_product_id = $command->orderProductId;
         $orderProductCardKey->content          = $command->content;
+        $orderProductCardKey->num              = $command->num;
         $orderProductCardKey->extends          = $command->extends;
         $orderProductCardKey->status           = $command->status;
 
 
-        $this->pipelineManager()->call('executing');
-        $this->pipelineManager()->call('execute', fn() => $this->orderShippingService->cardKey($order, $orderProductCardKey));
-        $this->orderRepository->update($order);
-        $this->pipelineManager()->call('executed');
+        $this->handle(
+            execute: fn() => $this->orderShippingService->cardKey($order, $orderProductCardKey),
+            persistence: fn() => $this->orderRepository->update($order)
+        );
 
     }
 

@@ -25,10 +25,10 @@ class OrderShippingVirtualCommandHandler extends AbstractOrderCommandHandler
 
         $order = $this->find($command->id);
 
-        $this->pipelineManager()->call('executing');
-        $this->pipelineManager()->call('execute', fn() => $this->orderShippingService->virtual($order, $command->orderProductId, $command->isPartShipped));
-        $this->orderRepository->update($order);
-        $this->pipelineManager()->call('executed');
+        $this->handle(
+            execute: fn() => $this->orderShippingService->virtual($order, $command->orderProductId, $command->isFinished),
+            persistence: fn() => $this->orderRepository->update($order)
+        );
 
     }
 

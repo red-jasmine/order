@@ -21,11 +21,10 @@ class OrderShippingLogisticsCommandHandler extends AbstractOrderCommandHandler
     }
 
 
-
     public function execute(OrderShippingLogisticsCommand $command) : void
     {
 
-        $order = $this->find($command->id);
+        $order                                = $this->find($command->id);
         $orderLogistics                       = app(OrderFactory::class)->createOrderLogistics();
         $orderLogistics->shippable_id         = $order->id;
         $orderLogistics->seller               = $order->seller;
@@ -38,10 +37,10 @@ class OrderShippingLogisticsCommandHandler extends AbstractOrderCommandHandler
         $orderLogistics->shipping_time        = now();
 
 
-        $this->pipelineManager()->call('executing');
-        $this->pipelineManager()->call('execute', fn() => $this->orderShippingService->logistics($order, $command->isSplit, $orderLogistics));
-        $this->orderRepository->update($order);
-        $this->pipelineManager()->call('executed');
+        $this->handle(
+            execute: fn() => $this->orderShippingService->logistics($order, $command->isSplit, $orderLogistics),
+            persistence: fn() => $this->orderRepository->update($order)
+        );
     }
 
 

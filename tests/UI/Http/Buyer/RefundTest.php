@@ -14,7 +14,7 @@ use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
-use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
+
 
 class RefundTest extends Base
 {
@@ -38,7 +38,7 @@ class RefundTest extends Base
 
         // 创建订单
         //$orderFake   = new OrderFake();
-        $requestData = $orderFake->fake();
+        $requestData = $orderFake->order();
         unset($requestData['buyer']);
         $response = $this->postJson(route('order.buyer.orders.store', [], false), $requestData);
 

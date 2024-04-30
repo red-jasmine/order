@@ -3,6 +3,7 @@
 namespace RedJasmine\Order\Domain\Services;
 
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderLogistics;
@@ -12,7 +13,16 @@ use RedJasmine\Order\Domain\Models\OrderProductCardKey;
 class OrderShippingService
 {
 
-    public function logistics(Order $order, bool $isSplit = false, OrderLogistics $logistics):void
+    /**
+     * 物流发货
+     *
+     * @param Order          $order
+     * @param bool           $isSplit
+     * @param OrderLogistics $logistics
+     *
+     * @return void
+     */
+    public function logistics(Order $order, bool $isSplit = false, OrderLogistics $logistics) : void
     {
         // 添加物流记录
 
@@ -35,6 +45,8 @@ class OrderShippingService
 
 
     /**
+     * 卡密发货
+     *
      * @param Order               $order
      * @param OrderProductCardKey $orderProductCardKey
      *
@@ -43,43 +55,62 @@ class OrderShippingService
      */
     public function cardKey(Order $order, OrderProductCardKey $orderProductCardKey) : void
     {
-        $orderProductCardKey->seller   = $order->seller;
-        $orderProductCardKey->buyer    = $order->buyer;
-        $orderProductCardKey->order_id = $order->id;
 
         $orderProduct = $order->products->where('id', $orderProductCardKey->order_product_id)->firstOrFail();
-        if ($orderProduct->shipping_status === ShippingStatusEnum::SHIPPED) {
-            throw new OrderException('已完成发货');
+
+        if ($orderProduct->shipping_type !== ShippingTypeEnum::CDK) {
+            throw OrderException::newFromCodes(OrderException::SHIPPING_TYPE_NOT_ALLOW, '发货类型不支持操作');
         }
 
+        if ($orderProduct->shipping_status === ShippingStatusEnum::SHIPPED) {
+            throw OrderException::newFromCodes(OrderException::ORDER_STATUS_NOT_ALLOW);
+        }
+
+        $orderProductCardKey->creator = $order->getOperator();
         $orderProduct->addCardKey($orderProductCardKey);
+
         $orderProduct->shipping_status = ShippingStatusEnum::PART_SHIPPED;
         $orderProduct->shipping_time   = $orderProduct->shipping_time ?? now();
+        $orderProduct->updater         = $order->getOperator();
 
-        if ($orderProduct->cardKeys->count() >= $orderProduct->num) {
+        if ($orderProduct->progress >= $orderProduct->num) {
             $orderProduct->shipping_status = ShippingStatusEnum::SHIPPED;
+            $orderProduct->collect_time    = now(); // 虚拟商品作为最后一次发货时间
         }
-        ++$orderProduct->progress;
 
         $order->shipping();
     }
+
 
     /**
+     * 虚拟发货
+     *
+     * @param Order $order
+     * @param int   $orderProductId
+     * @param bool  $isFinished 是否完成发货
+     *
+     * @return void
      * @throws OrderException
      */
-    public function virtual(Order $order, int $orderProductId, bool $isPartShipped = false) : void
+    public function virtual(Order $order, int $orderProductId, bool $isFinished = true) : void
     {
-
-
         $orderProduct = $order->products->where('id', $orderProductId)->firstOrFail();
 
-        if ($orderProduct->shipping_status === ShippingStatusEnum::SHIPPED) {
-            throw new OrderException('已完成发货');
+        if ($orderProduct->shipping_type !== ShippingTypeEnum::VIRTUAL) {
+            throw OrderException::newFromCodes(OrderException::SHIPPING_TYPE_NOT_ALLOW, '发货类型不支持操作');
         }
 
-        $orderProduct->shipping_status = $isPartShipped ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
-        $orderProduct->shipping_time   = now();
+        if ($orderProduct->shipping_status === ShippingStatusEnum::SHIPPED) {
+            throw OrderException::newFromCodes(OrderException::ORDER_STATUS_NOT_ALLOW);
+        }
+        $orderProduct->shipping_status = $isFinished ? ShippingStatusEnum::SHIPPED : ShippingStatusEnum::PART_SHIPPED;
+        $orderProduct->shipping_time   = $orderProduct->shipping_time ?? now();
+        if ($orderProduct->shipping_status === ShippingStatusEnum::SHIPPED) {
+            $orderProduct->collect_time = now(); // 虚拟商品作为最后一次发货时间
+        }
         $order->shipping();
     }
 
+
+    // 同城配置 TODO
 }

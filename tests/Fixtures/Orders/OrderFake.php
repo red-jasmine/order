@@ -2,6 +2,11 @@
 
 namespace RedJasmine\Order\Tests\Fixtures\Orders;
 
+use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
@@ -20,7 +25,10 @@ class OrderFake
      */
     public ShippingTypeEnum $shippingType = ShippingTypeEnum::VIRTUAL;
     // 商品数量
-    protected int $productCount = 3;
+    public int $productCount = 3;
+
+
+    public int $unit = 1;
 
 
     public function fakeAddressArray() : array
@@ -122,7 +130,8 @@ class OrderFake
             'outer_id'               => fake()->numerify('out-id-########'),
             'outer_sku_id'           => fake()->numerify('out-sku-id-########'),
             'barcode'                => fake()->ean13(),
-            'num'                    => fake()->numberBetween(1, 5),
+            'num'                    => fake()->numberBetween(1, 10),
+            'unit'                   => $this->unit,
             'price'                  => fake()->randomFloat(2, 90, 100),
             'cost_price'             => fake()->randomFloat(2, 70, 80),
             'tax_amount'             => fake()->randomFloat(2, 10, 20),
@@ -149,7 +158,7 @@ class OrderFake
     }
 
 
-    public function fake(array $order = []) : array
+    public function order(array $order = []) : array
     {
         $orderDataArray = $this->fakeOrderArray($order);
         for ($i = 1; $i <= $this->productCount; $i++) {
@@ -158,4 +167,80 @@ class OrderFake
         return $orderDataArray;
     }
 
+
+    public function paid(array $merge = []) : OrderPaidCommand
+    {
+
+        $data = [
+            'id'                  => 1,
+            'order_payment_id'    => 1,
+            'amount'              => 0,
+            'payment_time'        => date('Y-m-d H:i:s'),
+            'payment_type'        => 'payment',
+            'payment_id'          => fake()->numberBetween(1000000, 999999999),
+            'payment_channel'     => fake()->randomNumber([ 'alipay', 'wechat' ]),
+            'payment_channel_no'  => fake()->numerify('out-sku-id-########'),
+            'payment_method_type' => fake()->randomElement([ 'h5', 'applets', 'ios-app', 'android' ]),
+        ];
+
+        $data = array_merge($data, $merge);
+        return OrderPaidCommand::from($data);
+    }
+
+
+    public function shippingLogistics(array $merge = []) : OrderShippingLogisticsCommand
+    {
+        $data = [
+            'id'                   => 1,
+            'is_split'             => false,
+            'order_products'       => null,
+            'express_company_code' => fake()->randomElement([ 'shunfeng', 'yuantong', ]),
+            'express_no'           => fake()->numerify('##########'),
+        ];
+
+        $data = array_merge($data, $merge);
+
+        return OrderShippingLogisticsCommand::from($data);
+    }
+
+
+    public function shippingCardKey(array $merge) : OrderShippingCardKeyCommand
+    {
+        $data = [
+            'id'               => 1,
+            'order_product_id' => 0,
+            'content'          => fake()->text(),
+            'extends'          => [],
+        ];
+
+        $data = array_merge($data, $merge);
+        return OrderShippingCardKeyCommand::from($data);
+    }
+
+    public function shippingVirtual(array $merge) : OrderShippingVirtualCommand
+    {
+        $data = [
+            'id'               => 0,
+            'order_product_id' => 0,
+            'is_finished'      => true,
+        ];
+
+        $data = array_merge($data, $merge);
+        return OrderShippingVirtualCommand::from($data);
+    }
+
+
+    public function progress(array $merge = []) : OrderProgressCommand
+    {
+        $data = [
+            'id'               => 0,
+            'order_product_id' => 0,
+            'progress'         => 1,
+            'is_absolute'      => true,
+            'is_allow_less'    => false,
+        ];
+
+        $data = array_merge($data, $merge);
+        return OrderProgressCommand::from($data);
+    }
 }

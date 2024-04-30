@@ -13,8 +13,7 @@ class OrderPaidCommandHandler extends AbstractOrderCommandHandler
     {
 
         // 加锁处理
-        $order = $this->find($command->id);
-
+        $order                            = $this->find($command->id);
         $orderPayment                     = $order->payments->where('id', $command->orderPaymentId)->firstOrFail();
         $orderPayment->payment_amount     = $command->amount;
         $orderPayment->payment_time       = $command->paymentTime;

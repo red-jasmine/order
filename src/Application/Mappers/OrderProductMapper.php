@@ -22,6 +22,7 @@ class OrderProductMapper
         $orderProduct->price                  = $orderProductData->price;
         $orderProduct->cost_price             = $orderProductData->costPrice;
         $orderProduct->num                    = $orderProductData->num;
+        $orderProduct->unit                   = $orderProductData->unit;
         $orderProduct->tax_amount             = $orderProductData->taxAmount;
         $orderProduct->discount_amount        = $orderProductData->discountAmount;
         $orderProduct->image                  = $orderProductData->image;

@@ -20,7 +20,9 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
@@ -34,10 +36,14 @@ use RedJasmine\Support\Application\ApplicationService;
  * @method void cancel(OrderCancelCommand $command)
  * @method OrderPayment paying(OrderPayingCommand $command)
  * @method bool paid(OrderPaidCommand $command)
- * @method void buyerHidden(OrderHiddenCommand $command)
  * @method void shippingLogistics(OrderShippingLogisticsCommand $command)
  * @method void shippingCardKey(OrderShippingCardKeyCommand $command)
  * @method void shippingVirtual(OrderShippingVirtualCommand $command)
+ * @method int progress(OrderProgressCommand $command)
+ * @method void sellerRemarks(OrderRemarksCommand $command)
+ * @method void buyerRemarks(OrderRemarksCommand $command)
+ * @method void sellerHidden(OrderHiddenCommand $command)
+ * @method void buyerHidden(OrderHiddenCommand $command)
  */
 class OrderCommandService extends ApplicationService
 {

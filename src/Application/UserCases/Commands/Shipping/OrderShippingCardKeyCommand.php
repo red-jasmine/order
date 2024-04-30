@@ -19,11 +19,17 @@ class OrderShippingCardKeyCommand extends Data
 
 
     /**
+     * 数量
+     * @var int
+     */
+    public int $num = 1;
+
+
+    /**
      * 扩展信息
      * @var array
      */
     public array $extends = [];
-
 
 
     public OrderCardKeyStatusEnum $status = OrderCardKeyStatusEnum::SHIPPED;
