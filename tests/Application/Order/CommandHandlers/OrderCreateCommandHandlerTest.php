@@ -12,25 +12,31 @@ class OrderCreateCommandHandlerTest extends ApplicationTest
 
 
     /**
-     * @test 创建订单
+     * @test 创建标准流程订单 SOP
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、创建数据
      *  2、执行
      *  3、
-     * 预期结果:
+     * 预期结果: TODO
      *  1、有返回结果
-     *  2、
+     *  2、验证金额
+     *  3、验证状态
      * @return void
      */
-    public function can_create_order() : void
+    public function can_create_sop_order() : void
     {
 
         $fake               = new OrderFake();
-        $orderCreateCommand = OrderCreateCommand::from($fake->fake());
+        $orderCreateCommand = OrderCreateCommand::from($fake->order());
 
-        $order              = $this->orderCommandService()->create($orderCreateCommand);
+        $order = $this->orderCommandService()->create($orderCreateCommand);
         $this->assertInstanceOf(Order::class, $order);
+
+
+        $this->assertEquals($orderCreateCommand->orderType, $order->order_type);
+        $this->assertEquals($orderCreateCommand->shippingType, $order->shipping_type);
+        $this->assertCount($orderCreateCommand->products->count(), $order->products);
 
     }
 

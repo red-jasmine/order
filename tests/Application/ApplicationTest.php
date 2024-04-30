@@ -9,6 +9,7 @@ use RedJasmine\Order\Application\Services\RefundQueryService;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\RefundRepository;
+use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 use RedJasmine\Order\Tests\Fixtures\Users\Seller;
 use RedJasmine\Order\Tests\Fixtures\Users\User;
 use RedJasmine\Order\Tests\TestCase;
@@ -25,6 +26,11 @@ class ApplicationTest extends TestCase
     protected function seller() : UserInterface
     {
         return Seller::make(1);
+    }
+
+    public function fake() : OrderFake
+    {
+        return new OrderFake();
     }
 
 
