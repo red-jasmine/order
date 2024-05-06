@@ -28,6 +28,7 @@ use RedJasmine\Order\Domain\Events\OrderProgressEvent;
 use RedJasmine\Order\Domain\Events\OrderShippedEvent;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Exceptions\OrderExceptionCodeEnum;
+use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Order\Domain\Models\ValueObjects\Progress;
 use RedJasmine\Order\Domain\Services\OrderRefundService;
 use RedJasmine\Order\Services\OrderService;
@@ -538,10 +539,15 @@ class Order extends Model
         return $this->hasMany(OrderRefund::class, 'order_id', 'id');
     }
 
+    /**
+     * @param OrderRefund $orderRefund
+     *
+     * @return void
+     * @throws RefundException
+     */
     public function createRefund(OrderRefund $orderRefund) : void
     {
         app(OrderRefundService::class)->create($this, $orderRefund);
-
     }
 
 

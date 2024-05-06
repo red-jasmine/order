@@ -12,10 +12,10 @@ use RedJasmine\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderRefund;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
+use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 
 class OrderRefundService
 {
-
 
     /**
      * @param Order       $order
@@ -30,7 +30,9 @@ class OrderRefundService
          * @var $orderProduct OrderProduct
          */
         $orderProduct = $order->products->where('id', $orderRefund->order_product_id)->firstOrFail();
-        // TODO 验证子商品单 是否允许售后
+
+        // TODO 验证是否允许 创建售后单
+
         // 获取允许的类型
         if (!in_array($orderRefund->refund_type, $orderProduct->allowRefundTypes(), true)) {
             throw RefundException::newFromCodes(RefundException::REFUND_TYPE_NOT_ALLOW);
@@ -58,30 +60,32 @@ class OrderRefundService
         $orderRefund->payable_amount         = $orderProduct->payable_amount;
         $orderRefund->payment_amount         = $orderProduct->payment_amount;
         $orderRefund->divided_payment_amount = $orderProduct->divided_payment_amount;
+        $orderRefund->shipping_status        = $orderProduct->shipping_status;
         $orderRefund->creator                = $order->getOperator();
 
         // 获取当售后阶段
         $orderRefund->phase = $this->getRefundPhase($orderProduct);
-
+        // 计算退款金额 // TODO
         switch ($orderRefund->refund_type) {
-            case RefundTypeEnum::REFUND_ONLY:
-                $orderRefund->refund_amount = $orderProduct->maxRefundAmount();
+            case RefundTypeEnum::REFUND:
+                $orderRefund->refund_amount = new Amount($orderProduct->maxRefundAmount());
                 $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE;
                 break;
             case RefundTypeEnum::RETURN_GOODS_REFUND:
-                $orderRefund->refund_amount = $orderProduct->maxRefundAmount();
+                $orderRefund->refund_amount = new Amount($orderProduct->maxRefundAmount());
                 $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
                 break;
+            case RefundTypeEnum::GUARANTEE:
+                // TODO 需要
             case RefundTypeEnum::EXCHANGE:
             case RefundTypeEnum::SERVICE:
-            case RefundTypeEnum::OTHER:
-                $orderRefund->refund_amount = 0;
+            case RefundTypeEnum::RESHIPMENT:
+                $orderRefund->refund_amount = new Amount(0);
                 $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
                 break;
         }
 
         $orderRefund->created_time = now();
-
         // 设置订单商品状态
         $order->refunds->add($orderRefund);
     }

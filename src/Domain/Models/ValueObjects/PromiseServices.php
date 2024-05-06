@@ -20,14 +20,14 @@ class PromiseServices extends Data
     public PromiseServiceValue $service;
 
     #[WithCastAndTransformer(PromiseServiceValueCastTransformer::class)]
-    public PromiseServiceValue $priceGuarantee;
+    public PromiseServiceValue $guarantee;
 
     public function __construct()
     {
-        $this->refund         = new PromiseServiceValue();
-        $this->exchange       = new PromiseServiceValue();
-        $this->service        = new PromiseServiceValue();
-        $this->priceGuarantee = new PromiseServiceValue();
+        $this->refund    = new PromiseServiceValue();
+        $this->exchange  = new PromiseServiceValue();
+        $this->service   = new PromiseServiceValue();
+        $this->guarantee = new PromiseServiceValue();
     }
 
 

@@ -33,7 +33,7 @@ class RefundCommandServiceTest extends OrderCommandServiceTest
             [
                 'id'               => $order->id,
                 'order_product_id' => $orderProduct->id,
-                'refund_type'      => RefundTypeEnum::REFUND_ONLY,
+                'refund_type'      => RefundTypeEnum::REFUND,
                 'refund_amount'    => $orderProduct->payment_amount,
                 'out_refund_id'    => fake()->numerify('out-sku-id-########'),
                 'description'      => 'test refund',

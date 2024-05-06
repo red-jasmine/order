@@ -7,6 +7,7 @@ use RedJasmine\Order\Domain\Enums\RefundGoodsStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundPhaseEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
+use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 
 return new class extends Migration {
     public function up() : void
@@ -41,12 +42,12 @@ return new class extends Migration {
             $table->decimal('payable_amount', 12)->default(0)->comment('应付金额');
             $table->decimal('payment_amount', 12)->default(0)->comment('实付金额');
             $table->decimal('divided_payment_amount', 12)->default(0)->comment('分摊后实际付款金额');
-
+            $table->enum('shipping_status', ShippingStatusEnum::values())->default(ShippingStatusEnum::NIL->value)->comment(ShippingStatusEnum::comments('发货状态'));
 
             $table->enum('phase', RefundPhaseEnum::values())->comment(RefundPhaseEnum::comments('阶段'));
             $table->enum('refund_type', RefundTypeEnum::values())->comment(RefundTypeEnum::comments('退款类型'));
-            $table->decimal('freight_amount', 12)->default(0)->comment('运费');
             $table->unsignedTinyInteger('has_good_return')->default(0)->comment('是否需要退货');
+            $table->decimal('freight_amount', 12)->default(0)->comment('运费');
             $table->enum('good_status', RefundGoodsStatusEnum::values())->default('nil')->comment(RefundGoodsStatusEnum::comments('货物状态'));
             $table->string('reason')->nullable()->comment('原因');
             $table->string('description')->nullable()->comment('描述');

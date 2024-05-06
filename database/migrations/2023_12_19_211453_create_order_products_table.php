@@ -58,7 +58,9 @@ return new class extends Migration {
             $table->enum('rate_status', RateStatusEnum::values())->default(RateStatusEnum::NIL->value)->comment(RateStatusEnum::comments('评价状态'));
             $table->enum('settlement_status', SettlementStatusEnum::values())->default(SettlementStatusEnum::NIL->value)->comment(SettlementStatusEnum::comments('结算状态'));
             $table->string('seller_custom_status', 32)->default('nil')->comment('卖家自定义状态');
-
+            // TODO 异常状态
+            $table->unsignedBigInteger('batch_no')->default(0)->comment('批次');
+            // 自动确认时间
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
             $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
 

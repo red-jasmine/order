@@ -12,25 +12,31 @@ enum RefundTypeEnum: string
 {
     use EnumsHelper;
 
-    // 退款
-    case REFUND_ONLY = 'refund';
+    // 仅退款
+    case  REFUND = 'refund';
+    // 退货退款
     case  RETURN_GOODS_REFUND = 'return_goods_refund';
     // 换货
     case  EXCHANGE = 'exchange';
     // 维修
     case  SERVICE = 'service';
+    // 保价
+    case  GUARANTEE = 'guarantee';
+    // 补寄
+    case  RESHIPMENT = 'reshipment';
+    // 退邮费
+    // .. 更多
 
-    case  OTHER = 'other';
-    // 保价 TODO
 
     public static function labels() : array
     {
         return [
-            self::REFUND_ONLY->value         => '仅退款',
+            self::REFUND->value              => '退款',
             self::RETURN_GOODS_REFUND->value => '退货退款',
             self::EXCHANGE->value            => '换货',
             self::SERVICE->value             => '维修',
-            self::OTHER->value               => '其他',
+            self::GUARANTEE->value           => '保价',
+            self::RESHIPMENT->value          => '补寄',
         ];
 
     }

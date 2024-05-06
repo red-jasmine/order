@@ -3,27 +3,54 @@
 namespace RedJasmine\Order\Domain\Models\ValueObjects;
 
 use InvalidArgumentException;
+use RedJasmine\Order\Domain\Enums\OrderProductPhaseEnum;
 use RedJasmine\Support\Domain\Models\ValueObjects\ValueObject;
 
 
 class PromiseServiceValue extends ValueObject
 {
 
-    public const  UNSUPPORTED = 'unsupported';
+    public const  UNSUPPORTED     = 'unsupported';
+    public const  BEFORE_SHIPMENT = 'before_shipping';
 
+
+    /**
+     * 固定值
+     * @var array|string[]
+     */
     protected array $enums = [
-        self::UNSUPPORTED => '不支持',
+        self::UNSUPPORTED     => '不支持',
+        self::BEFORE_SHIPMENT => '发货前',
+
     ];
+
+    public function getEnums() : array
+    {
+        return $this->enums;
+    }
+
+
+    protected bool $isEnum = false;
+    protected bool $isTime = false;
+
+    public function isEnum() : bool
+    {
+        return $this->isEnum;
+    }
+
+    public function isTime() : bool
+    {
+        return $this->isTime;
+    }
+
 
     private string $value;
 
     public function __construct(string $value = self::UNSUPPORTED)
     {
-
         $this->isValid($value);
         $this->value = $value;
     }
-
 
     protected function allowTimeSuffix() : array
     {
@@ -41,19 +68,37 @@ class PromiseServiceValue extends ValueObject
     {
 
         if (in_array($value, array_keys($this->enums), true)) {
+            $this->isEnum = true;
             return true;
         }
-        $allowTimeSuffixString = implode('|', $this->allowTimeSuffix());
-        $pattern               = "/^[1-9]+[\d]*($allowTimeSuffixString)$/";
+        $this->validateDeadline($value);
 
-        if ((bool)preg_match($pattern, $value) === false) {
-            throw new InvalidArgumentException('参数值错误:'.$value);
-        }
+
         return true;
+    }
+
+    /**
+     * 格式 阶段+截止时间
+     *
+     * @param string $item
+     *
+     * @return void
+     */
+    protected function validateDeadline(string $item) : void
+    {
+
+        $allowTimeSuffixString = implode('|', $this->allowTimeSuffix());
+        $pattern               = "/^[1-9]+\d*($allowTimeSuffixString)$/";
+        if ((bool)preg_match($pattern, $item) === false) {
+            throw new InvalidArgumentException('参数值错误:' . $item);
+        }
+        $this->isTime = true;
     }
 
     public function value() : string
     {
         return $this->value;
     }
+
+
 }

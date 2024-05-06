@@ -10,7 +10,7 @@ use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
 class PromiseServicesCastTransformer implements CastsAttributes
 {
 
-    public function get(Model $model, string $key, mixed $value, array $attributes) : PromiseServiceValue
+    public function get(Model $model, string $key, mixed $value, array $attributes) : PromiseServices
     {
         return PromiseServices::from($this->decode($value));
     }

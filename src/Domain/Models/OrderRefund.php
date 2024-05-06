@@ -26,6 +26,7 @@ use RedJasmine\Order\Domain\Events\RefundReshippedGoodsEvent;
 use RedJasmine\Order\Domain\Events\RefundReturnedGoodsEvent;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Order\Domain\OrderFactory;
+use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
 use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
@@ -46,16 +47,23 @@ class OrderRefund extends Model
     public $incrementing = false;
 
     protected $casts = [
-        'order_product_type' => OrderProductTypeEnum::class,
-        'shipping_type'      => ShippingTypeEnum::class,
-        'refund_type'        => RefundTypeEnum::class,
-        'refund_status'      => RefundStatusEnum::class,
-        'good_status'        => RefundGoodsStatusEnum::class,
-        'phase'              => RefundPhaseEnum::class,
-        'has_good_return'    => 'boolean',
-        'end_time'           => 'datetime',
-        'images'             => 'array',
-        'extends'            => 'array',
+        'order_product_type'     => OrderProductTypeEnum::class,
+        'shipping_type'          => ShippingTypeEnum::class,
+        'refund_type'            => RefundTypeEnum::class,
+        'refund_status'          => RefundStatusEnum::class,
+        'good_status'            => RefundGoodsStatusEnum::class,
+        'phase'                  => RefundPhaseEnum::class,
+        'has_good_return'        => 'boolean',
+        'end_time'               => 'datetime',
+        'images'                 => 'array',
+        'extends'                => 'array',
+        'price'                  => AmountCastTransformer::class,
+        'cost_price'             => AmountCastTransformer::class,
+        'product_amount'         => AmountCastTransformer::class,
+        'payable_amount'         => AmountCastTransformer::class,
+        'payment_amount'         => AmountCastTransformer::class,
+        'divided_payment_amount' => AmountCastTransformer::class,
+        'refund_amount'          => AmountCastTransformer::class,
     ];
 
     protected $dispatchesEvents = [
@@ -150,6 +158,7 @@ class OrderRefund extends Model
 
     /**
      * 拒绝退款
+     *
      * @param string $reason
      *
      * @return void
@@ -258,6 +267,7 @@ class OrderRefund extends Model
 
     /**
      * 再次发货
+     *
      * @param OrderLogistics $orderLogistics
      *
      * @return void

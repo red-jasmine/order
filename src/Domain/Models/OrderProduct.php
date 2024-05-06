@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Domain\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,10 +12,12 @@ use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Domain\Enums\PromiseServiceTypeEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\Casts\PromiseServicesCastTransformer;
+use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
 use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
@@ -37,32 +40,34 @@ class OrderProduct extends Model
 
 
     protected $casts = [
-        'order_product_type' => OrderProductTypeEnum::class,
-        'shipping_type'      => ShippingTypeEnum::class,
-        'order_status'       => OrderStatusEnum::class,
-        'shipping_status'    => ShippingStatusEnum::class,
-        'payment_status'     => PaymentStatusEnum::class,
-        'refund_status'      => OrderRefundStatusEnum::class,
-        'created_time'       => 'datetime',
-        'payment_time'       => 'datetime',
-        'close_time'         => 'datetime',
-        'shipping_time'      => 'datetime',
-        'collect_time'       => 'datetime',
-        'dispatch_time'      => 'datetime',
-        'signed_time'        => 'datetime',
-        'confirm_time'       => 'datetime',
-        'refund_time'        => 'datetime',
-        'rate_time'          => 'datetime',
-        'price'              => AmountCastTransformer::class,
-        'cost_price'         => AmountCastTransformer::class,
-        'tax_amount'         => AmountCastTransformer::class,
-        'product_amount'     => AmountCastTransformer::class,
-        'payable_amount'     => AmountCastTransformer::class,
-        'payment_amount'     => AmountCastTransformer::class,
-        'refund_amount'      => AmountCastTransformer::class,
-        'discount_amount'    => AmountCastTransformer::class,
-        'commission_amount'  => AmountCastTransformer::class,
-        'promise_services'   => PromiseServicesCastTransformer::class,
+        'order_product_type'      => OrderProductTypeEnum::class,
+        'shipping_type'           => ShippingTypeEnum::class,
+        'order_status'            => OrderStatusEnum::class,
+        'shipping_status'         => ShippingStatusEnum::class,
+        'payment_status'          => PaymentStatusEnum::class,
+        'refund_status'           => OrderRefundStatusEnum::class,
+        'created_time'            => 'datetime',
+        'payment_time'            => 'datetime',
+        'close_time'              => 'datetime',
+        'shipping_time'           => 'datetime',
+        'collect_time'            => 'datetime',
+        'dispatch_time'           => 'datetime',
+        'signed_time'             => 'datetime',
+        'confirm_time'            => 'datetime',
+        'refund_time'             => 'datetime',
+        'rate_time'               => 'datetime',
+        'price'                   => AmountCastTransformer::class,
+        'cost_price'              => AmountCastTransformer::class,
+        'tax_amount'              => AmountCastTransformer::class,
+        'product_amount'          => AmountCastTransformer::class,
+        'payable_amount'          => AmountCastTransformer::class,
+        'payment_amount'          => AmountCastTransformer::class,
+        'refund_amount'           => AmountCastTransformer::class,
+        'discount_amount'         => AmountCastTransformer::class,
+        'commission_amount'       => AmountCastTransformer::class,
+        'divided_discount_amount' => AmountCastTransformer::class,
+        'divided_payment_amount'  => AmountCastTransformer::class,
+        'promise_services'        => PromiseServicesCastTransformer::class,
     ];
 
     protected $fillable = [
@@ -130,30 +135,84 @@ class OrderProduct extends Model
         return bcsub($this->divided_payment_amount, $this->refund_amount, 2);
     }
 
+
     /**
-     * 允许的售后退款类型
-     * 允许的售后类型 和 订单状态、发货状态、支付状态、支付方式 相关
      * @return array
      */
     public function allowRefundTypes() : array
     {
-        // TODO 根据 子商品单  的 售后服务
+
         $allowApplyRefundTypes = [];
 
-        // 如果支付那么久可以申请退款
-        if (in_array($this->payment_status, [ PaymentStatusEnum::PART_PAY, PaymentStatusEnum::PAID ], true)) {
-            $allowApplyRefundTypes[] = RefundTypeEnum::REFUND_ONLY;
-            $allowApplyRefundTypes[] = RefundTypeEnum::RETURN_GOODS_REFUND;
+        // 退款
+        if ($this->isAllowPromiseService(PromiseServiceTypeEnum::REFUND)) {
+            $allowApplyRefundTypes[] = RefundTypeEnum::REFUND;
+            if (in_array($this->shipping_status, [ ShippingStatusEnum::PART_SHIPPED, ShippingStatusEnum::SHIPPED ], true)) {
+                $allowApplyRefundTypes[] = RefundTypeEnum::RETURN_GOODS_REFUND;
+            }
         }
-        // 如果已发货
-        if (in_array($this->shipping_status, [
-            ShippingStatusEnum::PART_SHIPPED,
-            ShippingStatusEnum::SHIPPED,
-        ],           true)) {
+        // 换货 只有物流发货才支持换货 TODO
+        if (in_array($this->shipping_status, [ ShippingStatusEnum::PART_SHIPPED, ShippingStatusEnum::SHIPPED ], true)
+            && $this->isAllowPromiseService(PromiseServiceTypeEnum::EXCHANGE)) {
             $allowApplyRefundTypes[] = RefundTypeEnum::EXCHANGE;
         }
+        // 保修
+        if (in_array($this->shipping_status, [ ShippingStatusEnum::PART_SHIPPED, ShippingStatusEnum::SHIPPED ], true)
+            && $this->isAllowPromiseService(PromiseServiceTypeEnum::SERVICE)) {
+            $allowApplyRefundTypes[] = RefundTypeEnum::SERVICE;
+        }
+        // 保价
+        if ($this->isAllowPromiseService(PromiseServiceTypeEnum::GUARANTEE)) {
+            $allowApplyRefundTypes[] = RefundTypeEnum::GUARANTEE;
+        }
+        // 补发
+        $allowApplyRefundTypes[] = RefundTypeEnum::RESHIPMENT;
+
 
         return $allowApplyRefundTypes;
+    }
+
+
+    public function isAllowPromiseService(PromiseServiceTypeEnum $type) : bool
+    {
+        /**
+         * @var $promiseService PromiseServiceValue
+         */
+        $promiseService = $this->promise_services->{$type->value};
+
+        // 判断固定类型的
+        if ($promiseService->isEnum()) {
+            if ($promiseService->value() === PromiseServiceValue::UNSUPPORTED) {
+                return false;
+            }
+            if (($promiseService->value() === PromiseServiceValue::BEFORE_SHIPMENT)
+                && in_array($this->shipping_status, [ ShippingStatusEnum::NIL, ShippingStatusEnum::READY_SEND, ShippingStatusEnum::WAIT_SEND ], true)) {
+                return true;
+            }
+            return false;
+        }
+
+        // 时间类判断
+        $lastTime = now();
+        switch ($type) {
+            case PromiseServiceTypeEnum::EXCHANGE: // 换货
+            case PromiseServiceTypeEnum::SERVICE: // 保修
+            case PromiseServiceTypeEnum::REFUND: // 退款
+                $lastTime = $this->confirm_time ?? now();
+                break;
+            case PromiseServiceTypeEnum::GUARANTEE: // 保价
+                $lastTime = $this->created_time ?? now();
+                break;
+        }
+        // 添加时长
+        $lastTime->add($promiseService->value());
+        // 判断是否超过了时间
+        if (now()->diffInRealSeconds($lastTime, false) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
 

@@ -4,11 +4,13 @@ namespace RedJasmine\Order\Tests\Fixtures\Orders;
 
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServices;
 use RedJasmine\Order\Tests\Fixtures\Users\User;
@@ -138,10 +140,11 @@ class OrderFake
             'discount_amount'        => fake()->randomFloat(2, 5, 20),
             'outer_order_product_id' => fake()->numerify('CODE-########'),
             'promise_services'       => PromiseServices::from([
-                                                                  'refund'          => '7day',
-                                                                  'exchange'        => '15day',
-                                                                  'service'         => '3month',
-                                                                  'price_guarantee' => '10day'
+                                                                  'refund'    => '7day',// 退款
+                                                                  // 'refund'    => 'unsupported',// 退款
+                                                                  'exchange'  => '15day', // 换货
+                                                                  'service'   => '3month', // 保修
+                                                                  'guarantee' => 'unsupported',// 不支持
                                                               ])->toArray(),
             'info'                   => [
                 'seller_remarks' => fake()->sentence(10),
@@ -242,5 +245,23 @@ class OrderFake
 
         $data = array_merge($data, $merge);
         return OrderProgressCommand::from($data);
+    }
+
+
+    public function createRefund(array $merge = []) : RefundCreateCommand
+    {
+        $data = [
+            'id'               => 0,
+            'order_product_id' => 0,
+            'images'           => [ fake()->imageUrl, fake()->imageUrl ],
+            'refund_type'      => RefundTypeEnum::REFUND->value,
+            'reason'           => fake()->randomElement([ '不想要了', '拍错了' ]),
+            'refund_amount'    => null,
+            'description'      => fake()->text,
+            'outer_refund_id'  => fake()->numerify('##########'),
+        ];
+
+        $data = array_merge($data, $merge);
+        return RefundCreateCommand::from($data);
     }
 }

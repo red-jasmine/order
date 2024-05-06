@@ -23,7 +23,7 @@ enum ShippingStatusEnum: string
     {
         return [
             self::NIL->value          => '',
-            self::WAIT_SEND->value    => '准备发货', // 发货管控中
+            self::READY_SEND->value   => '发货', // 发货管控中 //TODO
             self::WAIT_SEND->value    => '待发货',
             self::PART_SHIPPED->value => '部分发货',
             self::SHIPPED->value      => '已发货',
