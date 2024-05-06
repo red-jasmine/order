@@ -2,9 +2,11 @@
 
 namespace RedJasmine\Order\Tests\Application\Refund\CommandHandlers;
 
+use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
+use RedJasmine\Order\Domain\Enums\RefundPhaseEnum;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
@@ -18,7 +20,8 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
     protected function orderPaid() : Order
     {
         // 1、创建订单
-        $fake               = $this->fake();
+        $fake = $this->fake();
+
         $fake->productCount = 2;
 
 
@@ -49,20 +52,31 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
     {
         $order = $this->orderPaid();
 
-        $orderShippingLogisticsCommand = $this->fake()->shippingLogistics([
-                                                                              'id' => $order->id
-                                                                          ]);
-
+        $orderShippingLogisticsCommand = $this->fake()->shippingLogistics([ 'id' => $order->id ]);
 
         $this->orderCommandService()->shippingLogistics($orderShippingLogisticsCommand);
-
 
         return $order;
     }
 
 
+    public function orderConfirmed() : Order
+    {
+
+        $order = $this->orderPaidAndShipping();
+
+        $command = OrderConfirmCommand::from([ 'id' => $order->id ]);
+        $this->orderCommandService()->confirm($command);
+
+        return $order;
+
+    }
+
+    // 售中阶段
+
+
     /**
-     * @test 能创建订单
+     * @test 能创建仅退款单
      * 前提条件: 订单已支付
      * 步骤：
      *  1、发起一个产品的 仅退款的订单
@@ -73,7 +87,7 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
      *  2、
      * @return void
      */
-    public function can_create_only_refund()
+    public function can_create_only_refund_on_sale() : void
     {
         // 前提条件
         $order = $this->orderPaid();
@@ -98,7 +112,7 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
 
             $this->assertEquals($order->id, $refund->order_id);
             $this->assertEquals($product->id, $refund->order_product_id);
-
+            $this->assertEquals(RefundPhaseEnum::ON_SALE->value, $refund->phase->value);
             $this->assertEquals($command->refundType, $refund->refund_type);
             $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE->value, $refund->refund_status->value);
 
@@ -119,7 +133,7 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
      *  2、
      * @return void
      */
-    public function can_crate_return_goods_refund():void
+    public function can_crate_return_goods_refund_on_sale() : void
     {
 
         $order = $this->orderPaidAndShipping();
@@ -145,7 +159,7 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
 
             $this->assertEquals($order->id, $refund->order_id);
             $this->assertEquals($product->id, $refund->order_product_id);
-
+            $this->assertEquals(RefundPhaseEnum::ON_SALE->value, $refund->phase->value);
             $this->assertEquals($command->refundType, $refund->refund_type);
             $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE_RETURN->value, $refund->refund_status->value);
 
@@ -153,6 +167,205 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
 
 
     }
+
+    /**
+     * @test 能创建 换货单
+     * 前提条件: 订单已发货
+     * 步骤：
+     *  1、创建换货单
+     *  2、
+     *  3、
+     * 预期结果:
+     *  1、换货单创建成功
+     *  2、
+     * @return void
+     */
+    public function can_crate_exchange_on_sale() : void
+    {
+
+        $order = $this->orderPaidAndShipping();
+
+
+        // 创建退货退款单
+        foreach ($order->products as $product) {
+            $command = RefundCreateCommand::from([
+                                                     'id'               => $order->id,
+                                                     'order_product_id' => $product->id,
+                                                     'refund_type'      => RefundTypeEnum::EXCHANGE->value,
+                                                     'reason'           => fake()->randomElement([ '不想要了', '拍错了' ]),
+                                                     'refund_amount'    => null,
+                                                     'description'      => fake()->text,
+                                                     'outer_refund_id'  => fake()->numerify('##########'),
+                                                     'images'           => [ fake()->imageUrl, fake()->imageUrl, fake()->imageUrl, ],
+                                                 ]);
+
+
+            $refundId = $this->refundCommandService()->create($command);
+            $refund   = $this->refundRepository()->find($refundId);
+
+
+            $this->assertEquals($order->id, $refund->order_id);
+            $this->assertEquals($product->id, $refund->order_product_id);
+            $this->assertEquals(RefundPhaseEnum::ON_SALE->value, $refund->phase->value);
+            $this->assertEquals($command->refundType, $refund->refund_type);
+            $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE_RETURN->value, $refund->refund_status->value);
+
+        }
+
+
+    }
+
+
+    // 售后阶段
+
+    /**
+     * @test 能创建仅退款单
+     * 前提条件: 订单已确认
+     * 步骤：
+     *  1、发起一个产品的 仅退款的订单
+     *  2、
+     *  3、
+     * 预期结果:
+     *  1、创建退款单成功
+     *  2、
+     * @return void
+     */
+    public function can_create_only_refund_after_sale() : void
+    {
+        // 前提条件
+        $order = $this->orderConfirmed();
+
+        // 1、创建退款单
+        foreach ($order->products as $product) {
+            $command = RefundCreateCommand::from([
+                                                     'id'               => $order->id,
+                                                     'order_product_id' => $product->id,
+                                                     'refund_type'      => RefundTypeEnum::REFUND->value,
+                                                     'reason'           => fake()->randomElement([ '不想要了', '拍错了' ]),
+                                                     'refund_amount'    => null,
+                                                     'description'      => fake()->text,
+                                                     'outer_refund_id'  => fake()->numerify('##########'),
+                                                     'images'           => [ fake()->imageUrl, fake()->imageUrl, fake()->imageUrl, ],
+                                                 ]);
+
+
+            $refundId = $this->refundCommandService()->create($command);
+            $refund   = $this->refundRepository()->find($refundId);
+
+
+            $this->assertEquals($order->id, $refund->order_id);
+            $this->assertEquals($product->id, $refund->order_product_id);
+            $this->assertEquals(RefundPhaseEnum::AFTER_SALE->value, $refund->phase->value);
+            $this->assertEquals($command->refundType, $refund->refund_type);
+            $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE->value, $refund->refund_status->value);
+
+        }
+
+
+    }
+
+
+    /**
+     * @test 能创建 退货退款单
+     * 前提条件:
+     * 步骤：
+     *  1、
+     *  2、
+     *  3、
+     * 预期结果:
+     *  1、
+     *  2、
+     * @return void
+     */
+    public function can_crate_return_goods_refund_after_sale() : void
+    {
+
+        $order = $this->orderConfirmed();
+
+
+        // 创建退货退款单
+        foreach ($order->products as $product) {
+            $command = RefundCreateCommand::from([
+                                                     'id'               => $order->id,
+                                                     'order_product_id' => $product->id,
+                                                     'refund_type'      => RefundTypeEnum::RETURN_GOODS_REFUND->value,
+                                                     'reason'           => fake()->randomElement([ '不想要了', '拍错了' ]),
+                                                     'refund_amount'    => null,
+                                                     'description'      => fake()->text,
+                                                     'outer_refund_id'  => fake()->numerify('##########'),
+                                                     'images'           => [ fake()->imageUrl, fake()->imageUrl, fake()->imageUrl, ],
+                                                 ]);
+
+
+            $refundId = $this->refundCommandService()->create($command);
+            $refund   = $this->refundRepository()->find($refundId);
+
+
+            $this->assertEquals($order->id, $refund->order_id);
+            $this->assertEquals($product->id, $refund->order_product_id);
+            $this->assertEquals(RefundPhaseEnum::AFTER_SALE->value, $refund->phase->value);
+            $this->assertEquals($command->refundType, $refund->refund_type);
+            $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE_RETURN->value, $refund->refund_status->value);
+
+        }
+
+
+    }
+
+
+    /**
+     * @test 能创建 换货单
+     * 前提条件: 订单已发货
+     * 步骤：
+     *  1、创建换货单
+     *  2、
+     *  3、
+     * 预期结果:
+     *  1、换货单创建成功
+     *  2、
+     * @return void
+     */
+    public function can_crate_exchange_after_sale() : void
+    {
+
+        $order = $this->orderConfirmed();
+
+
+        // 创建退货退款单
+        foreach ($order->products as $product) {
+            $command = RefundCreateCommand::from([
+                                                     'id'               => $order->id,
+                                                     'order_product_id' => $product->id,
+                                                     'refund_type'      => RefundTypeEnum::EXCHANGE->value,
+                                                     'reason'           => fake()->randomElement([ '不想要了', '拍错了' ]),
+                                                     'refund_amount'    => null,
+                                                     'description'      => fake()->text,
+                                                     'outer_refund_id'  => fake()->numerify('##########'),
+                                                     'images'           => [ fake()->imageUrl, fake()->imageUrl, fake()->imageUrl, ],
+                                                 ]);
+
+
+            $refundId = $this->refundCommandService()->create($command);
+            $refund   = $this->refundRepository()->find($refundId);
+
+
+            $this->assertEquals($order->id, $refund->order_id);
+            $this->assertEquals($product->id, $refund->order_product_id);
+
+            $this->assertEquals($command->refundType, $refund->refund_type);
+            $this->assertEquals(RefundPhaseEnum::AFTER_SALE->value, $refund->phase->value);
+            $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE_RETURN->value, $refund->refund_status->value);
+
+        }
+
+
+    }
+
+
+    // TODO
+    // 测试创建保价单
+
+    // 测试创建补发单
 
 
 }

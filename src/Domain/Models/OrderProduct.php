@@ -166,7 +166,9 @@ class OrderProduct extends Model
             $allowApplyRefundTypes[] = RefundTypeEnum::GUARANTEE;
         }
         // 补发
-        $allowApplyRefundTypes[] = RefundTypeEnum::RESHIPMENT;
+        if (in_array($this->shipping_status, [ ShippingStatusEnum::PART_SHIPPED, ShippingStatusEnum::SHIPPED ], true)) {
+            $allowApplyRefundTypes[] = RefundTypeEnum::RESHIPMENT;
+        }
 
 
         return $allowApplyRefundTypes;

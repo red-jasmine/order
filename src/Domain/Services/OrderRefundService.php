@@ -31,9 +31,7 @@ class OrderRefundService
          */
         $orderProduct = $order->products->where('id', $orderRefund->order_product_id)->firstOrFail();
 
-        // TODO 验证是否允许 创建售后单
-
-        // 获取允许的类型
+        // 类型是否允许
         if (!in_array($orderRefund->refund_type, $orderProduct->allowRefundTypes(), true)) {
             throw RefundException::newFromCodes(RefundException::REFUND_TYPE_NOT_ALLOW);
         }
@@ -65,10 +63,16 @@ class OrderRefundService
 
         // 获取当售后阶段
         $orderRefund->phase = $this->getRefundPhase($orderProduct);
-        // 计算退款金额 // TODO
+
+        // 计算退款金额
+        $refundAmount = (string)($orderRefund->refund_amount ?? 0);
+        if (bccomp($refundAmount, $orderProduct->maxRefundAmount(), 2) > 0) {
+            $refundAmount = $orderProduct->maxRefundAmount();
+        }
+
         switch ($orderRefund->refund_type) {
             case RefundTypeEnum::REFUND:
-                $orderRefund->refund_amount = new Amount($orderProduct->maxRefundAmount());
+                $orderRefund->refund_amount = new Amount($refundAmount);
                 $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE;
                 break;
             case RefundTypeEnum::RETURN_GOODS_REFUND:
@@ -100,8 +104,9 @@ class OrderRefundService
      */
     protected function getRefundPhase(OrderProduct $orderProduct) : RefundPhaseEnum
     {
+
         if ($orderProduct->order_status === OrderStatusEnum::FINISHED) {
-            RefundPhaseEnum::AFTER_SALE;
+            return RefundPhaseEnum::AFTER_SALE;
         }
         return RefundPhaseEnum::ON_SALE;
     }

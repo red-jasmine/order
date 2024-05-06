@@ -11,8 +11,8 @@ class RefundException extends AbstractException
     public const  REFUND_TYPE_NOT_ALLOW   = 211520;
 
     protected static array $codes = [
-        self::REFUND_STATUS_NOT_ALLOW => '退款不支持操作',
-        self::REFUND_TYPE_NOT_ALLOW   => '退款类型不支持操作',
+        self::REFUND_STATUS_NOT_ALLOW => '售后状态不支持操作',
+        self::REFUND_TYPE_NOT_ALLOW   => '售后类型不支持操作',
     ];
 
 

@@ -17,6 +17,7 @@ use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingCardKey
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingLogisticsCommandHandler;
 use RedJasmine\Order\Application\Services\Handlers\Shipping\OrderShippingVirtualCommandHandler;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
@@ -44,6 +45,8 @@ use RedJasmine\Support\Application\ApplicationService;
  * @method void buyerRemarks(OrderRemarksCommand $command)
  * @method void sellerHidden(OrderHiddenCommand $command)
  * @method void buyerHidden(OrderHiddenCommand $command)
+ * @see OrderConfirmCommandHandler::execute()
+ * @method void confirm(OrderConfirmCommand $command)
  */
 class OrderCommandService extends ApplicationService
 {
