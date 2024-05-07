@@ -41,6 +41,35 @@ class RefundAgreeRefundCommandHandlerTest extends RefundCommandServiceTestCase
 
     }
 
+    /**
+     * @return int[]
+     */
+    public function orderPaidAndShippingAndCreateRefund() : array
+    {
+        $order = $this->orderPaidAndShipping();
+
+        $refunds = [];
+        // 1、创建退款单
+        foreach ($order->products as $product) {
+            $command = RefundCreateCommand::from([
+                                                     'id'               => $order->id,
+                                                     'order_product_id' => $product->id,
+                                                     'refund_type'      => RefundTypeEnum::RETURN_GOODS_REFUND->value,
+                                                     'reason'           => fake()->randomElement([ '不合适', '拍错了' ]),
+                                                     'refund_amount'    => null,
+                                                     'description'      => fake()->text,
+                                                     'outer_refund_id'  => fake()->numerify('##########'),
+                                                     'images'           => [ fake()->imageUrl, fake()->imageUrl, fake()->imageUrl, ],
+                                                 ]);
+
+
+            $refunds[] = $this->refundCommandService()->create($command);
+
+
+        }
+        return $refunds;
+
+    }
 
     /**
      * @test 能同意退款
@@ -61,8 +90,11 @@ class RefundAgreeRefundCommandHandlerTest extends RefundCommandServiceTestCase
         $refunds = $this->orderPaidAndCreateRefund();
 
         foreach ($refunds as $rid) {
-
-            $command = RefundAgreeRefundCommand::from([ 'rid' => $rid ]);
+            $refund  = $this->refundRepository()->find($rid);
+            $command = RefundAgreeRefundCommand::from([
+                                                          'rid'    => $rid,
+                                                          'amount' => $refund->refund_amount
+                                                      ]);
 
             $this->refundCommandService()->agreeRefund($command);
 
@@ -78,9 +110,5 @@ class RefundAgreeRefundCommandHandlerTest extends RefundCommandServiceTestCase
 
     }
 
-    public function can_agree_typeof_and_return_refund() : void
-    {
-
-    }
 
 }

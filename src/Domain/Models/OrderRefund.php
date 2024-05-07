@@ -26,6 +26,7 @@ use RedJasmine\Order\Domain\Events\RefundReturnedGoodsEvent;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
 use RedJasmine\Order\Domain\OrderFactory;
 use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
@@ -149,12 +150,12 @@ class OrderRefund extends Model
     /**
      * 同意退款
      *
-     * @param string|null $amount
+     * @param Amount|null $amount
      *
      * @return void
      * @throws RefundException
      */
-    public function agreeRefund(?string $amount = null) : void
+    public function agreeRefund(?Amount $amount = null) : void
     {
         if (!in_array($this->refund_type, [
             RefundTypeEnum::REFUND,
@@ -169,8 +170,10 @@ class OrderRefund extends Model
 
         $amount = $amount ?: $this->refund_amount;
 
-        // TODO 验证金额
-        // TODO 需要最后退邮费
+        if (bccomp($amount, $this->refund_amount, 2) > 0) {
+            throw RefundException::newFromCodes(RefundException::REFUND_AMOUNT_OVERFLOW, '退款金额超出');
+        }
+        // TODO 什么情况下需要加上邮费
         $this->end_time      = now();
         $this->refund_amount = $amount;
         $this->refund_status = RefundStatusEnum::REFUND_SUCCESS;
@@ -197,7 +200,7 @@ class OrderRefund extends Model
         $payment->seller         = $this->seller;
         $payment->buyer          = $this->buyer;
         $payment->amount_type    = AmountTypeEnum::REFUND;
-        $payment->payment_amount = $this->refund_amount;
+        $payment->payment_amount = bcadd($this->refund_amount, $this->freight_amount, 2);
         $payment->status         = PaymentStatusEnum::WAIT_PAY;
         $this->payments->add($payment);
         $this->fireModelEvent('agreed');
