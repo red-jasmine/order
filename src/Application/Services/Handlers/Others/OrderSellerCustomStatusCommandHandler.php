@@ -11,7 +11,7 @@ class OrderSellerCustomStatusCommandHandler extends AbstractOrderCommandHandler
 
 
 
-    public function execute(OrderSellerCustomStatusCommand $command) : void
+    public function handle(OrderSellerCustomStatusCommand $command) : void
     {
 
         $order = $this->find($command->id);

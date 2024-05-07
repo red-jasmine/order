@@ -4,7 +4,7 @@ namespace RedJasmine\Order\Application\UserCases\Commands\Refund;
 
 use RedJasmine\Support\Data\Data;
 
-class RefundAgreeCommand extends Data
+class RefundAgreeRefundCommand extends Data
 {
     public int $rid; // 退款单ID
 

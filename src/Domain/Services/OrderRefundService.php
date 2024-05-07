@@ -65,32 +65,38 @@ class OrderRefundService
         $orderRefund->phase = $this->getRefundPhase($orderProduct);
 
         // 计算退款金额
-        $refundAmount = (string)($orderRefund->refund_amount ?? 0);
-        if (bccomp($refundAmount, $orderProduct->maxRefundAmount(), 2) > 0) {
-            $refundAmount = $orderProduct->maxRefundAmount();
+        $refundAmount = 0;
+        if (in_array($orderRefund->refund_type, [
+            RefundTypeEnum::REFUND,
+            RefundTypeEnum::RETURN_GOODS_REFUND,
+        ],           true)) {
+            $refundAmount = (string)($orderRefund->refund_amount ?? 0);
+            if (bccomp($refundAmount, 0, 2) <= 0) {
+                $refundAmount = $orderProduct->maxRefundAmount();
+            }
+            if (bccomp($refundAmount, $orderProduct->maxRefundAmount(), 2) > 0) {
+                $refundAmount = $orderProduct->maxRefundAmount();
+            }
         }
+        $orderRefund->refund_amount = new Amount($refundAmount);
 
         switch ($orderRefund->refund_type) {
+            case RefundTypeEnum::RESHIPMENT:
             case RefundTypeEnum::REFUND:
-                $orderRefund->refund_amount = new Amount($refundAmount);
-                $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE;
+                $orderRefund->has_good_return = false;
+                $orderRefund->refund_status   = RefundStatusEnum::WAIT_SELLER_AGREE;
                 break;
-            case RefundTypeEnum::RETURN_GOODS_REFUND:
-                $orderRefund->refund_amount = new Amount($orderProduct->maxRefundAmount());
-                $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
-                break;
-            case RefundTypeEnum::GUARANTEE:
-                // TODO 需要
             case RefundTypeEnum::EXCHANGE:
             case RefundTypeEnum::SERVICE:
-            case RefundTypeEnum::RESHIPMENT:
-                $orderRefund->refund_amount = new Amount(0);
-                $orderRefund->refund_status = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
+            case RefundTypeEnum::RETURN_GOODS_REFUND:
+                $orderRefund->has_good_return = true;
+                $orderRefund->refund_status   = RefundStatusEnum::WAIT_SELLER_AGREE_RETURN;
                 break;
+
         }
 
         $orderRefund->created_time = now();
-        // 设置订单商品状态
+
         $order->refunds->add($orderRefund);
     }
 

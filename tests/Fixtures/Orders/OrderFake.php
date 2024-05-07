@@ -144,7 +144,6 @@ class OrderFake
                                                                   // 'refund'    => 'unsupported',// 退款
                                                                   'exchange'  => '15day', // 换货
                                                                   'service'   => '3month', // 保修
-                                                                  'guarantee' => 'unsupported',// 不支持
                                                               ])->toArray(),
             'info'                   => [
                 'seller_remarks' => fake()->sentence(10),

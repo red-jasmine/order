@@ -5,10 +5,10 @@ namespace Order\CommandHandlers;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
 use RedJasmine\Order\Domain\Models\Order;
-use RedJasmine\Order\Tests\Application\ApplicationTest;
+use RedJasmine\Order\Tests\Application\ApplicationTestCase;
 use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 
-class OrderRemarksCommandHandlerTest extends ApplicationTest
+class OrderRemarksCommandHandlerTest extends ApplicationTestCase
 {
 
 

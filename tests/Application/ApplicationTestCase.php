@@ -15,7 +15,7 @@ use RedJasmine\Order\Tests\Fixtures\Users\User;
 use RedJasmine\Order\Tests\TestCase;
 use RedJasmine\Support\Contracts\UserInterface;
 
-class ApplicationTest extends TestCase
+class ApplicationTestCase extends TestCase
 {
 
     protected function buyer() : UserInterface

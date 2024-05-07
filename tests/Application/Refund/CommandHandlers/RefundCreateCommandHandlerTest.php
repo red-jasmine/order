@@ -11,66 +11,11 @@ use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderPayment;
-use RedJasmine\Order\Tests\Application\ApplicationTest;
 
-class RefundCreateCommandHandlerTest extends ApplicationTest
+class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
 {
 
 
-    protected function orderPaid() : Order
-    {
-        // 1、创建订单
-        $fake = $this->fake();
-
-        $fake->productCount = 2;
-
-
-        $orderCreateCommand = OrderCreateCommand::from($fake->order());
-        $order              = $this->orderCommandService()->create($orderCreateCommand);
-        $this->assertInstanceOf(Order::class, $order);
-
-
-        // 2、调用支付中
-        $orderPayingCommand = OrderPayingCommand::from([ 'id' => $order->id, 'amount' => $order->payable_amount ]);
-        $orderPayment       = $this->orderCommandService()->paying($orderPayingCommand);
-        $this->assertInstanceOf(OrderPayment::class, $orderPayment);
-
-
-        // 3、 设置支付成功
-        $orderPaidCommand = $fake->paid([
-                                            'id'               => $order->id,
-                                            'order_payment_id' => $orderPayment->id,
-                                            'amount'           => $orderPayment->payment_amount,
-                                        ]);
-
-        $this->orderCommandService()->paid($orderPaidCommand);
-        return $order;
-    }
-
-
-    public function orderPaidAndShipping() : Order
-    {
-        $order = $this->orderPaid();
-
-        $orderShippingLogisticsCommand = $this->fake()->shippingLogistics([ 'id' => $order->id ]);
-
-        $this->orderCommandService()->shippingLogistics($orderShippingLogisticsCommand);
-
-        return $order;
-    }
-
-
-    public function orderConfirmed() : Order
-    {
-
-        $order = $this->orderPaidAndShipping();
-
-        $command = OrderConfirmCommand::from([ 'id' => $order->id ]);
-        $this->orderCommandService()->confirm($command);
-
-        return $order;
-
-    }
 
     // 售中阶段
 
@@ -209,6 +154,53 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
             $this->assertEquals(RefundPhaseEnum::ON_SALE->value, $refund->phase->value);
             $this->assertEquals($command->refundType, $refund->refund_type);
             $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE_RETURN->value, $refund->refund_status->value);
+
+        }
+
+
+    }
+
+
+    /**
+     * @test 能创建补发
+     * 前提条件: 订单商品已发货
+     * 步骤：
+     *  1、创建补发售后单
+     *  2、
+     *  3、
+     * 预期结果:
+     *  1、创建成功
+     *  2、
+     * @return void
+     */
+    public function can_crate_reshipment_on_sale() : void
+    {
+
+        $order = $this->orderPaidAndShipping();
+
+        // 创建退货退款单
+        foreach ($order->products as $product) {
+            $command = RefundCreateCommand::from([
+                                                     'id'               => $order->id,
+                                                     'order_product_id' => $product->id,
+                                                     'refund_type'      => RefundTypeEnum::RESHIPMENT->value,
+                                                     'reason'           => fake()->randomElement([ '少了', '拍错了' ]),
+                                                     'refund_amount'    => null,
+                                                     'description'      => fake()->text,
+                                                     'outer_refund_id'  => fake()->numerify('##########'),
+                                                     'images'           => [ fake()->imageUrl, fake()->imageUrl, fake()->imageUrl, ],
+                                                 ]);
+
+
+            $refundId = $this->refundCommandService()->create($command);
+            $refund   = $this->refundRepository()->find($refundId);
+
+
+            $this->assertEquals($order->id, $refund->order_id);
+            $this->assertEquals($product->id, $refund->order_product_id);
+            $this->assertEquals(RefundPhaseEnum::ON_SALE->value, $refund->phase->value);
+            $this->assertEquals($command->refundType, $refund->refund_type);
+            $this->assertEquals(RefundStatusEnum::WAIT_SELLER_AGREE->value, $refund->refund_status->value);
 
         }
 
@@ -360,12 +352,6 @@ class RefundCreateCommandHandlerTest extends ApplicationTest
 
 
     }
-
-
-    // TODO
-    // 测试创建保价单
-
-    // 测试创建补发单
 
 
 }

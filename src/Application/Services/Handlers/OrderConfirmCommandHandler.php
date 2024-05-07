@@ -14,12 +14,12 @@ class OrderConfirmCommandHandler extends AbstractOrderCommandHandler
      *
      * @return void
      */
-    public function execute(OrderConfirmCommand $command) : void
+    public function handle(OrderConfirmCommand $command) : void
     {
 
         $order = $this->find($command->id);
 
-        $this->handle(
+        $this->execute(
             execute: fn() => $order->confirm(),
             persistence: fn() => $this->orderRepository->update($order)
         );

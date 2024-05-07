@@ -7,11 +7,11 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
 class OrderCancelCommandHandler extends AbstractOrderCommandHandler
 {
 
-    public function execute(OrderCancelCommand $command) : void
+    public function handle(OrderCancelCommand $command) : void
     {
 
         $order = $this->find($command->id);
-        $this->handle(
+        $this->execute(
             execute: fn() => $order->cancel($command->cancelReason),
             persistence: fn() => $this->orderRepository->update($order)
         );

@@ -2,6 +2,7 @@
 
 namespace RedJasmine\Order\Application\Services\Handlers\Refund;
 
+use Exception;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Order\Domain\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Domain\OrderFactory;
@@ -10,11 +11,15 @@ class RefundReturnGoodsCommandHandler extends AbstractRefundCommandHandler
 {
 
 
-
-
-    public function execute(RefundReturnGoodsCommand $command) : void
+    /**
+     * @param RefundReturnGoodsCommand $command
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function handle(RefundReturnGoodsCommand $command) : void
     {
-        $refund  = $this->find($command->rid);
+        $refund = $this->find($command->rid);
 
         $orderLogistics                       = app(OrderFactory::class)->createOrderLogistics();
         $orderLogistics->shippable_type       = 'refund';
@@ -28,10 +33,10 @@ class RefundReturnGoodsCommandHandler extends AbstractRefundCommandHandler
         $orderLogistics->status               = $command->status;
         $orderLogistics->shipping_time        = now();
 
-        $this->pipelineManager()->call('executing');
-        $this->pipelineManager()->call('execute', fn() => $refund->returnGoods($orderLogistics));
-        $this->refundRepository->update($refund);
-        $this->pipelineManager()->call('executed');
+        $this->execute(
+            execute: fn() => $refund->returnGoods($orderLogistics),
+            persistence: fn() => $this->refundRepository->update($refund),
+        );
 
 
     }

@@ -45,7 +45,7 @@ use RedJasmine\Support\Application\ApplicationService;
  * @method void buyerRemarks(OrderRemarksCommand $command)
  * @method void sellerHidden(OrderHiddenCommand $command)
  * @method void buyerHidden(OrderHiddenCommand $command)
- * @see OrderConfirmCommandHandler::execute()
+ * @see OrderConfirmCommandHandler::handle()
  * @method void confirm(OrderConfirmCommand $command)
  */
 class OrderCommandService extends ApplicationService

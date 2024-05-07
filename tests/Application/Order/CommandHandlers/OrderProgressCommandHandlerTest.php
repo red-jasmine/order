@@ -9,9 +9,9 @@ use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderPayment;
-use RedJasmine\Order\Tests\Application\ApplicationTest;
+use RedJasmine\Order\Tests\Application\ApplicationTestCase;
 
-class OrderProgressCommandHandlerTest extends ApplicationTest
+class OrderProgressCommandHandlerTest extends ApplicationTestCase
 {
 
 

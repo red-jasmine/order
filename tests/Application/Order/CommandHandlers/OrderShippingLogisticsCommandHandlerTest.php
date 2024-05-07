@@ -8,9 +8,9 @@ use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderPayment;
-use RedJasmine\Order\Tests\Application\ApplicationTest;
+use RedJasmine\Order\Tests\Application\ApplicationTestCase;
 
-class OrderShippingLogisticsCommandHandlerTest extends ApplicationTest
+class OrderShippingLogisticsCommandHandlerTest extends ApplicationTestCase
 {
 
 

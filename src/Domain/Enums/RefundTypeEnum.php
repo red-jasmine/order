@@ -20,8 +20,6 @@ enum RefundTypeEnum: string
     case  EXCHANGE = 'exchange';
     // 维修
     case  SERVICE = 'service';
-    // 保价
-    case  GUARANTEE = 'guarantee';
     // 补寄
     case  RESHIPMENT = 'reshipment';
     // 退邮费
@@ -35,7 +33,6 @@ enum RefundTypeEnum: string
             self::RETURN_GOODS_REFUND->value => '退货退款',
             self::EXCHANGE->value            => '换货',
             self::SERVICE->value             => '维修',
-            self::GUARANTEE->value           => '保价',
             self::RESHIPMENT->value          => '补寄',
         ];
 

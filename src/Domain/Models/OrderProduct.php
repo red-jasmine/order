@@ -137,11 +137,15 @@ class OrderProduct extends Model
 
 
     /**
+     * 允许的售后类型
      * @return array
      */
     public function allowRefundTypes() : array
     {
-
+        // 有效单判断
+        if ($this->isEffective() === false) {
+            return [];
+        }
         $allowApplyRefundTypes = [];
 
         // 退款
@@ -161,11 +165,8 @@ class OrderProduct extends Model
             && $this->isAllowPromiseService(PromiseServiceTypeEnum::SERVICE)) {
             $allowApplyRefundTypes[] = RefundTypeEnum::SERVICE;
         }
-        // 保价
-        if ($this->isAllowPromiseService(PromiseServiceTypeEnum::GUARANTEE)) {
-            $allowApplyRefundTypes[] = RefundTypeEnum::GUARANTEE;
-        }
-        // 补发
+
+        // TODO 最长时间
         if (in_array($this->shipping_status, [ ShippingStatusEnum::PART_SHIPPED, ShippingStatusEnum::SHIPPED ], true)) {
             $allowApplyRefundTypes[] = RefundTypeEnum::RESHIPMENT;
         }
@@ -195,17 +196,7 @@ class OrderProduct extends Model
         }
 
         // 时间类判断
-        $lastTime = now();
-        switch ($type) {
-            case PromiseServiceTypeEnum::EXCHANGE: // 换货
-            case PromiseServiceTypeEnum::SERVICE: // 保修
-            case PromiseServiceTypeEnum::REFUND: // 退款
-                $lastTime = $this->confirm_time ?? now();
-                break;
-            case PromiseServiceTypeEnum::GUARANTEE: // 保价
-                $lastTime = $this->created_time ?? now();
-                break;
-        }
+        $lastTime = $this->confirm_time ?? now();
         // 添加时长
         $lastTime->add($promiseService->value());
         // 判断是否超过了时间

@@ -1,37 +1,25 @@
 <?php
 
-namespace Order\CommandHandlers;
+namespace RedJasmine\Order\Tests\Application\Refund\CommandHandlers;
 
+use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
-use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
-use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderPayment;
 use RedJasmine\Order\Tests\Application\ApplicationTestCase;
-use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 
-class OrderPaidCommandHandlerTest extends ApplicationTestCase
+class RefundCommandServiceTestCase extends ApplicationTestCase
 {
 
-
-    /**
-     * @test 能支付成功
-     * 前提条件: 准备订单数据
-     * 步骤：
-     *  1、创建订单
-     *  2、调用支付
-     *  3、设置支付成功
-     * 预期结果:
-     *  1、订单支付状态成功、付款金额为应付金额
-     *  2、支付单支付状态成功、
-     * @return void
-     */
-    public function can_order_paid() : void
+    protected function orderPaid() : Order
     {
-
         // 1、创建订单
-        $fake               = new OrderFake();
+        $fake = $this->fake();
+
+        $fake->productCount = 2;
+
+
         $orderCreateCommand = OrderCreateCommand::from($fake->order());
         $order              = $this->orderCommandService()->create($orderCreateCommand);
         $this->assertInstanceOf(Order::class, $order);
@@ -51,11 +39,36 @@ class OrderPaidCommandHandlerTest extends ApplicationTestCase
                                         ]);
 
         $this->orderCommandService()->paid($orderPaidCommand);
-
-        $order = $this->orderRepository()->find($order->id);
-
-        $this->assertEquals(PaymentStatusEnum::PAID->value, $order->payment_status->value);
-        $this->assertEquals($order->payable_amount->value(), $order->payment_amount->value());
+        return $order;
     }
+
+
+    public function orderPaidAndShipping() : Order
+    {
+        $order = $this->orderPaid();
+
+        $orderShippingLogisticsCommand = $this->fake()->shippingLogistics([ 'id' => $order->id ]);
+
+        $this->orderCommandService()->shippingLogistics($orderShippingLogisticsCommand);
+
+        return $order;
+    }
+
+
+    public function orderConfirmed() : Order
+    {
+
+        $order = $this->orderPaidAndShipping();
+
+        $command = OrderConfirmCommand::from([ 'id' => $order->id ]);
+        $this->orderCommandService()->confirm($command);
+
+        return $order;
+
+    }
+
+
+
+
 
 }

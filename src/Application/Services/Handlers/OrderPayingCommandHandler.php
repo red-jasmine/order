@@ -11,7 +11,7 @@ class OrderPayingCommandHandler extends AbstractOrderCommandHandler
 {
 
 
-    public function execute(OrderPayingCommand $command) : OrderPayment
+    public function handle(OrderPayingCommand $command) : OrderPayment
     {
         $order        = $this->find($command->id);
         $orderPayment = app(OrderFactory::class)->createOrderPayment();
@@ -20,7 +20,7 @@ class OrderPayingCommandHandler extends AbstractOrderCommandHandler
         $orderPayment->amount_type    = $command->amountType;
 
 
-        $this->handle(
+        $this->execute(
             execute: fn() => $order->paying($orderPayment),
             persistence: fn() => $this->orderRepository->store($order)
         );

@@ -3,12 +3,11 @@
 namespace RedJasmine\Order\Tests\UI\Http\Buyer;
 
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeRefundCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeReturnGoodsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectReturnGoodsCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipmentCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
@@ -154,8 +153,8 @@ class RefundTest extends Base
 
         // 5、同意退款
 
-        $agreeRefundCommand = RefundAgreeCommand::from([ 'rid' => $rid ]);
-        $this->refundCommandService()->agree($agreeRefundCommand);
+        $agreeRefundCommand = RefundAgreeRefundCommand::from([ 'rid' => $rid ]);
+        $this->refundCommandService()->agreeRefund($agreeRefundCommand);
 
 
         // 6、查询退款详情
@@ -337,8 +336,8 @@ class RefundTest extends Base
         $this->assertEquals(200, $returnGoodsResponse->status());
         // 4、卖家确认退款
 
-        $agreeRefundCommand = RefundAgreeCommand::from([ 'rid' => $rid ]);
-        $this->refundCommandService()->agree($agreeRefundCommand);
+        $agreeRefundCommand = RefundAgreeRefundCommand::from([ 'rid' => $rid ]);
+        $this->refundCommandService()->agreeRefund($agreeRefundCommand);
 
 
         // 5、查询 状态
@@ -395,8 +394,9 @@ class RefundTest extends Base
         $rid = $refundCreateResponseData['rid'];
 
         // 2、卖家拒绝退货
-        $rejectReturnGoodsCommand = RefundRejectReturnGoodsCommand::from([ 'rid' => $rid, 'reason' => '不是质量问题' ]);
-        $this->refundCommandService()->rejectReturnGoods($rejectReturnGoodsCommand);
+
+        $refundRejectCommand = RefundRejectCommand::from([ 'rid' => $rid, 'reason' => '不是质量问题' ]);
+        $this->refundCommandService()->reject($refundRejectCommand);
         // 3、查询退款详情
         $showRequestData = [ 'refund' => $rid ];
         $showResponse    = $this->getJson(route('order.buyer.refunds.show', $showRequestData, false));
@@ -470,13 +470,13 @@ class RefundTest extends Base
 
         $this->assertEquals(200, $returnGoodsResponse->status());
         //4、卖家重新发货
-        $reshippingCommand = RefundReshipGoodsCommand::from([
+        $reshippingCommand = RefundReshipmentCommand::from([
                                                                 'rid'                  => $rid,
                                                                 'express_company_code' => fake()->randomElement([ 'yunda' ]),
                                                                 'express_no'           => (string)fake()->numberBetween(111111111, 999999999)
                                                             ]);
 
-        $this->refundCommandService()->reshipGoods($reshippingCommand);
+        $this->refundCommandService()->reshipment($reshippingCommand);
         //5、查询验证
         $showRequestData = [ 'refund' => $rid ];
         $showResponse    = $this->getJson(route('order.buyer.refunds.show', $showRequestData, false));

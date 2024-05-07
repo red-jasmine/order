@@ -5,7 +5,7 @@ namespace RedJasmine\Order\Application\UserCases\Commands\Refund;
 use RedJasmine\Order\Domain\Enums\Logistics\LogisticsStatusEnum;
 use RedJasmine\Support\Data\Data;
 
-class RefundReshipGoodsCommand extends Data
+class RefundReshipmentCommand extends Data
 {
 
     public int $rid; // 退款单ID

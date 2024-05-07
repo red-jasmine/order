@@ -20,12 +20,12 @@ class OrderShippingVirtualCommandHandler extends AbstractOrderCommandHandler
     }
 
 
-    public function execute(OrderShippingVirtualCommand $command) : void
+    public function handle(OrderShippingVirtualCommand $command) : void
     {
 
         $order = $this->find($command->id);
 
-        $this->handle(
+        $this->execute(
             execute: fn() => $this->orderShippingService->virtual($order, $command->orderProductId, $command->isFinished),
             persistence: fn() => $this->orderRepository->update($order)
         );

@@ -9,7 +9,7 @@ class OrderPaidCommandHandler extends AbstractOrderCommandHandler
 {
 
 
-    public function execute(OrderPaidCommand $command) : bool
+    public function handle(OrderPaidCommand $command) : bool
     {
 
         // 加锁处理
@@ -23,7 +23,7 @@ class OrderPaidCommandHandler extends AbstractOrderCommandHandler
         $orderPayment->payment_channel_no = $command->paymentChannelNo;
         $orderPayment->payment_method     = $command->paymentMethod;
         $orderPayment->updater            = $this->getOperator();
-        $this->handle(
+        $this->execute(
             execute: fn() => $order->paid($orderPayment),
             persistence: fn() => $this->orderRepository->store($order)
         );

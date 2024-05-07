@@ -20,7 +20,7 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
      * @return Order
      * @throws Exception
      */
-    public function execute(OrderCreateCommand $data) : Order
+    public function handle(OrderCreateCommand $data) : Order
     {
         $order = app(OrderFactory::class)->createOrder();
 
@@ -44,7 +44,7 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
             $order->setAddress($address);
         }
 
-        $this->handle(
+        $this->execute(
             execute: fn() => $order->create(),
             persistence: fn() => $this->orderRepository->store($order)
         );

@@ -24,12 +24,12 @@ class OrderRemarksCommandHandler extends AbstractOrderCommandHandler
     }
 
 
-    public function execute(OrderRemarksCommand $command) : void
+    public function handle(OrderRemarksCommand $command) : void
     {
 
         $order = $this->find($command->id);
 
-        $this->handle(
+        $this->execute(
             execute: fn() => $order->remarks($this->tradeParty, $command->remarks, $command->orderProductId),
             persistence: fn() => $this->orderRepository->update($order)
         );

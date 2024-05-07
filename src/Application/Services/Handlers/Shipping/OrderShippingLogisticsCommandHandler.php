@@ -21,7 +21,7 @@ class OrderShippingLogisticsCommandHandler extends AbstractOrderCommandHandler
     }
 
 
-    public function execute(OrderShippingLogisticsCommand $command) : void
+    public function handle(OrderShippingLogisticsCommand $command) : void
     {
 
         $order                                = $this->find($command->id);
@@ -37,7 +37,7 @@ class OrderShippingLogisticsCommandHandler extends AbstractOrderCommandHandler
         $orderLogistics->shipping_time        = now();
 
 
-        $this->handle(
+        $this->execute(
             execute: fn() => $this->orderShippingService->logistics($order, $command->isSplit, $orderLogistics),
             persistence: fn() => $this->orderRepository->update($order)
         );

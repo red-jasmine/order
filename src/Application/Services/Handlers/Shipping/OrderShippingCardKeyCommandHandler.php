@@ -21,7 +21,7 @@ class OrderShippingCardKeyCommandHandler extends AbstractOrderCommandHandler
     }
 
 
-    public function execute(OrderShippingCardKeyCommand $command) : void
+    public function handle(OrderShippingCardKeyCommand $command) : void
     {
 
         $order = $this->find($command->id);
@@ -35,7 +35,7 @@ class OrderShippingCardKeyCommandHandler extends AbstractOrderCommandHandler
         $orderProductCardKey->status           = $command->status;
 
 
-        $this->handle(
+        $this->execute(
             execute: fn() => $this->orderShippingService->cardKey($order, $orderProductCardKey),
             persistence: fn() => $this->orderRepository->update($order)
         );

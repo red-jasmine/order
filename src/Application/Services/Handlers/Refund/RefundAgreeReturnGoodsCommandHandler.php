@@ -2,24 +2,21 @@
 
 namespace RedJasmine\Order\Application\Services\Handlers\Refund;
 
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeRefundCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeReturnGoodsCommand;
 
 class RefundAgreeReturnGoodsCommandHandler extends AbstractRefundCommandHandler
 {
 
 
-
-
-    public function execute(RefundAgreeReturnGoodsCommand $command) : void
+    public function handle(RefundAgreeReturnGoodsCommand $command) : void
     {
+        $refund = $this->find($command->rid);
 
-        $refund  = $this->find($command->rid);
-
-        $this->pipelineManager()->call('executing');
-        $this->pipelineManager()->call('execute', fn() => $refund->agreeReturnGoods());
-        $this->refundRepository->update($refund);
-        $this->pipelineManager()->call('executed');
+        $this->execute(
+            execute: fn() => $refund->agreeReturnGoods(),
+            persistence: fn() => $this->refundRepository->update($refund)
+        );
     }
 
 }

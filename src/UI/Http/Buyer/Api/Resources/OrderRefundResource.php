@@ -68,7 +68,7 @@ class OrderRefundResource extends JsonResource
 
             'logistics'    => OrderLogisticsResource::collection($this->whenLoaded('logistics')),
             'order'        => new OrderResource($this->whenLoaded('order')),
-            'orderProduct' => new OrderProductResource($this->whenLoaded('orderProduct')),
+            'product' => new OrderProductResource($this->whenLoaded('product')),
             'payments'     => OrderPaymentResource::collection($this->whenLoaded('payments')),
         ];
     }

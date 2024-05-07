@@ -16,7 +16,7 @@ class RefundCreateCommandHandler extends AbstractOrderCommandHandler
      * @return int
      * @throws Exception
      */
-    public function execute(RefundCreateCommand $command) : int
+    public function handle(RefundCreateCommand $command) : int
     {
         $order                         = $this->find($command->id);
         $orderRefund                   = app(OrderFactory::class)->createRefund($order);
@@ -27,8 +27,7 @@ class RefundCreateCommandHandler extends AbstractOrderCommandHandler
         $orderRefund->images           = $command->images;
         $orderRefund->reason           = $command->reason;
 
-
-        $this->handle(
+        $this->execute(
             execute: fn() => $order->createRefund($orderRefund),
             persistence: fn() => $this->orderRepository->update($order),
         );

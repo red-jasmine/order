@@ -2,7 +2,6 @@
 
 namespace RedJasmine\Order\Domain\Models;
 
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -82,7 +81,7 @@ class OrderRefund extends Model
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
-    public function orderProduct() : BelongsTo
+    public function product() : BelongsTo
     {
         return $this->belongsTo(OrderProduct::class, 'order_product_id', 'id');
     }
@@ -100,64 +99,7 @@ class OrderRefund extends Model
 
 
     /**
-     * 同意退款
-     *
-     * @param string|null $amount
-     *
-     * @return void
-     * @throws RefundException
-     * @throws Exception
-     */
-    public function agree(?string $amount = null) : void
-    {
-
-        if (!in_array($this->refund_type, [ RefundTypeEnum::REFUND_ONLY, RefundTypeEnum::RETURN_GOODS_REFUND ], true)) {
-            throw new RefundException();
-        }
-        // 验证状态
-        if (!in_array($this->refund_status, [ RefundStatusEnum::WAIT_SELLER_AGREE, RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS, ], true)) {
-            throw new RefundException();
-        }
-
-        $amount = $amount ?: $this->refund_amount;
-
-
-        // TODO 验证金额
-        $this->end_time      = now();
-        $this->refund_amount = $amount;
-        $this->refund_status = RefundStatusEnum::REFUND_SUCCESS;
-
-        // TODO 退邮费
-        // 设置退款单状态
-        $this->orderProduct->refund_amount = bcadd($this->orderProduct->refund_amount, $amount, 2);
-        $this->orderProduct->refund_status = OrderRefundStatusEnum::PART_REFUND;
-        $this->orderProduct->refund_time   = $this->orderProduct->refund_time ?? now();
-        if (bccomp($this->orderProduct->refund_amount, $this->orderProduct->divided_payment_amount, 2) >= 0) {
-            $this->orderProduct->refund_status = OrderRefundStatusEnum::ALL_REFUND;
-        }
-        $this->orderProduct->order->refund_amount = bcadd($this->orderProduct->order->refund_amount, $amount, 2);
-        $this->orderProduct->order->refund_status = OrderRefundStatusEnum::PART_REFUND;
-        if (bccomp($this->orderProduct->order->refund_amount, $this->orderProduct->order->payment_amount, 2) >= 0) {
-            $this->orderProduct->order->refund_status = OrderRefundStatusEnum::ALL_REFUND;
-        }
-        $this->orderProduct->order->refund_time = $this->orderProduct->order->refund_time ?? now();
-
-
-        $payment                 = app(OrderFactory::class)->createOrderPayment();
-        $payment->order_id       = $this->order_id;
-        $payment->refund_id      = $this->id;
-        $payment->seller         = $this->seller;
-        $payment->buyer          = $this->buyer;
-        $payment->amount_type    = AmountTypeEnum::REFUND;
-        $payment->payment_amount = $this->refund_amount;
-        $payment->status         = PaymentStatusEnum::WAIT_PAY;
-        $this->payments->add($payment);
-        $this->fireModelEvent('agreed');
-    }
-
-
-    /**
-     * 拒绝退款
+     * 拒绝
      *
      * @param string $reason
      *
@@ -167,7 +109,11 @@ class OrderRefund extends Model
     public function reject(string $reason) : void
     {
 
-        if (!in_array($this->refund_status, [ RefundStatusEnum::WAIT_SELLER_AGREE, RefundStatusEnum::WAIT_SELLER_AGREE_RETURN ], true)) {
+        if (!in_array($this->refund_status, [
+            RefundStatusEnum::WAIT_SELLER_AGREE,
+            RefundStatusEnum::WAIT_SELLER_AGREE_RETURN,
+            RefundStatusEnum::WAIT_SELLER_CONFIRM,
+        ],            true)) {
             throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
         }
         $this->reject_reason = $reason;
@@ -184,7 +130,13 @@ class OrderRefund extends Model
     public function cancel() : void
     {
 
-        if (!in_array($this->refund_status, [ RefundStatusEnum::SELLER_REJECT_BUYER, RefundStatusEnum::WAIT_SELLER_AGREE, RefundStatusEnum::WAIT_SELLER_AGREE_RETURN ], true)) {
+        if (!in_array($this->refund_status,
+            [
+                RefundStatusEnum::SELLER_REJECT_BUYER,
+                RefundStatusEnum::WAIT_SELLER_AGREE,
+                RefundStatusEnum::WAIT_SELLER_AGREE_RETURN
+            ], true)) {
+
             throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
         }
 
@@ -192,6 +144,63 @@ class OrderRefund extends Model
         $this->end_time      = now();
 
         $this->fireModelEvent('canceled');
+    }
+
+    /**
+     * 同意退款
+     *
+     * @param string|null $amount
+     *
+     * @return void
+     * @throws RefundException
+     */
+    public function agreeRefund(?string $amount = null) : void
+    {
+        if (!in_array($this->refund_type, [
+            RefundTypeEnum::REFUND,
+            RefundTypeEnum::RETURN_GOODS_REFUND
+        ],            true)) {
+            throw new RefundException();
+        }
+        // 验证状态
+        if (!in_array($this->refund_status, [ RefundStatusEnum::WAIT_SELLER_AGREE, RefundStatusEnum::WAIT_SELLER_CONFIRM, ], true)) {
+            throw new RefundException();
+        }
+
+        $amount = $amount ?: $this->refund_amount;
+
+        // TODO 验证金额
+        // TODO 需要最后退邮费
+        $this->end_time      = now();
+        $this->refund_amount = $amount;
+        $this->refund_status = RefundStatusEnum::REFUND_SUCCESS;
+
+
+        // 设置订单信息
+        $this->product->refund_amount = bcadd($this->product->refund_amount, $amount, 2);
+        $this->product->refund_status = OrderRefundStatusEnum::PART_REFUND;
+        $this->product->refund_time   = $this->product->refund_time ?? now();
+        if (bccomp($this->product->refund_amount, $this->product->divided_payment_amount, 2) >= 0) {
+            $this->product->refund_status = OrderRefundStatusEnum::ALL_REFUND;
+        }
+        $this->order->refund_amount = bcadd($this->order->refund_amount, $amount, 2);
+        $this->order->refund_status = OrderRefundStatusEnum::PART_REFUND;
+        if (bccomp($this->order->refund_amount, $this->order->payment_amount, 2) >= 0) {
+            $this->order->refund_status = OrderRefundStatusEnum::ALL_REFUND;
+        }
+        $this->order->refund_time = $this->order->refund_time ?? now();
+
+
+        $payment                 = app(OrderFactory::class)->createOrderPayment();
+        $payment->order_id       = $this->order_id;
+        $payment->refund_id      = $this->id;
+        $payment->seller         = $this->seller;
+        $payment->buyer          = $this->buyer;
+        $payment->amount_type    = AmountTypeEnum::REFUND;
+        $payment->payment_amount = $this->refund_amount;
+        $payment->status         = PaymentStatusEnum::WAIT_PAY;
+        $this->payments->add($payment);
+        $this->fireModelEvent('agreed');
     }
 
 
@@ -219,44 +228,72 @@ class OrderRefund extends Model
 
 
     /**
-     * 拒绝退货
+     * 同意补发
+     * @return void
      * @throws RefundException
      */
-    public function rejectReturnGoods(string $reason) : void
+    public function agreeReshipment()
+    {
+        if (!in_array($this->refund_type, [
+            RefundTypeEnum::RESHIPMENT,
+        ],            true)) {
+            throw  RefundException::newFromCodes(RefundException::REFUND_TYPE_NOT_ALLOW);
+        }
+
+        if ($this->refund_type === RefundTypeEnum::RESHIPMENT) {
+            throw  RefundException::newFromCodes(RefundException::REFUND_TYPE_NOT_ALLOW);
+        }
+        if ($this->refund_status !== RefundStatusEnum::WAIT_SELLER_AGREE) {
+            throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
+        }
+        $this->refund_status = RefundStatusEnum::WAIT_SELLER_RESHIPMENT;
+        $this->updater       = $this->getOperator();
+        $this->fireModelEvent('agreedReshipment');
+    }
+
+    /**
+     * 退货货物时需要确认
+     *
+     * @return void
+     * @throws RefundException
+     */
+    public function confirm() : void
+    {
+        if (!in_array($this->refund_type, [
+            RefundTypeEnum::SERVICE,
+            RefundTypeEnum::EXCHANGE,
+        ],            true)) {
+            throw  RefundException::newFromCodes(RefundException::REFUND_TYPE_NOT_ALLOW);
+        }
+        if ($this->refund_status !== RefundStatusEnum::WAIT_SELLER_CONFIRM) {
+            throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
+        }
+        $this->refund_status = RefundStatusEnum::WAIT_SELLER_RESHIPMENT;
+        $this->updater       = $this->getOperator();
+        $this->fireModelEvent('confirmed');
+
+    }
+
+    /**
+     * 回退货物
+     * @throws RefundException
+     */
+    public function returnGoods(OrderLogistics $orderLogistics) : void
     {
         if (!in_array($this->refund_type, [
             RefundTypeEnum::RETURN_GOODS_REFUND,
             RefundTypeEnum::EXCHANGE,
             RefundTypeEnum::SERVICE,
         ],            true)) {
-
             throw  RefundException::newFromCodes(RefundException::REFUND_TYPE_NOT_ALLOW);
         }
-        if ($this->refund_status !== RefundStatusEnum::WAIT_SELLER_AGREE_RETURN) {
-            throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
-        }
-
-
-        $this->refund_status = RefundStatusEnum::SELLER_REJECT_BUYER;
-
-        $this->reject_reason = $reason;
-
-        $this->fireModelEvent('rejectedReturnGoods');
-    }
-
-    /**
-     * @throws RefundException
-     */
-    public function returnGoods(OrderLogistics $orderLogistics) : void
-    {
 
         if ($this->refund_status !== RefundStatusEnum::WAIT_BUYER_RETURN_GOODS) {
             throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
         }
 
-        $this->refund_status = RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS;
+        $this->refund_status = RefundStatusEnum::WAIT_SELLER_CONFIRM;
 
-        $orderLogistics->shippable_type = 'refund';
 
         $this->logistics->add($orderLogistics);
 
@@ -267,16 +304,17 @@ class OrderRefund extends Model
 
     /**
      * 再次发货
+     * // 换货、维修、补发
      *
      * @param OrderLogistics $orderLogistics
      *
      * @return void
      * @throws RefundException
      */
-    public function reshipGoods(OrderLogistics $orderLogistics) : void
+    public function reshipment(OrderLogistics $orderLogistics) : void
     {
 
-        if ($this->refund_status !== RefundStatusEnum::WAIT_SELLER_CONFIRM_GOODS) {
+        if ($this->refund_status !== RefundStatusEnum::WAIT_SELLER_RESHIPMENT) {
             throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
         }
         $this->refund_status = RefundStatusEnum::REFUND_SUCCESS;
@@ -285,6 +323,9 @@ class OrderRefund extends Model
         $orderLogistics->shippable_type = 'refund';
 
         $this->logistics->add($orderLogistics);
+
+        $this->fireModelEvent('reshipment');
+
 
     }
 }

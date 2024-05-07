@@ -8,10 +8,10 @@ class OrderProgressCommandHandler extends AbstractOrderCommandHandler
 {
 
 
-    public function execute(OrderProgressCommand $command) : int
+    public function handle(OrderProgressCommand $command) : int
     {
         $order = $this->find($command->id);
-        return $this->handle(
+        return $this->execute(
             execute: fn() => $order->setProductProgress($command->orderProductId, $command->progress, $command->isAbsolute, $command->isAllowLess),
             persistence: fn() => $this->orderRepository->store($order)
         );

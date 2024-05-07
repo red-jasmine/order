@@ -2,20 +2,25 @@
 
 namespace RedJasmine\Order\Application\Services\Handlers\Refund;
 
-use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipGoodsCommand;
+use Exception;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipmentCommand;
 use RedJasmine\Order\Domain\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Domain\OrderFactory;
 
-class RefundReshipGoodsCommandHandler extends AbstractRefundCommandHandler
+class RefundReshipmentCommandHandler extends AbstractRefundCommandHandler
 {
 
 
-
-
-    public function execute(RefundReshipGoodsCommand $command) : void
+    /**
+     * @param RefundReshipmentCommand $command
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function handle(RefundReshipmentCommand $command) : void
     {
 
-        $refund  = $this->find($command->rid);
+        $refund                               = $this->find($command->rid);
         $orderLogistics                       = app(OrderFactory::class)->createOrderLogistics();
         $orderLogistics->shippable_type       = 'refund';
         $orderLogistics->shippable_id         = $refund->id;
@@ -28,10 +33,11 @@ class RefundReshipGoodsCommandHandler extends AbstractRefundCommandHandler
         $orderLogistics->status               = $command->status;
         $orderLogistics->shipping_time        = now();
 
-        $this->pipelineManager()->call('executing');
-        $this->pipelineManager()->call('execute', fn() => $refund->reshipGoods($orderLogistics));
-        $this->refundRepository->update($refund);
-        $this->pipelineManager()->call('executed');
+        $this->execute(
+            execute: fn() => $refund->reshipment($orderLogistics),
+            persistence: fn() => $this->refundRepository->update($refund)
+        );
+
 
     }
 

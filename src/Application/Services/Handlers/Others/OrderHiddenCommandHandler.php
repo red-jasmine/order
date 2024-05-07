@@ -25,10 +25,10 @@ class OrderHiddenCommandHandler extends AbstractOrderCommandHandler
     }
 
 
-    public function execute(OrderHiddenCommand $command) : void
+    public function handle(OrderHiddenCommand $command) : void
     {
         $order = $this->find($command->id);
-        $this->handle(
+        $this->execute(
             execute: fn() => $order->hiddenOrder($this->getTradeParty(), $command->isHidden),
             persistence: fn() => $this->orderRepository->update($order)
         );

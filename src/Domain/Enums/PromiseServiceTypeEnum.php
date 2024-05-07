@@ -15,7 +15,6 @@ enum PromiseServiceTypeEnum: string
 
     case SERVICE = 'service';
 
-    case GUARANTEE = 'guarantee';
 
 
     public static function labels() : array
@@ -25,8 +24,6 @@ enum PromiseServiceTypeEnum: string
             self::REFUND->value    => '退款',
             self::EXCHANGE->value  => '换货',
             self::SERVICE->value   => '保修',
-            self::GUARANTEE->value => '保价',
-
         ];
     }
 

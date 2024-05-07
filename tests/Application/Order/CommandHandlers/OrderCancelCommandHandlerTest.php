@@ -7,10 +7,10 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
 use RedJasmine\Order\Domain\Models\Order;
-use RedJasmine\Order\Tests\Application\ApplicationTest;
+use RedJasmine\Order\Tests\Application\ApplicationTestCase;
 use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 
-class OrderCancelCommandHandlerTest extends ApplicationTest
+class OrderCancelCommandHandlerTest extends ApplicationTestCase
 {
 
 
