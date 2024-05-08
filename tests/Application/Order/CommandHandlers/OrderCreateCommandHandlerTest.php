@@ -33,9 +33,7 @@ class OrderCreateCommandHandlerTest extends ApplicationTestCase
         $order = $this->orderCommandService()->create($orderCreateCommand);
         $this->assertInstanceOf(Order::class, $order);
 
-
         $this->assertEquals($orderCreateCommand->orderType, $order->order_type);
-        $this->assertEquals($orderCreateCommand->shippingType, $order->shipping_type);
         $this->assertCount($orderCreateCommand->products->count(), $order->products);
 
     }

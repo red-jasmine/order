@@ -27,7 +27,6 @@ return new class extends Migration {
             $table->string('title')->nullable()->comment('标题');
 
             $table->enum('order_type', OrderTypeEnum::values())->comment(OrderTypeEnum::comments('订单类型'));
-            $table->enum('shipping_type', ShippingTypeEnum::values())->comment(ShippingTypeEnum::comments('发货类型'));
             $table->enum('pay_type', PayTypeEnum::values())->comment(PayTypeEnum::comments('支付方式'));
 
             $table->enum('order_status', OrderStatusEnum::values())->comment(OrderStatusEnum::comments('订单状态'));
@@ -38,14 +37,8 @@ return new class extends Migration {
             $table->enum('settlement_status', SettlementStatusEnum::values())->default(SettlementStatusEnum::NIL->value)->comment(SettlementStatusEnum::comments('结算状态'));
             $table->string('seller_custom_status', 32)->default('nil')->comment('卖家自定义状态');
 
-
             // 订单锁
-            // 周期订单
-
             // 发票信息
-            // 补差类 订单
-
-
             $table->decimal('product_amount', 12)->default(0)->comment('商品金额');
             $table->decimal('cost_amount', 12)->default(0)->comment('成本金额');
             $table->decimal('tax_amount', 12)->default(0)->comment('税费金额');

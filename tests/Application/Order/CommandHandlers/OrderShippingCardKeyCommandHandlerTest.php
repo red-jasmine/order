@@ -10,39 +10,19 @@ use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderPayment;
 use RedJasmine\Order\Tests\Application\ApplicationTestCase;
+use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 
 class OrderShippingCardKeyCommandHandlerTest extends ApplicationTestCase
 {
 
-
-    protected function orderPaid() : Order
+    public function fake() : OrderFake
     {
-        // 1、创建订单
-        $fake               = $this->fake();
+        $fake               = parent::fake();
         $fake->productCount = 2;
         $fake->shippingType = ShippingTypeEnum::CDK;
-
-        $orderCreateCommand = OrderCreateCommand::from($fake->order());
-        $order              = $this->orderCommandService()->create($orderCreateCommand);
-        $this->assertInstanceOf(Order::class, $order);
-
-
-        // 2、调用支付中
-        $orderPayingCommand = OrderPayingCommand::from([ 'id' => $order->id, 'amount' => $order->payable_amount ]);
-        $orderPayment       = $this->orderCommandService()->paying($orderPayingCommand);
-        $this->assertInstanceOf(OrderPayment::class, $orderPayment);
-
-
-        // 3、 设置支付成功
-        $orderPaidCommand = $fake->paid([
-                                            'id'               => $order->id,
-                                            'order_payment_id' => $orderPayment->id,
-                                            'amount'           => $orderPayment->payment_amount,
-                                        ]);
-
-        $this->orderCommandService()->paid($orderPaidCommand);
-        return $order;
+        return $fake;
     }
+
 
     /**
      * @test 订单能卡密发货

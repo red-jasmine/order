@@ -9,14 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use phpDocumentor\Reflection\Types\This;
 use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
-use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Enums\TradePartyEnums;
 use RedJasmine\Order\Domain\Events\OrderCanceledEvent;
 use RedJasmine\Order\Domain\Events\OrderConfirmedEvent;
@@ -29,19 +26,16 @@ use RedJasmine\Order\Domain\Events\OrderShippedEvent;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Exceptions\OrderExceptionCodeEnum;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
-use RedJasmine\Order\Domain\Models\ValueObjects\Progress;
 use RedJasmine\Order\Domain\Services\OrderRefundService;
 use RedJasmine\Order\Services\OrderService;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
 use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
-use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 use Spatie\LaravelData\WithData;
-use Throwable;
 
 
 class Order extends Model
@@ -86,7 +80,6 @@ class Order extends Model
 
     protected $casts = [
         'order_type'             => OrderTypeEnum::class,
-        'shipping_type'          => ShippingTypeEnum::class,
         'order_status'           => OrderStatusEnum::class,
         'payment_status'         => PaymentStatusEnum::class,
         'shipping_status'        => ShippingStatusEnum::class,

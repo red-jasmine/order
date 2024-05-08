@@ -25,7 +25,7 @@ class OrderFake
      * 发货类型
      * @var ShippingTypeEnum
      */
-    public ShippingTypeEnum $shippingType = ShippingTypeEnum::VIRTUAL;
+    public ShippingTypeEnum $shippingType = ShippingTypeEnum::EXPRESS;
     // 商品数量
     public int $productCount = 3;
 
@@ -75,7 +75,6 @@ class OrderFake
             ],
             'title'          => fake()->text(),
             'order_type'     => $this->orderType->value,
-            'shipping_type'  => $this->shippingType->value,
             'source_type'    => fake()->randomElement([ 'product', 'activity' ]),
             'source_id'      => fake()->numerify('out-order-id-########'),
             'outer_order_id' => fake()->numerify('out-order-id-########'),

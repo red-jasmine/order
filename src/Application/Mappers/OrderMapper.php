@@ -17,7 +17,6 @@ class OrderMapper
         $order->title                = $orderData->title;
         $order->order_type           = $orderData->orderType;
         $order->pay_type             = $orderData->payType;
-        $order->shipping_type        = $orderData->shippingType;
         $order->source_type          = $orderData->sourceType;
         $order->source_id            = $orderData->sourceId;
         $order->seller_custom_status = $orderData->sellerCustomStatus ?? 'nil';

@@ -15,6 +15,7 @@ class OrderProgressCommandHandlerTest extends ApplicationTestCase
 {
 
 
+
     protected function orderPaidAndShippingVirtual() : Order
     {
         // 1、创建订单

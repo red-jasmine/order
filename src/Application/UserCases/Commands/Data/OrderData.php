@@ -5,12 +5,9 @@ namespace RedJasmine\Order\Application\UserCases\Commands\Data;
 use Illuminate\Support\Collection;
 use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Enums\PayTypeEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
-use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
 use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
-use Spatie\LaravelData\Attributes\WithCastAndTransformer;
 
 class OrderData extends Data
 {
@@ -44,11 +41,6 @@ class OrderData extends Data
      * @var OrderTypeEnum
      */
     public OrderTypeEnum $orderType;
-    /**
-     * 发货类型
-     * @var ShippingTypeEnum
-     */
-    public ShippingTypeEnum $shippingType;
 
     /**
      * 支付方式
@@ -61,9 +53,9 @@ class OrderData extends Data
     public ?string $outerOrderId       = null;
     public ?string $sellerCustomStatus = null;
 
-    public Amount  $freightAmount;
+    public Amount $freightAmount;
 
-    public Amount  $discountAmount;
+    public Amount $discountAmount;
 
 
     public ?UserData $channel    = null;
