@@ -5,6 +5,7 @@ namespace RedJasmine\Order\Tests\UI\Http\Buyer;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeRefundCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeReturnGoodsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundConfirmCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipmentCommand;
@@ -53,8 +54,8 @@ class RefundTest extends Base
         $payingRequestData = [ 'id' => $orderId ];
         $payingResponse    = $this->postJson(route('order.buyer.orders.paying', [], false), $payingRequestData);
         $this->assertEquals(200, $payingResponse->status());
-        $payingResult     = $payingResponse->json('data');
-        $order_payment_id = $payingResult['order_payment_id'];
+        $payingResult = $payingResponse->json('data');
+        $orderPayment = $payingResult['order_payment'];
         $this->assertEquals($orderId, $payingResult['id']);
 
 
@@ -62,7 +63,7 @@ class RefundTest extends Base
 
         $paymentCommand = OrderPaidCommand::from([
                                                      'id'                 => $orderId,
-                                                     'order_payment_id'   => $order_payment_id,
+                                                     'order_payment_id'   => $orderPayment['id'],
                                                      'amount'             => $payingResult['amount'],
                                                      'payment_type'       => 'payment',
                                                      'payment_id'         => fake()->numberBetween(1000000, 999999999),
@@ -419,7 +420,8 @@ class RefundTest extends Base
      *       1、申请换货
      *       2、卖家同意退回货物
      *       3、买家寄回货物
-     *       4、卖家重新发货
+     *       4、买家确认
+     *       6、卖家重新发货
      *       5、查询验证
      *       期望结果：
      *       1、能正常换货
@@ -469,15 +471,22 @@ class RefundTest extends Base
         $returnGoodsResponse    = $this->postJson(route('order.buyer.refunds.return-goods', [], false), $returnGoodsRequestData);
 
         $this->assertEquals(200, $returnGoodsResponse->status());
-        //4、卖家重新发货
+
+        // 4、卖家确认
+        $confirmCommand = RefundConfirmCommand::from([ 'rid' => $rid ]);
+
+        $this->refundCommandService()->confirm($confirmCommand);
+
+
+        //5、卖家重新发货
         $reshippingCommand = RefundReshipmentCommand::from([
-                                                                'rid'                  => $rid,
-                                                                'express_company_code' => fake()->randomElement([ 'yunda' ]),
-                                                                'express_no'           => (string)fake()->numberBetween(111111111, 999999999)
-                                                            ]);
+                                                               'rid'                  => $rid,
+                                                               'express_company_code' => fake()->randomElement([ 'yunda' ]),
+                                                               'express_no'           => (string)fake()->numberBetween(111111111, 999999999)
+                                                           ]);
 
         $this->refundCommandService()->reshipment($reshippingCommand);
-        //5、查询验证
+        //6、查询验证
         $showRequestData = [ 'refund' => $rid ];
         $showResponse    = $this->getJson(route('order.buyer.refunds.show', $showRequestData, false));
         $this->assertEquals(200, $showResponse->status());

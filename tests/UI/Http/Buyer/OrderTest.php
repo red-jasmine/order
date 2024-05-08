@@ -146,4 +146,20 @@ class OrderTest extends Base
     }
 
 
+    /**
+     * @test 能进行订单确认
+     * 前提条件:
+     * 步骤：
+     *  1、
+     *  2、
+     *  3、
+     * 预期结果:
+     *  1、
+     *  2、
+     * @return void
+     */
+    public function can_order_confirm()
+    {
+
+    }
 }

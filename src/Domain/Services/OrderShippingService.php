@@ -21,11 +21,15 @@ class OrderShippingService
      * @param OrderLogistics $logistics
      *
      * @return void
+     * @throws OrderException
      */
     public function logistics(Order $order, bool $isSplit = false, OrderLogistics $logistics) : void
     {
-        // 添加物流记录
 
+        if (!in_array($order->shipping_type, [ ShippingTypeEnum::EXPRESS, ShippingTypeEnum::CITY_DELIVERY ], true)) {
+            throw OrderException::newFromCodes(OrderException::SHIPPING_TYPE_NOT_ALLOW, '发货类型不支持操作');
+        }
+        // 添加物流记录
         $order->addLogistics($logistics);
         // 设置 订单商品未发货状态
         $order->products
@@ -111,6 +115,4 @@ class OrderShippingService
         $order->shipping();
     }
 
-
-    // 同城配置 TODO
 }

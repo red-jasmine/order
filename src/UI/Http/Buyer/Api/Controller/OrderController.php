@@ -36,6 +36,13 @@ class OrderController extends Controller
         return OrderResource::collection($result->appends($request->query()));
     }
 
+    public function show(Request $request, int $id) : OrderResource
+    {
+        $result = $this->queryService->find($id, $request->query());
+        return OrderResource::make($result);
+    }
+
+
     public function store(Request $request) : OrderResource
     {
         $request->offsetSet('buyer', $this->getOwner());
@@ -48,10 +55,14 @@ class OrderController extends Controller
     {
         $order = $this->queryService->find($request->id);
 
-        $command   = OrderPayingCommand::from([ 'id' => $order->id, 'amount' => $order->payable_amount ]);
-        $paymentId = $this->commandService->paying($command);
+        $command = OrderPayingCommand::from([ 'id' => $order->id, 'amount' => $order->payable_amount ]);
+        $payment = $this->commandService->paying($command);
 
-        return self::success([ 'id' => $order->id, 'order_payment_id' => $paymentId, 'amount' => $order->payable_amount ]);
+        return static::success([
+                                   'id'            => $order->id,
+                                   'order_payment' => $payment,
+                                   'amount'        => $order->payable_amount->value()
+                               ]);
     }
 
 
@@ -68,11 +79,6 @@ class OrderController extends Controller
         return static::success();
     }
 
-    public function show(Request $request, int $id) : OrderResource
-    {
-        $result = $this->queryService->find($id, $request->query());
-        return OrderResource::make($result);
-    }
 
     public function destroy($id) : JsonResponse
     {
