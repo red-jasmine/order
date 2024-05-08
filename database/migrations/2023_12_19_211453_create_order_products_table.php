@@ -58,16 +58,13 @@ return new class extends Migration {
             $table->enum('rate_status', RateStatusEnum::values())->default(RateStatusEnum::NIL->value)->comment(RateStatusEnum::comments('评价状态'));
             $table->enum('settlement_status', SettlementStatusEnum::values())->default(SettlementStatusEnum::NIL->value)->comment(SettlementStatusEnum::comments('结算状态'));
             $table->string('seller_custom_status', 32)->default('nil')->comment('卖家自定义状态');
-
-            $table->unsignedBigInteger('batch_no')->default(0)->comment('批次');
+            $table->string('abnormal_status', 32)->default('nil')->comment('异常状态');
             // 自动确认时间
             $table->unsignedBigInteger('progress')->nullable()->comment('进度');
             $table->unsignedBigInteger('progress_total')->nullable()->comment('进度总数');
             $table->unsignedBigInteger('gift_point')->default(0)->comment('赠送积分');
-            // TODO 异常状态
             // 电子票据商品有效期
             // 是否为赠品
-            // 是否为代销
             $table->string('promise_services')->nullable()->comment('承诺服务');
             $table->string('warehouse_code', 32)->nullable()->comment('仓库编码');
             $table->timestamp('created_time')->nullable()->comment('创建时间');
@@ -82,6 +79,7 @@ return new class extends Migration {
             $table->timestamp('rate_time')->nullable()->comment('评价时间');
             $table->timestamp('settlement_time')->nullable()->comment('结算时间');
             $table->string('outer_order_product_id', 64)->nullable()->comment('外部商品单号');
+            $table->unsignedBigInteger('batch_no')->default(0)->comment('批次号');
             $table->unsignedBigInteger('version')->default(0)->comment('版本');
             $table->nullableMorphs('creator');
             $table->nullableMorphs('updater');
