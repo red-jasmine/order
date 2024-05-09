@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\UI\Http\Buyer\Api\Controller;
+namespace RedJasmine\Order\UI\Http\Seller\Api\Controller;
 
 
 use Illuminate\Http\JsonResponse;
@@ -9,12 +9,16 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use RedJasmine\Order\Application\Services\OrderCommandService;
 use RedJasmine\Order\Application\Services\OrderQueryService;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCancelCommand;
-use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderPaidCommand;
 use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
+use RedJasmine\Order\Application\UserCases\Commands\OrderProgressCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
-use RedJasmine\Order\UI\Http\Buyer\Api\Resources\OrderResource;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKeyCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
+use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
+use RedJasmine\Order\UI\Http\Seller\Api\Resources\OrderResource;
 
 class OrderController extends Controller
 {
@@ -26,7 +30,7 @@ class OrderController extends Controller
         $this->commandService->setOperator(fn() => $this->getUser());
 
         $this->queryService->withQuery(function ($query) {
-            $query->onlyBuyer($this->getOwner());
+            $query->onlySeller($this->getOwner());
         });
     }
 
@@ -48,40 +52,68 @@ class OrderController extends Controller
 
     public function store(Request $request) : OrderResource
     {
-        $request->offsetSet('buyer', $this->getOwner());
-
         $command = OrderCreateCommand::from($request->all());
         $result  = $this->commandService->create($command);
-
         return OrderResource::make($result);
     }
 
+
     public function paying(Request $request) : JsonResponse
     {
+
+        $command = OrderPayingCommand::from($request->all());
+
         $order = $this->queryService->find($request->id);
 
-        $command = OrderPayingCommand::from([ 'id' => $order->id, 'amount' => $order->payable_amount ]);
         $payment = $this->commandService->paying($command);
 
         return static::success([ 'id' => $order->id, 'order_payment' => $payment, 'amount' => $order->payable_amount->value() ]);
     }
 
-
-    public function confirm(Request $request) : JsonResponse
+    public function paid(Request $request) : JsonResponse
     {
-        $order = $this->queryService->find($request->id);
+        $command = OrderPaidCommand::from($request->all());
 
-        $command = OrderConfirmCommand::from($request->all());
-        $this->commandService->confirm($command);
+        $this->queryService->find($command->id);
+
+        $this->commandService->paid($command);
 
         return static::success();
     }
 
-    public function cancel(Request $request) : JsonResponse
+
+    public function shippingLogistics(Request $request) : JsonResponse
     {
-        $command = OrderCancelCommand::from($request->all());
-        $this->queryService->find($request->id);
-        $this->commandService->cancel($command);
+
+        $command = OrderShippingLogisticsCommand::from($request->all());
+
+        $this->queryService->find($command->id);
+
+        $this->commandService->shippingLogistics($command);
+
+        return static::success();
+    }
+
+    public function shippingVirtual(Request $request) : JsonResponse
+    {
+
+        $command = OrderShippingVirtualCommand::from($request->all());
+
+        $this->queryService->find($command->id);
+
+        $this->commandService->shippingVirtual($command);
+
+        return static::success();
+    }
+
+    public function shippingCardKey(Request $request) : JsonResponse
+    {
+
+        $command = OrderShippingCardKeyCommand::from($request->all());
+
+        $this->queryService->find($command->id);
+
+        $this->commandService->shippingCardKey($command);
 
         return static::success();
     }
@@ -89,9 +121,21 @@ class OrderController extends Controller
 
     public function destroy($id) : JsonResponse
     {
+
         $command = OrderHiddenCommand::from([ 'id' => $id ]);
         $this->queryService->find($command->id);
-        $this->commandService->buyerHidden($command);
+
+        $this->commandService->sellerHidden($command);
+
+        return static::success();
+    }
+
+    public function cancel(Request $request) : JsonResponse
+    {
+
+        $command = OrderCancelCommand::from($request->all());
+        $this->queryService->find($command->id);
+        $this->commandService->cancel($command);
 
         return static::success();
     }
@@ -102,7 +146,17 @@ class OrderController extends Controller
         $this->queryService->find($request->id);
         $command = OrderRemarksCommand::from($request->all());
 
-        $this->commandService->buyerRemarks($command);
+        $this->commandService->sellerRemarks($command);
         return static::success();
+    }
+
+
+    public function progress(Request $request) : JsonResponse
+    {
+        $command = OrderProgressCommand::from($request->all());
+        $this->queryService->find($command->id);
+        $this->commandService->progress($command);
+        return static::success();
+
     }
 }

@@ -20,6 +20,7 @@ class OrderBuyerApiRoute
             Route::apiResource('orders', OrderController::class)->names('order.buyer.orders');
             Route::post('orders/cancel', [ OrderController::class, 'cancel' ])->name('order.buyer.orders.cancel');
             Route::post('orders/paying', [ OrderController::class, 'paying' ])->name('order.buyer.orders.paying');
+            Route::post('orders/remarks', [ OrderController::class, 'remarks' ])->name('order.buyer.orders.remarks');
 
 
             // 退款售后
