@@ -24,7 +24,6 @@ class OrderResource extends JsonResource
             'buyer_nickname'  => $this->buyer_nickname,
             'title'           => $this->title,
             'order_type'      => $this->order_type,
-            'shipping_type'   => $this->shipping_type,
             'pay_type'        => $this->pay_type,
             'product_amount'  => $this->product_amount,
             'tax_amount'      => $this->tax_amount,

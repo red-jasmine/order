@@ -27,7 +27,10 @@ class OrderProductResource extends JsonResource
             'sku_id'                  => $this->sku_id,
             'barcode'                 => $this->barcode,
             'num'                     => $this->num,
+            'unit'                    => $this->unit,
             'price'                   => $this->price,
+            'cost_price'              => $this->cost_price,
+            'cost_amount'             => $this->cost_amount,
             'product_amount'          => $this->product_amount,
             'tax_amount'              => $this->tax_amount,
             'discount_amount'         => $this->discount_amount,
@@ -36,9 +39,11 @@ class OrderProductResource extends JsonResource
             'divided_discount_amount' => $this->divided_discount_amount,
             'divided_payment_amount'  => $this->divided_payment_amount,
             'refund_amount'           => $this->refund_amount,
+            'commission_amount'       => $this->commission_amount,
 
             'progress'               => $this->progress,
             'progress_total'         => $this->progress_total,
+            'gift_point' => $this->gift_point,
             'outer_order_product_id' => $this->outer_order_product_id,
 
             'version'              => $this->version,

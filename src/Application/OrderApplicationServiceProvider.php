@@ -2,12 +2,9 @@
 
 namespace RedJasmine\Order\Application;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use RedJasmine\Order\Domain\Models\Casts\PromiseServiceValueCastTransformer;
-use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
-use RedJasmine\Order\Domain\Observer\OrderObserver;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Order\Domain\Repositories\RefundRepositoryInterface;
 use RedJasmine\Order\Infrastructure\ReadRepositories\Mysql\OrderReadRepository;
@@ -46,7 +43,7 @@ class OrderApplicationServiceProvider extends ServiceProvider
         $config->set('data.casts.' . PromiseServiceValue::class, PromiseServiceValueCastTransformer::class);
         $config->set('data.transformers.' . PromiseServiceValue::class, PromiseServiceValueCastTransformer::class);
 
-        //dd( $config->get('data.transformers'));
+       
     }
 
     public function boot() : void
