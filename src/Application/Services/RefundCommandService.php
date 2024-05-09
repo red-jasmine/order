@@ -18,7 +18,7 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipmentCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
-use RedJasmine\Support\Application\ApplicationService;
+use RedJasmine\Support\Application\ApplicationCommandService;
 
 /**
  * @method int create(RefundCreateCommand $command)
@@ -30,7 +30,7 @@ use RedJasmine\Support\Application\ApplicationService;
  * @method void confirm(RefundConfirmCommand $command)
  * @method void reshipment(RefundReshipmentCommand $command)
  */
-class RefundCommandService extends ApplicationService
+class RefundCommandService extends ApplicationCommandService
 {
     protected static $macros = [
         'create'           => RefundCreateCommandHandler::class,

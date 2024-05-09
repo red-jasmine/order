@@ -29,7 +29,7 @@ use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogist
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderPayment;
-use RedJasmine\Support\Application\ApplicationService;
+use RedJasmine\Support\Application\ApplicationCommandService;
 
 
 /**
@@ -48,7 +48,7 @@ use RedJasmine\Support\Application\ApplicationService;
  * @see OrderConfirmCommandHandler::handle()
  * @method void confirm(OrderConfirmCommand $command)
  */
-class OrderCommandService extends ApplicationService
+class OrderCommandService extends ApplicationCommandService
 {
 
     protected static $macros = [
