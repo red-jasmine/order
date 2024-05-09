@@ -4,8 +4,8 @@ namespace RedJasmine\Order\Domain\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RedJasmine\Order\Domain\Enums\Payments\AmountTypeEnum;
-use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\Payments\AmountTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\PaymentStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 

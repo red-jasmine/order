@@ -2,11 +2,9 @@
 
 namespace RedJasmine\Order\Domain\Observer;
 
-use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Strategies\OrderFlowInterface;
-use RedJasmine\Order\Domain\Strategies\OrderSopFlow;
 
 /**
  * 标准电商流程

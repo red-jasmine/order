@@ -10,9 +10,9 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipmentCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
-use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
-use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 
 

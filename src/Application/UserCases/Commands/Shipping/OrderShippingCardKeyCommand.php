@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Application\UserCases\Commands\Shipping;
 
-use RedJasmine\Order\Domain\Enums\OrderCardKeyStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderCardKeyStatusEnum;
 use RedJasmine\Support\Data\Data;
 
 class OrderShippingCardKeyCommand extends Data

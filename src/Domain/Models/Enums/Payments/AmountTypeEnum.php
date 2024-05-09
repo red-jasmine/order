@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\Domain\Enums\Payments;
+namespace RedJasmine\Order\Domain\Models\Enums\Payments;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 

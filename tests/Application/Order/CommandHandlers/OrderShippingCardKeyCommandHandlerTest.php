@@ -2,13 +2,9 @@
 
 namespace Order\CommandHandlers;
 
-use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
-use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
-use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
-use RedJasmine\Order\Domain\Models\Order;
-use RedJasmine\Order\Domain\Models\OrderPayment;
+use RedJasmine\Order\Domain\Models\Enums\OrderStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Tests\Application\ApplicationTestCase;
 use RedJasmine\Order\Tests\Fixtures\Orders\OrderFake;
 

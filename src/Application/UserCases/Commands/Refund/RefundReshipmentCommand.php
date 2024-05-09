@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Application\UserCases\Commands\Refund;
 
-use RedJasmine\Order\Domain\Enums\Logistics\LogisticsStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\Logistics\LogisticsStatusEnum;
 use RedJasmine\Support\Data\Data;
 
 class RefundReshipmentCommand extends Data

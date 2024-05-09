@@ -2,21 +2,20 @@
 
 namespace RedJasmine\Order\Domain\Models;
 
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Order\Domain\Enums\OrderProductTypeEnum;
-use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
-use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
-use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
-use RedJasmine\Order\Domain\Enums\PromiseServiceTypeEnum;
-use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
-use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\Casts\PromiseServicesCastTransformer;
+use RedJasmine\Order\Domain\Models\Enums\OrderProductTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderRefundStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\PromiseServiceTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
 use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;

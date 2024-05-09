@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Application\UserCases\Commands\Refund;
 
-use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
 use RedJasmine\Support\Data\Data;
 
 class RefundCreateCommand extends Data

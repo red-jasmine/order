@@ -4,8 +4,7 @@ namespace RedJasmine\Order\Application\Services\Handlers\Others;
 
 use RedJasmine\Order\Application\Services\Handlers\AbstractOrderCommandHandler;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
-use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
-use RedJasmine\Order\Domain\Enums\TradePartyEnums;
+use RedJasmine\Order\Domain\Models\Enums\TradePartyEnums;
 
 class OrderHiddenCommandHandler extends AbstractOrderCommandHandler
 {

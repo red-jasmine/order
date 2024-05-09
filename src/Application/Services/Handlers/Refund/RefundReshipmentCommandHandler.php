@@ -4,7 +4,7 @@ namespace RedJasmine\Order\Application\Services\Handlers\Refund;
 
 use Exception;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipmentCommand;
-use RedJasmine\Order\Domain\Enums\Logistics\LogisticsShipperEnum;
+use RedJasmine\Order\Domain\Models\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Domain\OrderFactory;
 
 class RefundReshipmentCommandHandler extends AbstractRefundCommandHandler

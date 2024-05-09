@@ -3,9 +3,9 @@
 namespace RedJasmine\Order\Application\Data;
 
 use Illuminate\Support\Collection;
-use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
-use RedJasmine\Order\Domain\Enums\PayTypeEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\PayTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
 

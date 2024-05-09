@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Application\Services\Handlers\Others;
 
-use RedJasmine\Order\Domain\Enums\TradePartyEnums;
+use RedJasmine\Order\Domain\Models\Enums\TradePartyEnums;
 
 class OrderBuyerHiddenCommandHandler extends OrderHiddenCommandHandler
 {

@@ -3,8 +3,8 @@
 namespace RedJasmine\Order\Application\UserCases\Commands\Data;
 
 use Illuminate\Support\Collection;
-use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
-use RedJasmine\Order\Domain\Enums\PayTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\PayTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
 use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
@@ -38,7 +38,7 @@ class OrderData extends Data
 
     /**
      * 订单类型
-     * @var OrderTypeEnum
+     * @var \RedJasmine\Order\Domain\Models\Enums\OrderTypeEnum
      */
     public OrderTypeEnum $orderType;
 

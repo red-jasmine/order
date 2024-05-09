@@ -3,11 +3,11 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use RedJasmine\Order\Domain\Enums\RefundGoodsStatusEnum;
-use RedJasmine\Order\Domain\Enums\RefundPhaseEnum;
-use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
-use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
-use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundGoodsStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundPhaseEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
 
 return new class extends Migration {
     public function up() : void

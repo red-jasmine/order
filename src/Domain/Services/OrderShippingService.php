@@ -2,9 +2,9 @@
 
 namespace RedJasmine\Order\Domain\Services;
 
-use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Exceptions\OrderException;
+use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderLogistics;
 use RedJasmine\Order\Domain\Models\OrderProduct;

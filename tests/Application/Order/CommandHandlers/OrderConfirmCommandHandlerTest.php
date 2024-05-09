@@ -3,7 +3,7 @@
 namespace RedJasmine\Order\Tests\Application\Order\CommandHandlers;
 
 use RedJasmine\Order\Application\UserCases\Commands\OrderConfirmCommand;
-use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderStatusEnum;
 
 class OrderConfirmCommandHandlerTest extends OrderCommandServiceTestCase
 {

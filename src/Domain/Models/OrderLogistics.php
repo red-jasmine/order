@@ -5,8 +5,8 @@ namespace RedJasmine\Order\Domain\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use RedJasmine\Order\Domain\Enums\Logistics\LogisticsShipperEnum;
-use RedJasmine\Order\Domain\Enums\Logistics\LogisticsStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\Logistics\LogisticsShipperEnum;
+use RedJasmine\Order\Domain\Models\Enums\Logistics\LogisticsStatusEnum;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Traits\Models\HasOperator;
 

@@ -2,7 +2,7 @@
 
 namespace RedJasmine\Order\Application\UserCases\Commands;
 
-use RedJasmine\Order\Domain\Enums\Payments\AmountTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\Payments\AmountTypeEnum;
 use RedJasmine\Support\Data\Data;
 
 class OrderPayingCommand extends Data

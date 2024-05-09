@@ -3,7 +3,6 @@
 namespace RedJasmine\Order\Domain\Models\ValueObjects;
 
 use InvalidArgumentException;
-use RedJasmine\Order\Domain\Enums\OrderProductPhaseEnum;
 use RedJasmine\Support\Domain\Models\ValueObjects\ValueObject;
 
 

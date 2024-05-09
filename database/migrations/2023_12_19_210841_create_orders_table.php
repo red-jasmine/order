@@ -3,15 +3,14 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
-use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
-use RedJasmine\Order\Domain\Enums\OrderTypeEnum;
-use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
-use RedJasmine\Order\Domain\Enums\PayTypeEnum;
-use RedJasmine\Order\Domain\Enums\RateStatusEnum;
-use RedJasmine\Order\Domain\Enums\SettlementStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderRefundStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\PayTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\RateStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\SettlementStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
 
 return new class extends Migration {
     public function up() : void

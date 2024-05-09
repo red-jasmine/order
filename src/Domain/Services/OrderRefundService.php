@@ -2,16 +2,14 @@
 
 namespace RedJasmine\Order\Domain\Services;
 
-use RedJasmine\Order\Domain\Enums\RefundPhaseEnum;
-use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
-use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
-use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
-use RedJasmine\Order\Domain\Exceptions\OrderException;
 use RedJasmine\Order\Domain\Exceptions\RefundException;
-use RedJasmine\Order\Domain\Models\OrderProduct;
+use RedJasmine\Order\Domain\Models\Enums\OrderStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundPhaseEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
+use RedJasmine\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domain\Models\OrderRefund;
-use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
 use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 
 class OrderRefundService

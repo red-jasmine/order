@@ -2,11 +2,9 @@
 
 namespace RedJasmine\Order\Domain\Strategies;
 
-use RedJasmine\Order\Domain\Enums\OrderStatusEnum;
-use RedJasmine\Order\Domain\Enums\PaymentStatusEnum;
-use RedJasmine\Order\Domain\Enums\RateStatusEnum;
-use RedJasmine\Order\Domain\Enums\SettlementStatusEnum;
-use RedJasmine\Order\Domain\Enums\ShippingStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\PaymentStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderProduct;
 

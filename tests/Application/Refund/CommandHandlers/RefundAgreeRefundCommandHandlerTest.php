@@ -4,9 +4,9 @@ namespace RedJasmine\Order\Tests\Application\Refund\CommandHandlers;
 
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundAgreeRefundCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundCreateCommand;
-use RedJasmine\Order\Domain\Enums\OrderRefundStatusEnum;
-use RedJasmine\Order\Domain\Enums\RefundStatusEnum;
-use RedJasmine\Order\Domain\Enums\RefundTypeEnum;
+use RedJasmine\Order\Domain\Models\Enums\OrderRefundStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundStatusEnum;
+use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
 
 class RefundAgreeRefundCommandHandlerTest extends RefundCommandServiceTestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace RedJasmine\Order\Domain\Enums\Logistics;
+namespace RedJasmine\Order\Domain\Models\Enums\Logistics;
 
 use RedJasmine\Support\Helpers\Enums\EnumsHelper;
 
