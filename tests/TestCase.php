@@ -2,13 +2,11 @@
 
 namespace RedJasmine\Order\Tests;
 
-use Illuminate\Contracts\Config\Repository;
-use Orchestra\Testbench\Concerns\WithWorkbench;
+use Illuminate\Foundation\Application;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
+use Orchestra\Testbench\Concerns\WithWorkbench;
 use function Orchestra\Testbench\artisan;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -29,8 +27,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
     }
 
 
-
-
     /**
      * Define environment setup.
      *
@@ -38,31 +34,21 @@ class TestCase extends \Orchestra\Testbench\TestCase
      *
      * @return void
      */
-    protected function defineEnvironment($app)
+    protected function defineEnvironment($app):void
     {
-        // // Setup default database to use sqlite :memory:
-        tap($app['config'], function (Repository $config) {
-            $config->set('app.faker_locale', 'zh_CN');
-            // $config->set('database.default', 'test');
 
 
-            // // Setup queue database connections.
-            // $config([
-            //             'queue.batching.database' => 'testbench',
-            //             'queue.failed.database' => 'testbench',
-            //         ]);
-        });
     }
 
 
     /**
      * Get the application timezone.
      *
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      *
-     * @return string|null
+     * @return string
      */
-    protected function getApplicationTimezone($app)
+    protected function getApplicationTimezone($app):string
     {
         return 'Asia/Shanghai';
     }

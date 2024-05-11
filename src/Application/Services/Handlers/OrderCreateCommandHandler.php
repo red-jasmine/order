@@ -38,6 +38,7 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
             $order->addProduct($product);
         }
 
+        // TODO 判断是否需要 地址
         if ($data->address) {
             $address = app(OrderFactory::class)->createOrderAddress();
             app(OrderAddressMapper::class)->fromData($data->address, $address);

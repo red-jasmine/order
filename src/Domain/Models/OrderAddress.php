@@ -12,7 +12,6 @@ use RedJasmine\Support\Traits\Models\WithDTO;
 
 class OrderAddress extends Model
 {
-    use WithDTO;
 
     use SoftDeletes;
 
