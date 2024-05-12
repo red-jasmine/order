@@ -8,26 +8,18 @@ use RedJasmine\Order\Infrastructure\ReadRepositories\OrderReadRepositoryInterfac
 use RedJasmine\Support\Infrastructure\ReadRepositories\QueryBuilderReadRepository;
 
 
+/**
+ *
+ * @method  Order findById($id, array $query = [])
+ */
 class OrderReadRepository extends QueryBuilderReadRepository implements OrderReadRepositoryInterface
 {
 
-
     /**
+     *
      * @var $modelClass class-string
      */
     protected string $modelClass = Order::class;
-
-
-    public function findAll(array $query = []) : LengthAwarePaginator
-    {
-        return $this->query($query)->paginate();
-    }
-
-
-    public function findById($id, array $query = []) : Order
-    {
-        return $this->query($query)->findOrFail($id);
-    }
 
 
 }

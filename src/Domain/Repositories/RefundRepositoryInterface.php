@@ -3,15 +3,9 @@
 namespace RedJasmine\Order\Domain\Repositories;
 
 use RedJasmine\Order\Domain\Models\OrderRefund;
+use RedJasmine\Support\Infrastructure\Repositories\RepositoryInterface;
 
-interface RefundRepositoryInterface
+interface RefundRepositoryInterface extends RepositoryInterface
 {
 
-    public function find(int $rid) : OrderRefund;
-
-
-    public function store(OrderRefund $refund) : void;
-
-
-    public function update(OrderRefund $refund) : void;
 }

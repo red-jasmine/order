@@ -9,8 +9,5 @@ use RedJasmine\Support\Infrastructure\ReadRepositories\ReadRepositoryInterface;
 interface OrderReadRepositoryInterface extends ReadRepositoryInterface
 {
 
-    public function findAll(array $query = []) : LengthAwarePaginator;
-
-    public function findById($id, array $query = []) : Order;
 
 }

@@ -19,6 +19,8 @@ use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingCardKe
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingLogisticsCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Shipping\OrderShippingVirtualCommand;
 use RedJasmine\Order\UI\Http\Admin\Api\Resources\OrderResource;
+use RedJasmine\Support\Infrastructure\ReadRepositories\FindQuery;
+use RedJasmine\Support\Infrastructure\ReadRepositories\PaginateQuery;
 
 class OrderController extends Controller
 {
@@ -33,14 +35,15 @@ class OrderController extends Controller
 
     public function index(Request $request) : AnonymousResourceCollection
     {
-        $result = $this->queryService->paginate($request->query());
+
+        $result = $this->queryService->paginate(PaginateQuery::from($request->query()));
 
         return OrderResource::collection($result->appends($request->query()));
     }
 
     public function show(Request $request, int $id) : OrderResource
     {
-        $result = $this->queryService->find($id, $request->query());
+        $result = $this->queryService->find($id, FindQuery::from($request->all()));
 
         return OrderResource::make($result);
     }

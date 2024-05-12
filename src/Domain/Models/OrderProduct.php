@@ -18,8 +18,8 @@ use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
 use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasOperator;
 use Spatie\LaravelData\WithData;
 
 class OrderProduct extends Model

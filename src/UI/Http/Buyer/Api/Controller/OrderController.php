@@ -15,6 +15,8 @@ use RedJasmine\Order\Application\UserCases\Commands\OrderPayingCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderRemarksCommand;
 use RedJasmine\Order\UI\Http\Buyer\Api\Resources\OrderResource;
+use RedJasmine\Support\Infrastructure\ReadRepositories\FindQuery;
+use RedJasmine\Support\Infrastructure\ReadRepositories\PaginateQuery;
 
 class OrderController extends Controller
 {
@@ -33,14 +35,14 @@ class OrderController extends Controller
 
     public function index(Request $request) : AnonymousResourceCollection
     {
-        $result = $this->queryService->paginate($request->query());
+        $result = $this->queryService->paginate(PaginateQuery::from($request->query()));
 
         return OrderResource::collection($result->appends($request->query()));
     }
 
     public function show(Request $request, int $id) : OrderResource
     {
-        $result = $this->queryService->find($id, $request->query());
+        $result = $this->queryService->find($id, FindQuery::from($request->all()));
 
         return OrderResource::make($result);
     }

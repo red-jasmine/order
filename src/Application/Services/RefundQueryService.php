@@ -7,7 +7,7 @@ use RedJasmine\Support\Application\ApplicationQueryService;
 
 class RefundQueryService extends ApplicationQueryService
 {
-    public function __construct(protected RefundReadRepositoryInterface $readRepository)
+    public function __construct(protected RefundReadRepositoryInterface $repository)
     {
         parent::__construct();
     }

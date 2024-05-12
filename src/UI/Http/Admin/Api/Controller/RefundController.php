@@ -17,6 +17,8 @@ use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundRejectCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReshipmentCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Refund\RefundReturnGoodsCommand;
 use RedJasmine\Order\UI\Http\Admin\Api\Resources\OrderRefundResource;
+use RedJasmine\Support\Infrastructure\ReadRepositories\FindQuery;
+use RedJasmine\Support\Infrastructure\ReadRepositories\PaginateQuery;
 
 class RefundController extends Controller
 {
@@ -35,14 +37,14 @@ class RefundController extends Controller
 
     public function index(Request $request) : AnonymousResourceCollection
     {
-        $result = $this->queryService->paginate($request->query());
+        $result = $this->queryService->paginate(PaginateQuery::from($request->query()));
         return OrderRefundResource::collection($result);
     }
 
 
     public function show(Request $request, int $id) : OrderRefundResource
     {
-        $refund = $this->queryService->find($id, $request->query());
+        $refund = $this->queryService->find($id, FindQuery::from($request->all()));
 
         return OrderRefundResource::make($refund);
     }

@@ -3,14 +3,10 @@
 namespace RedJasmine\Order\Domain\Repositories;
 
 
-use RedJasmine\Order\Domain\Models\Order;
+use RedJasmine\Support\Infrastructure\Repositories\RepositoryInterface;
 
-interface OrderRepositoryInterface
+interface OrderRepositoryInterface extends RepositoryInterface
 {
-    public function find(int $id) : Order;
 
-    public function store(Order $order) : Order;
-
-    public function update(Order $order) : void;
 
 }

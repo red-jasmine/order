@@ -29,7 +29,6 @@ use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
 use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
 use RedJasmine\Support\Foundation\HasServiceContext;
 use RedJasmine\Support\Traits\HasDateTimeFormatter;
-use RedJasmine\Support\Traits\Models\HasOperator;
 
 
 class OrderRefund extends Model
@@ -40,7 +39,7 @@ class OrderRefund extends Model
 
     use SoftDeletes;
 
-    use HasOperator;
+    use \RedJasmine\Support\Domain\Models\Traits\HasOperator;
 
     use HasTradeParties;
 

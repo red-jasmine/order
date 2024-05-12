@@ -10,8 +10,6 @@ use RedJasmine\Support\Infrastructure\ReadRepositories\ReadRepositoryInterface;
 interface RefundReadRepositoryInterface extends ReadRepositoryInterface
 {
 
-    public function findAll(array $query = []) : LengthAwarePaginator;
 
-    public function findById($id, array $query = []) : OrderRefund;
 
 }

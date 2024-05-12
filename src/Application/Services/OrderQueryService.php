@@ -11,7 +11,7 @@ use RedJasmine\Support\Application\ApplicationQueryService;
  */
 class OrderQueryService extends ApplicationQueryService
 {
-    public function __construct(protected OrderReadRepositoryInterface $readRepository)
+    public function __construct(protected OrderReadRepositoryInterface $repository)
     {
         parent::__construct();
     }
