@@ -12,7 +12,7 @@ use Throwable;
 class OrderRepository extends EloquentRepository implements OrderRepositoryInterface
 {
 
-    protected static string $modelClass = Order::class;
+    protected static string $eloquentModelClass = Order::class;
 
 
 }

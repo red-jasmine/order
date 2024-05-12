@@ -12,7 +12,7 @@ use Throwable;
 class RefundRepository extends EloquentRepository implements RefundRepositoryInterface
 {
 
-    protected static string $modelClass = OrderRefund::class;
+    protected static string $eloquentModelClass = OrderRefund::class;
 
 
 }
