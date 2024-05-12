@@ -3,7 +3,7 @@
 namespace RedJasmine\Order\Domain\Repositories;
 
 
-use RedJasmine\Support\Infrastructure\Repositories\RepositoryInterface;
+use RedJasmine\Support\Domain\Repositories\RepositoryInterface;
 
 interface OrderRepositoryInterface extends RepositoryInterface
 {
