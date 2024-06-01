@@ -11,7 +11,7 @@ class RefundReadRepository extends QueryBuilderReadRepository implements RefundR
     /**
      * @var $modelClass class-string
      */
-    protected string $modelClass = OrderRefund::class;
+    protected static string $modelClass = OrderRefund::class;
 
 
 }

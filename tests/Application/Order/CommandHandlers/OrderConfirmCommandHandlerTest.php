@@ -10,7 +10,7 @@ class OrderConfirmCommandHandlerTest extends OrderCommandServiceTestCase
 
 
     /**
-     * @test 订单可以确认
+     *  订单可以确认
      * 前提条件: 订单支付、订单全部发货
      * 步骤：
      *  1、
@@ -21,7 +21,7 @@ class OrderConfirmCommandHandlerTest extends OrderCommandServiceTestCase
      *  2、
      * @return void
      */
-    public function can_order_confirm() : void
+    public function test_can_order_confirm() : void
     {
 
         $order = $this->orderPaidAndShipping();
@@ -30,7 +30,7 @@ class OrderConfirmCommandHandlerTest extends OrderCommandServiceTestCase
 
         $this->orderCommandService()->confirm($command);
 
-        $order = $this->orderQueryService()->find($command->id);
+        $order = $this->orderQueryService()->find($order->id);
 
 
         $this->assertEquals(OrderStatusEnum::FINISHED->value, $order->order_status->value);

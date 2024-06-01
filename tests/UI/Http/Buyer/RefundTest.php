@@ -110,7 +110,7 @@ class RefundTest extends Base
     }
 
     /**
-     * @test 创建退款买家同意
+     *  创建退款买家同意
      * 前提条件: 创建订单、发起支付、设置付款成功
      * 步骤:
      *  1、申请仅退款
@@ -121,7 +121,7 @@ class RefundTest extends Base
      *
      * @return void
      */
-    public function can_refund_create_and_seller_agree() : void
+    public function test_can_refund_create_and_seller_agree() : void
     {
 
 
@@ -172,7 +172,7 @@ class RefundTest extends Base
     }
 
     /**
-     * @test 创建退款卖家拒绝后取消
+     *  创建退款卖家拒绝后取消
      *       // 前提:订单支付成功
      *       // 步骤:
      *       // 1、申请退款
@@ -183,7 +183,7 @@ class RefundTest extends Base
      *       2、能取消成功
      * @return void
      */
-    public function can_refund_create_and_seller_reject_after_cancel() : void
+    public function test_can_refund_create_and_seller_reject_after_cancel() : void
     {
 
         // 前提:订单支付成功
@@ -232,12 +232,12 @@ class RefundTest extends Base
 
 
     /**
-     * @test 取消退款
+     *  取消退款
      * 前提条件:
      * 步骤：1、申请退款 2、取消退款 3、查看退款单状态
      * @return void
      */
-    public function can_cancel_refund() : void
+    public function test_can_cancel_refund() : void
     {
         // 前置条件
         $orderData      = $this->premise_create_order_and_paid();
@@ -280,7 +280,7 @@ class RefundTest extends Base
 
 
     /**
-     * @test 退货退款 卖家同意
+     *  退货退款 卖家同意
      * 前提条件: 订单支付成功、卖家发货
      * 步骤：
      *  1、申请退款退款
@@ -292,7 +292,7 @@ class RefundTest extends Base
      *  1、退款成功
      * @return void
      */
-    public function can_return_goods_and_refund() : void
+    public function test_can_return_goods_and_refund() : void
     {
 
         $orderData      = $this->premise_create_order_paid_shipping();
@@ -353,7 +353,7 @@ class RefundTest extends Base
     }
 
     /**
-     * @test 退货退款 卖家拒绝退货
+     *  退货退款 卖家拒绝退货
      * 前提条件: 订单支付成功、卖家发货
      * 步骤：
      *  1、申请退款退款
@@ -365,7 +365,7 @@ class RefundTest extends Base
      *  2、取消成功
      * @return void
      */
-    public function can_return_goods_seller_reject() : void
+    public function test_can_return_goods_seller_reject() : void
     {
 
         $orderData      = $this->premise_create_order_paid_shipping();
@@ -414,7 +414,7 @@ class RefundTest extends Base
 
 
     /**
-     * @test 能进行换货操作
+     *  能进行换货操作
      *       前提条件： 订单支付、并发货
      *       步骤：
      *       1、申请换货
@@ -427,7 +427,7 @@ class RefundTest extends Base
      *       1、能正常换货
      * @return void
      */
-    public function can_change_goods() : void
+    public function test_can_change_goods() : void
     {
         // 前提条件
         $orderData      = $this->premise_create_order_paid_shipping();

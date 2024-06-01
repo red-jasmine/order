@@ -17,9 +17,9 @@ use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
 use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
-use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Ecommerce\Domain\Models\Casts\AmountCastTransformer;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use Spatie\LaravelData\WithData;
 
 class OrderProduct extends Model

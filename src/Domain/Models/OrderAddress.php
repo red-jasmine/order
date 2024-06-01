@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 
 class OrderAddress extends Model
 {
 
     use SoftDeletes;
-
     use HasDateTimeFormatter;
 
     use SoftDeletes;

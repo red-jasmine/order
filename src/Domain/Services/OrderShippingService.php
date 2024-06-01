@@ -95,12 +95,12 @@ class OrderShippingService
             throw OrderException::newFromCodes(OrderException::ORDER_STATUS_NOT_ALLOW);
         }
 
-        $orderProductCardKey->creator = $order->getOperator();
+
         $orderProduct->addCardKey($orderProductCardKey);
 
         $orderProduct->shipping_status = ShippingStatusEnum::PART_SHIPPED;
         $orderProduct->shipping_time   = $orderProduct->shipping_time ?? now();
-        $orderProduct->updater         = $order->getOperator();
+
 
         if ($orderProduct->progress >= $orderProduct->num) {
             $orderProduct->shipping_status = ShippingStatusEnum::SHIPPED;

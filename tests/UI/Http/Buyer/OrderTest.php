@@ -21,7 +21,7 @@ class OrderTest extends Base
 
 
     /**
-     * @test 能创建订单
+     *  能创建订单
      * 前提条件:
      * 步骤：
      *  1、创建订单成功
@@ -32,7 +32,7 @@ class OrderTest extends Base
      *  2、订单卖家是当前用户
      * @return void
      */
-    public function can_create_order() : void
+    public function test_can_create_order() : void
     {
 
         // 创建订单
@@ -56,7 +56,7 @@ class OrderTest extends Base
 
 
     /**
-     * @test 创建订单能后 列表 和 详情能查询到
+     *  创建订单能后 列表 和 详情能查询到
      * 前提条件: 准备数据
      * 步骤：
      *  1、创建订单
@@ -67,7 +67,7 @@ class OrderTest extends Base
      *  2、详情查询成功
      * @return void
      */
-    public function create_after_can_index_and_show() : void
+    public function test_create_after_can_index_and_show() : void
     {
 
 
@@ -105,7 +105,7 @@ class OrderTest extends Base
 
 
     /**
-     * @test 创建订单后能取消
+     *  创建订单后能取消
      * 前提条件:准备订单数据
      * 步骤：
      *  1、创建订单
@@ -114,7 +114,7 @@ class OrderTest extends Base
      *  1、接口调用成功
      * @return void
      */
-    public function can_order_cancel() : void
+    public function test_can_order_cancel() : void
     {
 
 
@@ -158,7 +158,7 @@ class OrderTest extends Base
     }
 
     /**
-     * @test 订单能发起支付
+     *  订单能发起支付
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、创建订单
@@ -169,7 +169,7 @@ class OrderTest extends Base
      *  2、
      * @return void
      */
-    public function can_order_paying() : void
+    public function test_can_order_paying() : void
     {
 
 
@@ -193,7 +193,7 @@ class OrderTest extends Base
 
 
     /**
-     * @test 能进行订单确认
+     *  能进行订单确认
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、创建订单
@@ -206,7 +206,7 @@ class OrderTest extends Base
      *  2、订单已确认
      * @return void
      */
-    public function can_order_confirm() : void
+    public function test_can_order_confirm() : void
     {
         // TODO
 

@@ -18,6 +18,7 @@ class OrderPayingCommandHandler extends AbstractOrderCommandHandler
 
         $orderPayment->payment_amount = $command->amount;
         $orderPayment->amount_type    = $command->amountType;
+        $orderPayment->creator        = $this->getOperator();
 
 
         $this->execute(

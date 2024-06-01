@@ -35,6 +35,7 @@ class OrderShippingLogisticsCommandHandler extends AbstractOrderCommandHandler
         $orderLogistics->express_no           = $command->expressNo;
         $orderLogistics->status               = $command->status;
         $orderLogistics->shipping_time        = now();
+        $orderLogistics->creator              = $this->getOperator();
 
 
         $this->execute(

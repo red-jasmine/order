@@ -24,7 +24,7 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
     {
         $order = app(OrderFactory::class)->createOrder();
 
-        $order->setOperator($this->getOperator());
+        $order->creator = $this->getOperator();
         $this->setAggregate($order);
 
         // TODO 这里割裂了应该在当前类设置
@@ -44,7 +44,7 @@ class OrderCreateCommandHandler extends AbstractOrderCommandHandler
             app(OrderAddressMapper::class)->fromData($data->address, $address);
             $order->setAddress($address);
         }
-
+        $order->creator = $this->getOperator();
         $this->execute(
             execute: fn() => $order->create(),
             persistence: fn() => $this->orderRepository->store($order)

@@ -21,7 +21,7 @@ class OrderShippingCardKeyCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 订单能卡密发货
+     *  订单能卡密发货
      * 前提条件: 已支付卡密订单
      * 步骤：
      *  1、对所有订单进行卡密发货
@@ -30,7 +30,7 @@ class OrderShippingCardKeyCommandHandlerTest extends ApplicationTestCase
      *  1、
      * @return void
      */
-    public function can_shipping_card_key() : void
+    public function test_can_shipping_card_key() : void
     {
 
 

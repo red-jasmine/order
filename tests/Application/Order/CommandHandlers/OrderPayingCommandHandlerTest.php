@@ -14,7 +14,7 @@ class OrderPayingCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 创建订单
+     * 创建订单
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、创建订单
@@ -25,7 +25,7 @@ class OrderPayingCommandHandlerTest extends ApplicationTestCase
      *  2、
      * @return void
      */
-    public function can_order_paying() : void
+    public function test_can_order_paying() : void
     {
 
         // 1、创建订单

@@ -33,6 +33,7 @@ class OrderShippingCardKeyCommandHandler extends AbstractOrderCommandHandler
         $orderProductCardKey->num              = $command->num;
         $orderProductCardKey->extends          = $command->extends;
         $orderProductCardKey->status           = $command->status;
+        $orderProductCardKey->creator           = $this->getOperator();
 
 
         $this->execute(

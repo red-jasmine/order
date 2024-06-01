@@ -13,7 +13,7 @@ class RefundCancelCommandHandler extends AbstractRefundCommandHandler
     {
 
         $refund  = $this->find($command->rid);
-
+        $refund->updater = $this->getOperator();
         $this->execute(
             execute: fn() => $refund->cancel(),
             persistence: fn() => $this->refundRepository->update($refund)

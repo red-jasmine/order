@@ -10,7 +10,7 @@ use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Models\OrderProduct;
 use RedJasmine\Order\Domain\Models\OrderRefund;
-use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
+use RedJasmine\Ecommerce\Domain\Models\ValueObjects\Amount;
 
 class OrderRefundService
 {
@@ -57,7 +57,7 @@ class OrderRefundService
         $orderRefund->payment_amount         = $orderProduct->payment_amount;
         $orderRefund->divided_payment_amount = $orderProduct->divided_payment_amount;
         $orderRefund->shipping_status        = $orderProduct->shipping_status;
-        $orderRefund->creator                = $order->getOperator();
+        // TODO 创建人
 
         // 获取当售后阶段
         $orderRefund->phase = $this->getRefundPhase($orderProduct);

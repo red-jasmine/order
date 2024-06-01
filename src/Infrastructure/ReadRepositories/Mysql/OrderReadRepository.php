@@ -19,7 +19,7 @@ class OrderReadRepository extends QueryBuilderReadRepository implements OrderRea
      *
      * @var $modelClass class-string
      */
-    protected string $modelClass = Order::class;
+    protected static string $modelClass = Order::class;
 
 
 }

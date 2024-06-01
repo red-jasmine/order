@@ -21,7 +21,7 @@ class OrderShippingLogisticsCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 订单能物流发货
+     *  订单能物流发货
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、创建订单
@@ -34,7 +34,7 @@ class OrderShippingLogisticsCommandHandlerTest extends ApplicationTestCase
      *  2、物流单存在
      * @return void
      */
-    public function can_shipping_logistics() : void
+    public function test_can_shipping_logistics() : void
     {
 
 
@@ -58,7 +58,7 @@ class OrderShippingLogisticsCommandHandlerTest extends ApplicationTestCase
     }
 
     /**
-     * @test 订单能进行菜饭发货
+     *  订单能进行菜饭发货
      * 前提条件: 订单已支付
      * 步骤：
      *  1、对第一个子商品单 发货
@@ -69,7 +69,7 @@ class OrderShippingLogisticsCommandHandlerTest extends ApplicationTestCase
      *  2、第二次发货后  订单状态为 待买家确认、
      * @return void
      */
-    public function can_split_shipping_logistics() : void
+    public function test_can_split_shipping_logistics() : void
     {
         $order = $this->orderPaid();
 

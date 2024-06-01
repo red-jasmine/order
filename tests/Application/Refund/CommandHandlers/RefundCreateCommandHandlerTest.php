@@ -16,7 +16,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
 
 
     /**
-     * @test 能创建仅退款单
+     *  能创建仅退款单
      * 前提条件: 订单已支付
      * 步骤：
      *  1、发起一个产品的 仅退款的订单
@@ -27,7 +27,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
      *  2、
      * @return void
      */
-    public function can_create_only_refund_on_sale() : void
+    public function test_can_create_only_refund_on_sale() : void
     {
         // 前提条件
         $order = $this->orderPaid();
@@ -62,7 +62,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
     }
 
     /**
-     * @test 能创建 退货退款单
+     *  能创建 退货退款单
      * 前提条件:
      * 步骤：
      *  1、
@@ -73,7 +73,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
      *  2、
      * @return void
      */
-    public function can_crate_return_goods_refund_on_sale() : void
+    public function test_can_crate_return_goods_refund_on_sale() : void
     {
 
         $order = $this->orderPaidAndShipping();
@@ -109,7 +109,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
     }
 
     /**
-     * @test 能创建 换货单
+     *  能创建 换货单
      * 前提条件: 订单已发货
      * 步骤：
      *  1、创建换货单
@@ -120,7 +120,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
      *  2、
      * @return void
      */
-    public function can_crate_exchange_on_sale() : void
+    public function test_can_crate_exchange_on_sale() : void
     {
 
         $order = $this->orderPaidAndShipping();
@@ -157,7 +157,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
 
 
     /**
-     * @test 能创建补发
+     *  能创建补发
      * 前提条件: 订单商品已发货
      * 步骤：
      *  1、创建补发售后单
@@ -168,7 +168,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
      *  2、
      * @return void
      */
-    public function can_crate_reshipment_on_sale() : void
+    public function test_can_crate_reshipment_on_sale() : void
     {
 
         $order = $this->orderPaidAndShipping();
@@ -206,7 +206,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
     // 售后阶段
 
     /**
-     * @test 能创建仅退款单
+     *  能创建仅退款单
      * 前提条件: 订单已确认
      * 步骤：
      *  1、发起一个产品的 仅退款的订单
@@ -217,7 +217,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
      *  2、
      * @return void
      */
-    public function can_create_only_refund_after_sale() : void
+    public function test_can_create_only_refund_after_sale() : void
     {
         // 前提条件
         $order = $this->orderConfirmed();
@@ -253,7 +253,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
 
 
     /**
-     * @test 能创建 退货退款单
+     *  能创建 退货退款单
      * 前提条件:
      * 步骤：
      *  1、
@@ -264,7 +264,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
      *  2、
      * @return void
      */
-    public function can_crate_return_goods_refund_after_sale() : void
+    public function test_can_crate_return_goods_refund_after_sale() : void
     {
 
         $order = $this->orderConfirmed();
@@ -301,7 +301,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
 
 
     /**
-     * @test 能创建 换货单
+     * 能创建 换货单
      * 前提条件: 订单已发货
      * 步骤：
      *  1、创建换货单
@@ -312,7 +312,7 @@ class RefundCreateCommandHandlerTest extends RefundCommandServiceTestCase
      *  2、
      * @return void
      */
-    public function can_crate_exchange_after_sale() : void
+    public function test_can_crate_exchange_after_sale() : void
     {
 
         $order = $this->orderConfirmed();

@@ -32,6 +32,7 @@ class RefundReturnGoodsCommandHandler extends AbstractRefundCommandHandler
         $orderLogistics->express_no           = $command->expressNo;
         $orderLogistics->status               = $command->status;
         $orderLogistics->shipping_time        = now();
+        $orderLogistics->creator              = $this->getOperator();
 
         $this->execute(
             execute: fn() => $refund->returnGoods($orderLogistics),

@@ -3,6 +3,8 @@
 namespace RedJasmine\Order\Application;
 
 use Illuminate\Support\ServiceProvider;
+use RedJasmine\Ecommerce\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Ecommerce\Domain\Models\ValueObjects\Amount;
 use RedJasmine\Order\Domain\Models\Casts\PromiseServiceValueCastTransformer;
 use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServiceValue;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
@@ -13,8 +15,8 @@ use RedJasmine\Order\Infrastructure\ReadRepositories\OrderReadRepositoryInterfac
 use RedJasmine\Order\Infrastructure\ReadRepositories\RefundReadRepositoryInterface;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\OrderRepository;
 use RedJasmine\Order\Infrastructure\Repositories\Eloquent\RefundRepository;
-use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
-use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
+
+
 
 
 /**
@@ -43,7 +45,7 @@ class OrderApplicationServiceProvider extends ServiceProvider
         $config->set('data.casts.' . PromiseServiceValue::class, PromiseServiceValueCastTransformer::class);
         $config->set('data.transformers.' . PromiseServiceValue::class, PromiseServiceValueCastTransformer::class);
 
-       
+
     }
 
     public function boot() : void

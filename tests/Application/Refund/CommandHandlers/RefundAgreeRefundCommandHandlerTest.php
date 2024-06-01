@@ -72,7 +72,7 @@ class RefundAgreeRefundCommandHandlerTest extends RefundCommandServiceTestCase
     }
 
     /**
-     * @test 能同意退款
+     *  能同意退款
      * 前提条件: 订单支付后、创建退款单
      * 步骤：
      *  1、同意退款
@@ -84,7 +84,7 @@ class RefundAgreeRefundCommandHandlerTest extends RefundCommandServiceTestCase
      *  3、订单: 退款金额= 、退款状态 = 全部退款
      * @return void
      */
-    public function can_agree_typeof_refund() : void
+    public function test_can_agree_typeof_refund() : void
     {
         // 前提条件
         $refunds = $this->orderPaidAndCreateRefund();

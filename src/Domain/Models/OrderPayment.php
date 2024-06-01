@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RedJasmine\Order\Domain\Models\Enums\Payments\AmountTypeEnum;
 use RedJasmine\Order\Domain\Models\Enums\PaymentStatusEnum;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 
 class OrderPayment extends Model
 {
@@ -15,7 +16,7 @@ class OrderPayment extends Model
 
     use HasDateTimeFormatter;
 
-    use \RedJasmine\Support\Domain\Models\Traits\HasOperator;
+    use HasOperator;
 
     use HasTradeParties;
 

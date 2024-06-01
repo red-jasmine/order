@@ -25,7 +25,7 @@ class OrderHiddenCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 创建标准流程订单 SOP
+     * 创建标准流程订单 SOP
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、对主订单 设置隐藏
@@ -37,7 +37,7 @@ class OrderHiddenCommandHandlerTest extends ApplicationTestCase
      *
      * @return void
      */
-    public function can_hidden() : void
+    public function test_can_hidden() : void
     {
         $order = $this->create_order();
 

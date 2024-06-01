@@ -12,7 +12,7 @@ class RefundAgreeReturnGoodsCommandHandler extends AbstractRefundCommandHandler
     public function handle(RefundAgreeReturnGoodsCommand $command) : void
     {
         $refund = $this->find($command->rid);
-
+        $refund->updater = $this->getOperator();
         $this->execute(
             execute: fn() => $refund->agreeReturnGoods(),
             persistence: fn() => $this->refundRepository->update($refund)

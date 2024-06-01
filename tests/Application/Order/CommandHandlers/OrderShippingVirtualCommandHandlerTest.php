@@ -20,7 +20,7 @@ class OrderShippingVirtualCommandHandlerTest extends ApplicationTestCase
     }
 
     /**
-     * @test 订单能虚拟发货
+     * 订单能虚拟发货
      * 前提条件: 已支付虚拟发货订单
      * 步骤：
      *  1、对所有订单进行虚拟发货
@@ -29,7 +29,7 @@ class OrderShippingVirtualCommandHandlerTest extends ApplicationTestCase
      *  1、订单状态 等待买家确认、已发货
      * @return void
      */
-    public function can_shipping_virtual() : void
+    public function test_can_shipping_virtual() : void
     {
 
 
@@ -63,7 +63,7 @@ class OrderShippingVirtualCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 订单能支持分阶段发货
+     * 订单能支持分阶段发货
      * 前提条件: 虚拟商品订单已支付
      * 步骤：
      *  1、第一次 标记发货
@@ -74,7 +74,7 @@ class OrderShippingVirtualCommandHandlerTest extends ApplicationTestCase
      *  2、第二次 子商品单状态为 已发货
      * @return void
      */
-    public function can_stage_shipping_virtual() : void
+    public function test_can_stage_shipping_virtual() : void
     {
 
         $order = $this->orderPaid();

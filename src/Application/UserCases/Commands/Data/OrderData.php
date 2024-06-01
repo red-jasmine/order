@@ -7,7 +7,7 @@ use RedJasmine\Order\Domain\Models\Enums\OrderTypeEnum;
 use RedJasmine\Order\Domain\Models\Enums\PayTypeEnum;
 use RedJasmine\Support\Data\Data;
 use RedJasmine\Support\Data\UserData;
-use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
+use RedJasmine\Ecommerce\Domain\Models\ValueObjects\Amount;
 
 class OrderData extends Data
 {

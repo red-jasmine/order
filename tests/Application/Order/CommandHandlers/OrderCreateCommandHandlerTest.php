@@ -12,7 +12,7 @@ class OrderCreateCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 创建标准流程订单 SOP
+     * 创建标准流程订单 SOP
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、创建数据
@@ -24,7 +24,7 @@ class OrderCreateCommandHandlerTest extends ApplicationTestCase
      *  3、验证状态
      * @return void
      */
-    public function can_create_sop_order() : void
+    public function test_can_create_sop_order() : void
     {
 
         $fake               = new OrderFake();

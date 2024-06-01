@@ -24,7 +24,7 @@ class OrderRemarksCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 创建标准流程订单 SOP
+     * 创建标准流程订单 SOP
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、对主订单设置备注
@@ -36,7 +36,7 @@ class OrderRemarksCommandHandlerTest extends ApplicationTestCase
      *
      * @return void
      */
-    public function can_remarks() : void
+    public function test_can_remarks() : void
     {
         $order = $this->create_order();
 

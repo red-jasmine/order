@@ -15,7 +15,7 @@ class OrderCancelCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 创建标准流程订单 SOP
+     *  创建标准流程订单 SOP
      * 前提条件: 准备订单数据
      * 步骤：
      *      1、创建订单
@@ -27,7 +27,7 @@ class OrderCancelCommandHandlerTest extends ApplicationTestCase
      *
      * @return void
      */
-    public function can_cancel_sop_not_paid_order() : void
+    public function test_can_cancel_sop_not_paid_order() : void
     {
 
         $fake               = new OrderFake();

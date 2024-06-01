@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Domain\Models\Enums\Logistics\LogisticsShipperEnum;
 use RedJasmine\Order\Domain\Models\Enums\Logistics\LogisticsStatusEnum;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 
 class OrderLogistics extends Model
 {

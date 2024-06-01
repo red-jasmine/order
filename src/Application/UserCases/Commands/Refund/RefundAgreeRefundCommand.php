@@ -3,7 +3,7 @@
 namespace RedJasmine\Order\Application\UserCases\Commands\Refund;
 
 use RedJasmine\Support\Data\Data;
-use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
+use RedJasmine\Ecommerce\Domain\Models\ValueObjects\Amount;
 
 class RefundAgreeRefundCommand extends Data
 {

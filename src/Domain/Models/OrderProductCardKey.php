@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use RedJasmine\Order\Domain\Models\Enums\OrderCardKeyStatusEnum;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 
 class OrderProductCardKey extends Model
 {

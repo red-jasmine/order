@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use RedJasmine\Ecommerce\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Ecommerce\Domain\Models\ValueObjects\Amount;
 use RedJasmine\Order\Domain\Events\RefundAgreedEvent;
 use RedJasmine\Order\Domain\Events\RefundAgreedReturnGoodsEvent;
 use RedJasmine\Order\Domain\Events\RefundCanceledEvent;
@@ -25,21 +27,19 @@ use RedJasmine\Order\Domain\Models\Enums\RefundStatusEnum;
 use RedJasmine\Order\Domain\Models\Enums\RefundTypeEnum;
 use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\OrderFactory;
-use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
-use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
-use RedJasmine\Support\Foundation\HasServiceContext;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
+use RedJasmine\Support\Domain\Models\Traits\HasOperator;
 
 
 class OrderRefund extends Model
 {
-    use HasServiceContext;
+
 
     use HasDateTimeFormatter;
 
     use SoftDeletes;
 
-    use \RedJasmine\Support\Domain\Models\Traits\HasOperator;
+    use HasOperator;
 
     use HasTradeParties;
 
@@ -249,7 +249,7 @@ class OrderRefund extends Model
             throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
         }
         $this->refund_status = RefundStatusEnum::WAIT_SELLER_RESHIPMENT;
-        $this->updater       = $this->getOperator();
+
         $this->fireModelEvent('agreedReshipment');
     }
 
@@ -271,7 +271,7 @@ class OrderRefund extends Model
             throw  RefundException::newFromCodes(RefundException::REFUND_STATUS_NOT_ALLOW);
         }
         $this->refund_status = RefundStatusEnum::WAIT_SELLER_RESHIPMENT;
-        $this->updater       = $this->getOperator();
+
         $this->fireModelEvent('confirmed');
 
     }

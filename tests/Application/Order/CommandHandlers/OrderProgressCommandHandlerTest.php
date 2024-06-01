@@ -61,7 +61,7 @@ class OrderProgressCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 虚拟商品子商品单 能进行设置进度
+     * 虚拟商品子商品单 能进行设置进度
      * 前提条件: 虚拟商品 已开始发货
      * 步骤：
      *  1、设置 子商品单 绝对进度
@@ -72,7 +72,7 @@ class OrderProgressCommandHandlerTest extends ApplicationTestCase
      *  2、和 第一次设置的 和相等
      * @return void
      */
-    public function can_set_progress() : void
+    public function test_can_set_progress() : void
     {
         $order = $this->orderPaidAndShippingVirtual();
 

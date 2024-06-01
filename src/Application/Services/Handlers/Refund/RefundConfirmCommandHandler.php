@@ -10,7 +10,7 @@ class RefundConfirmCommandHandler extends AbstractRefundCommandHandler
     public function handle(RefundConfirmCommand $command) : void
     {
         $refund = $this->find($command->rid);
-
+        $refund->updater = $this->getOperator();
         $this->execute(
             execute: fn() => $refund->confirm(),
             persistence: fn() => $this->refundRepository->update($refund)

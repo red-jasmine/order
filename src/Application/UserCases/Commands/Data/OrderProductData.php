@@ -7,7 +7,7 @@ use RedJasmine\Order\Domain\Models\Enums\OrderProductTypeEnum;
 use RedJasmine\Order\Domain\Models\Enums\ShippingTypeEnum;
 use RedJasmine\Order\Domain\Models\ValueObjects\PromiseServices;
 use RedJasmine\Support\Data\Data;
-use RedJasmine\Support\Domain\Models\ValueObjects\Amount;
+use RedJasmine\Ecommerce\Domain\Models\ValueObjects\Amount;
 
 class OrderProductData extends Data
 {

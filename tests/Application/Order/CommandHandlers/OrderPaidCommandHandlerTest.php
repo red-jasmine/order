@@ -15,7 +15,7 @@ class OrderPaidCommandHandlerTest extends ApplicationTestCase
 
 
     /**
-     * @test 能支付成功
+     * 能支付成功
      * 前提条件: 准备订单数据
      * 步骤：
      *  1、创建订单
@@ -26,7 +26,7 @@ class OrderPaidCommandHandlerTest extends ApplicationTestCase
      *  2、支付单支付状态成功、
      * @return void
      */
-    public function can_order_paid() : void
+    public function test_can_order_paid() : void
     {
 
         // 1、创建订单

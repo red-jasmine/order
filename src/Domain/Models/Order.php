@@ -31,16 +31,16 @@ use RedJasmine\Order\Services\OrderService;
 use RedJasmine\Support\Casts\AesEncrypted;
 use RedJasmine\Support\Contracts\UserInterface;
 use RedJasmine\Support\Data\UserData;
-use RedJasmine\Support\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Ecommerce\Domain\Models\Casts\AmountCastTransformer;
+use RedJasmine\Support\Domain\Models\Traits\HasDateTimeFormatter;
 use RedJasmine\Support\Domain\Models\Traits\HasOperator;
-use RedJasmine\Support\Foundation\HasServiceContext;
-use RedJasmine\Support\Traits\HasDateTimeFormatter;
+
+
 use Spatie\LaravelData\WithData;
 
 
 class Order extends Model
 {
-    use HasServiceContext;
 
     use WithData;
 
@@ -155,7 +155,7 @@ class Order extends Model
 
     public function addProduct(OrderProduct $orderProduct) : static
     {
-        $orderProduct->creator        = $this->getOperator();
+
         $orderProduct->order_id       = $this->id;
         $orderProduct->seller         = $this->seller;
         $orderProduct->buyer          = $this->buyer;
@@ -168,8 +168,8 @@ class Order extends Model
 
     public function setAddress(OrderAddress $orderAddress) : static
     {
-        $orderAddress->id      = $this->id;
-        $orderAddress->creator = $this->getOperator();
+        $orderAddress->id = $this->id;
+
         $this->setRelation('address', $orderAddress);
         return $this;
     }
@@ -299,8 +299,6 @@ class Order extends Model
 
         // 计算金额
         $this->calculateAmount();
-
-        $this->creator      = $this->getOperator();
         $this->created_time = now();
         $this->fireModelEvent('created');
 
@@ -310,7 +308,7 @@ class Order extends Model
 
     public function addPayment(OrderPayment $orderPayment) : void
     {
-        $orderPayment->creator = $this->getOperator();
+
         $this->payments->add($orderPayment);
     }
 
@@ -350,7 +348,7 @@ class Order extends Model
         // 如果还有未完成发货的订单商品 那么订单只能是部分发货
         $this->shipping_status = $effectiveAndNotShippingCount > 0 ? ShippingStatusEnum::PART_SHIPPED : ShippingStatusEnum::SHIPPED;
         $this->shipping_time   = $order->shipping_time ?? now();
-        $this->updater         = $this->getOperator();
+
         $this->fireModelEvent('shipped');
     }
 
@@ -378,7 +376,7 @@ class Order extends Model
             $orderProduct->order_status = OrderStatusEnum::CANCEL;
             $orderProduct->close_time   = now();
         });
-        $this->updater = $this->getOperator();
+
         $this->fireModelEvent('canceled');
     }
 
@@ -400,7 +398,7 @@ class Order extends Model
         $orderPayment->seller   = $this->seller;
         $orderPayment->buyer    = $this->buyer;
         $orderPayment->status   = PaymentStatusEnum::PAYING;
-        $orderPayment->creator  = $this->getOperator();
+
         $this->addPayment($orderPayment);
         // 设置为支付中
         if (in_array($this->payment_status, [ PaymentStatusEnum::WAIT_PAY, PaymentStatusEnum::NIL ], true)) {
@@ -409,7 +407,7 @@ class Order extends Model
         $this->products->each(function (OrderProduct $orderProduct) {
             $orderProduct->payment_status = PaymentStatusEnum::PAYING;
         });
-        $this->updater = $this->getOperator();
+
         $this->fireModelEvent('paying');
     }
 
@@ -521,7 +519,7 @@ class Order extends Model
         }
 
         $orderProduct->progress = $newProgress;
-        $orderProduct->updater  = $this->getOperator();
+
         $this->fireModelEvent('progress');
         return (int)$orderProduct->progress;
     }
@@ -554,7 +552,7 @@ class Order extends Model
         }
         $model->info->{$field} = $remarks;
 
-        $model->updater = $this->getOperator();
+
     }
 
     public function setSellerCustomStatus(string $sellerCustomStatus, ?int $orderProductId = null) : void
@@ -566,7 +564,7 @@ class Order extends Model
         }
         $model->seller_custom_status = $sellerCustomStatus;
 
-        $model->updater = $this->getOperator();
+
     }
 
 
@@ -579,7 +577,7 @@ class Order extends Model
      */
     public function hiddenOrder(TradePartyEnums $tradeParty, bool $isHidden = true) : void
     {
-        $this->updater = $this->getOperator();
+
         switch ($tradeParty) {
             case TradePartyEnums::SELLER:
                 $this->is_seller_delete = $isHidden;
