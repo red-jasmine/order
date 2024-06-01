@@ -1,6 +1,6 @@
 <?php
 
-namespace Order\CommandHandlers;
+namespace RedJasmine\Order\Tests\Application\Order\CommandHandlers;
 
 use RedJasmine\Order\Application\UserCases\Commands\OrderCreateCommand;
 use RedJasmine\Order\Application\UserCases\Commands\Others\OrderHiddenCommand;

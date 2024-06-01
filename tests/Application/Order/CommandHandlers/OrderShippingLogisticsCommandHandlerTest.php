@@ -1,6 +1,6 @@
 <?php
 
-namespace Order\CommandHandlers;
+namespace RedJasmine\Order\Tests\Application\Order\CommandHandlers;
 
 use RedJasmine\Order\Domain\Models\Enums\OrderStatusEnum;
 use RedJasmine\Order\Domain\Models\Enums\ShippingStatusEnum;
