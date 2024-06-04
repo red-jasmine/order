@@ -24,8 +24,7 @@ class RefundController extends Controller
         protected OrderCommandService         $orderCommandService,
     )
     {
-        $this->commandService->setOperator(fn() => $this->getUser());
-        $this->orderCommandService->setOperator(fn() => $this->getUser());
+
 
         $this->queryService->withQuery(function ($query) {
             $query->onlyBuyer($this->getOwner());

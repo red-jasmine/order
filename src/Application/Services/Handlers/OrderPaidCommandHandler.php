@@ -22,7 +22,7 @@ class OrderPaidCommandHandler extends AbstractOrderCommandHandler
         $orderPayment->payment_channel    = $command->paymentChannel;
         $orderPayment->payment_channel_no = $command->paymentChannelNo;
         $orderPayment->payment_method     = $command->paymentMethod;
-        $orderPayment->updater            = $this->getOperator();
+        $orderPayment->updater            = $order->updater;
         $this->execute(
             execute: fn() => $order->paid($orderPayment),
             persistence: fn() => $this->orderRepository->store($order)

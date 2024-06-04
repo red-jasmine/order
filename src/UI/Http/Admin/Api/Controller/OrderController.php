@@ -29,7 +29,7 @@ class OrderController extends Controller
         protected OrderCommandService        $commandService,
     )
     {
-        $this->commandService->setOperator(fn() => $this->getUser());
+
     }
 
 

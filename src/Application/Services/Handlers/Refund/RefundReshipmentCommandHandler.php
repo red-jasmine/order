@@ -32,7 +32,7 @@ class RefundReshipmentCommandHandler extends AbstractRefundCommandHandler
         $orderLogistics->express_no           = $command->expressNo;
         $orderLogistics->status               = $command->status;
         $orderLogistics->shipping_time        = now();
-        $orderLogistics->creator              = $this->getOperator();
+        $orderLogistics->creator              = $refund->updater;
 
         $this->execute(
             execute: fn() => $refund->reshipment($orderLogistics),

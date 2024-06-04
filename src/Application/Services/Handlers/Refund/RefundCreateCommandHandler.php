@@ -26,7 +26,7 @@ class RefundCreateCommandHandler extends AbstractOrderCommandHandler
         $orderRefund->description      = $command->description;
         $orderRefund->images           = $command->images;
         $orderRefund->reason           = $command->reason;
-        $orderRefund->creator          = $this->getOperator();
+        $orderRefund->creator          =  $order->updater;
         $this->execute(
             execute: fn() => $order->createRefund($orderRefund),
             persistence: fn() => $this->orderRepository->update($order),

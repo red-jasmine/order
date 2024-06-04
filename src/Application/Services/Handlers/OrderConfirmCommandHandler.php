@@ -18,7 +18,7 @@ class OrderConfirmCommandHandler extends AbstractOrderCommandHandler
     {
 
         $order = $this->find($command->id);
-        $order->updater = $this->getOperator();
+
         $this->execute(
             execute: fn() => $order->confirm(),
             persistence: fn() => $this->orderRepository->update($order)

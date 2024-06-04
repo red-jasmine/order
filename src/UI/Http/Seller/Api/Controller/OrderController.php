@@ -29,7 +29,6 @@ class OrderController extends Controller
         protected OrderCommandService        $commandService,
     )
     {
-        $this->commandService->setOperator(fn() => $this->getUser());
 
         $this->queryService->withQuery(function ($query) {
             $query->onlySeller($this->getOwner());

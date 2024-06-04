@@ -13,7 +13,6 @@ class RefundAgreeRefundCommandHandler extends AbstractRefundCommandHandler
     {
 
         $refund = $this->find($command->rid);
-        $refund->updater = $this->getOperator();
         $this->execute(
             execute: fn() => $refund->agreeRefund($command->amount),
             persistence: fn() => $this->refundRepository->update($refund),

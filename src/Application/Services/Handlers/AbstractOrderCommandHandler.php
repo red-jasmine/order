@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use RedJasmine\Order\Domain\Models\Order;
 use RedJasmine\Order\Domain\Repositories\OrderRepositoryInterface;
 use RedJasmine\Support\Application\CommandHandler;
+use RedJasmine\Support\Facades\ServiceContext;
 
 
 abstract class AbstractOrderCommandHandler extends CommandHandler
@@ -25,6 +26,8 @@ abstract class AbstractOrderCommandHandler extends CommandHandler
     {
         $order = $this->orderRepository->find($id);
         $this->setAggregate($order);
+
+        $order->updater = ServiceContext::getOperator();
         return $order;
 
     }
